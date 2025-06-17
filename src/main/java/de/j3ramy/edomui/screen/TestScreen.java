@@ -1,6 +1,11 @@
 package de.j3ramy.edomui.screen;
 
+import de.j3ramy.edomui.EdomUiMod;
+import de.j3ramy.edomui.components.basic.*;
 import de.j3ramy.edomui.components.button.Button;
+import de.j3ramy.edomui.components.button.SpriteImageButton;
+import de.j3ramy.edomui.components.button.StaticImageButton;
+import de.j3ramy.edomui.components.image.Image;
 import de.j3ramy.edomui.components.input.*;
 import de.j3ramy.edomui.components.presentation.Grid;
 import de.j3ramy.edomui.components.presentation.ScrollableList;
@@ -14,6 +19,7 @@ import de.j3ramy.edomui.util.style.Color;
 import de.j3ramy.edomui.components.text.Text;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +44,9 @@ public class TestScreen extends Screen {
         view.addWidget(textArea = new TextArea(250, 100, 150, 100));
         textArea.setHidden(true);
 
-        this.view.addWidget(new Button(100, 5, 60, 13, "Hallo", ()->System.out.println(textArea.getText())));
+        Button button;
+        this.view.addWidget(button = new Button(100, 5, 60, 13, "Hallo", ()->System.out.println(textArea.getText())));
+        button.setEnabled(false);
 
         textArea.setText("Hallo Jaimy,\n\nmein Name ist DIngsbums\n\n\nhahahaha");
 
@@ -87,6 +95,13 @@ public class TestScreen extends Screen {
             table.addRow(Arrays.asList("Buenos Aires" + i, "Córdoba" + i, "La Plata" + i), Color.WHITE);
         }
         //table.setHidden(true);
+
+        ResourceLocation image = new ResourceLocation(EdomUiMod.MOD_ID, "sprite-example.png");
+        //view.addWidget(new Image(100, 100, 100, 100, image));
+
+        view.addWidget(new SpriteImageButton(100, 100, 20, 20, 20, 20, 256, 256, image, ()->System.out.println("HIHI2")));
+
+
     }
 
     @Override
