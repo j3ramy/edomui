@@ -8,31 +8,12 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 
 public final class Image extends Widget {
+    private final int uOffset, vOffset, textureWidth, textureHeight;
+
     private ResourceLocation textureLoc;
-    private int uOffset, vOffset, textureWidth, textureHeight;
 
     public void setTextureLoc(ResourceLocation textureLoc) {
         this.textureLoc = textureLoc;
-    }
-
-    public void setUOffset(int uOffset) {
-        this.uOffset = uOffset;
-    }
-
-    public void setVOffset(int vOffset) {
-        this.vOffset = vOffset;
-    }
-
-    public void setTextureWidth(int textureWidth) {
-        this.textureWidth = textureWidth;
-    }
-
-    public void setTextureHeight(int textureHeight) {
-        this.textureHeight = textureHeight;
-    }
-
-    public Image(int x, int y, int width, int height, ResourceLocation textureLoc){
-        this(x, y, width, height, 0, 0, width, height, textureLoc);
     }
 
     public Image(int x, int y, int width, int height, int uOffset, int vOffset, int textureWidth, int textureHeight, ResourceLocation textureLoc){
@@ -43,6 +24,10 @@ public final class Image extends Widget {
         this.vOffset = vOffset;
         this.textureWidth = textureWidth;
         this.textureHeight = textureHeight;
+    }
+
+    public Image(int x, int y, int width, int height, ResourceLocation textureLoc){
+        this(x, y, width, height, 0, 0, width, height, textureLoc);
     }
 
     @Override

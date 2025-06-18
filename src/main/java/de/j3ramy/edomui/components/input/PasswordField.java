@@ -9,12 +9,21 @@ import net.minecraft.client.gui.Font;
 import javax.annotation.Nullable;
 
 public final class PasswordField extends TextField {
-    public PasswordField(int x, int y, int width, int height, String placeholderText, @Nullable IValueAction onTextChangeAction, @Nullable IValueAction onPressEnterAction) {
+    public PasswordField(int x, int y, int width, int height, String placeholderText, @Nullable IValueAction onTextChangeAction,
+                         @Nullable IValueAction onPressEnterAction) {
         super(x, y, width, height, placeholderText, FontSize.BASE, onTextChangeAction, onPressEnterAction);
+    }
+
+    public PasswordField(int x, int y, int width, int height, String placeholderText, @Nullable IValueAction onTextChangeAction) {
+        super(x, y, width, height, placeholderText, FontSize.BASE, onTextChangeAction, null);
     }
 
     public PasswordField(int x, int y, int width, int height, String placeholderText) {
         this(x, y, width, height, placeholderText, null, null);
+    }
+
+    public PasswordField(int x, int y, int width, int height) {
+        this(x, y, width, height, "", null, null);
     }
 
     @Override

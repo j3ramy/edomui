@@ -4,19 +4,29 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.components.Widget;
 import de.j3ramy.edomui.components.basic.VerticalScrollbar;
 import de.j3ramy.edomui.components.button.Button;
+import de.j3ramy.edomui.components.presentation.contextmenu.ContextMenu;
+import de.j3ramy.edomui.components.presentation.contextmenu.DynamicContextMenuBuilder;
 import de.j3ramy.edomui.enums.FontSize;
+import de.j3ramy.edomui.interfaces.ContextMenuProvider;
 import de.j3ramy.edomui.interfaces.IAction;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public final class Grid extends Widget {
     private final List<List<Button>> grid;
     private final GridConfig config;
     private final VisibleRange visibleRange;
     private final VerticalScrollbar scrollbar;
+
+    private ContextMenu contextMenu;
+    private ContextMenuProvider contextMenuProvider;
+    private DynamicContextMenuBuilder menuBuilder;
+    private boolean dynamicMenuEnabled = false;
 
     private boolean needsUpdate = true;
 
@@ -42,6 +52,12 @@ public final class Grid extends Widget {
         }
 
         renderVisibleCells(poseStack);
+
+        if (contextMenu != null && contextMenu.isVisible()) {
+            contextMenu.render(poseStack);
+            return;
+        }
+
         renderTooltips(poseStack);
     }
 
@@ -51,6 +67,15 @@ public final class Grid extends Widget {
 
         super.update(x, y);
         updateCellPositions();
+
+        if (contextMenu != null && contextMenu.isVisible()) {
+            if (needsScrolling()) {
+                scrollbar.updateContentSize(grid.size());
+            }
+            contextMenu.update(x, y);
+            return;
+        }
+
         updateCellStates(x, y);
 
         if (needsScrolling()) {
@@ -62,9 +87,31 @@ public final class Grid extends Widget {
     public void onClick(int mouseButton) {
         if (isHidden()) return;
 
+        if (contextMenu != null && contextMenu.isVisible()) {
+            if (contextMenu.isMouseOver()) {
+                contextMenu.onClick(mouseButton);
+                return;
+            }
+
+            if (mouseButton == 1) {
+                Button hoveredCell = getHoveredCell();
+                if (hoveredCell != null) {
+                    showContextMenu(hoveredCell);
+                    return;
+                }
+            }
+
+            contextMenu.hide();
+            return;
+        }
+
         Button hoveredCell = getHoveredCell();
         if (hoveredCell != null) {
-            hoveredCell.onClick(mouseButton);
+            if (mouseButton == 1 && contextMenuProvider != null) {
+                showContextMenu(hoveredCell);
+            } else if (mouseButton == 0) {
+                hoveredCell.onClick(mouseButton);
+            }
         }
     }
 
@@ -73,6 +120,109 @@ public final class Grid extends Widget {
         if (isHidden() || !isMouseOver() || !needsScrolling()) return;
 
         handleScrolling(delta);
+    }
+
+    public Grid enableDynamicContextMenu() {
+        int menuButtonHeight = 13;
+        this.contextMenu = new ContextMenu(menuButtonHeight, getStyle().getBackgroundColor());
+        this.menuBuilder = DynamicContextMenuBuilder.create();
+        this.dynamicMenuEnabled = true;
+        return this;
+    }
+
+    public Grid addContextAction(String label, IAction action) {
+        if (!dynamicMenuEnabled) enableDynamicContextMenu();
+        menuBuilder.addAction(label, action);
+        updateContextMenuProvider();
+        return this;
+    }
+
+    public Grid addContextDeleteAction() {
+        if (!dynamicMenuEnabled) enableDynamicContextMenu();
+        menuBuilder.addAction("Delete Cell", () -> {
+            Button hoveredCell = getHoveredCell();
+            if (hoveredCell != null) {
+                removeCell(hoveredCell);
+            }
+        });
+        updateContextMenuProvider();
+        return this;
+    }
+
+    public Grid addContextEditAction(Function<Button, IAction> editFunction) {
+        if (!dynamicMenuEnabled) enableDynamicContextMenu();
+        menuBuilder.addAction("Edit Cell", () -> {
+            Button hoveredCell = getHoveredCell();
+            if (hoveredCell != null) {
+                editFunction.apply(hoveredCell).execute();
+            }
+        });
+        updateContextMenuProvider();
+        return this;
+    }
+
+    public Grid addContextActionIf(String label, IAction action, Predicate<Button> condition) {
+        if (!dynamicMenuEnabled) enableDynamicContextMenu();
+        menuBuilder.addAction(label, () -> {
+            Button hoveredCell = getHoveredCell();
+            if (hoveredCell != null && condition.test(hoveredCell)) {
+                action.execute();
+            }
+        });
+        updateContextMenuProvider();
+        return this;
+    }
+
+    public Grid addContextTitleAction(String label, Function<String, IAction> actionFactory) {
+        if (!dynamicMenuEnabled) enableDynamicContextMenu();
+        menuBuilder.addAction(label, () -> {
+            Button hoveredCell = getHoveredCell();
+            if (hoveredCell != null) {
+                String cellText = hoveredCell.getTitle().getString().toString();
+                actionFactory.apply(cellText).execute();
+            }
+        });
+        updateContextMenuProvider();
+        return this;
+    }
+
+    public DynamicContextMenuBuilder getMenuBuilder() {
+        if (!dynamicMenuEnabled) enableDynamicContextMenu();
+        return menuBuilder;
+    }
+
+    public void setContextMenuProvider(ContextMenuProvider provider) {
+        if (contextMenu == null) {
+            this.contextMenu = new ContextMenu(config.cellHeight, getStyle().getBackgroundColor());
+        }
+        this.contextMenuProvider = provider;
+        this.dynamicMenuEnabled = false;
+    }
+
+    private void updateContextMenuProvider() {
+        if (menuBuilder != null && dynamicMenuEnabled) {
+            this.contextMenuProvider = (menu, elementIndex, elementTitle) -> {
+                Button hoveredCell = getHoveredCell();
+                if (hoveredCell != null) {
+                    menuBuilder.build().populateContextMenu(menu, 0, hoveredCell.getTitle().getString().toString());
+                }
+            };
+        }
+    }
+
+    private void showContextMenu(Button cell) {
+        if (contextMenuProvider == null || contextMenu == null) return;
+
+        contextMenu.clear();
+
+        GridPosition position = findCellPosition(cell);
+        if (position == null) return;
+
+        contextMenuProvider.populateContextMenu(contextMenu,
+                position.row * config.maxVisibleCols + position.col,
+                cell.getTitle().getString().toString());
+
+        contextMenu.show(this.getMousePosition().x, this.getMousePosition().y);
     }
 
     public void addButton(Button button) {
@@ -97,8 +247,50 @@ public final class Grid extends Widget {
         }
 
         grid.get(rowIndex).remove(columnIndex);
+        compactGrid();
         markForUpdate();
+
+        if (contextMenu != null) {
+            contextMenu.hide();
+        }
+
         return true;
+    }
+
+    public void removeCell(Button cell) {
+        GridPosition position = findCellPosition(cell);
+        if (position != null) {
+            grid.get(position.row).remove(position.col);
+            compactGrid();
+            markForUpdate();
+
+            if (contextMenu != null) {
+                contextMenu.hide();
+            }
+
+        }
+    }
+
+    private void compactGrid() {
+        List<Button> allCells = new ArrayList<>();
+
+        for (List<Button> row : grid) {
+            allCells.addAll(row);
+        }
+
+        grid.clear();
+        grid.add(new ArrayList<>());
+
+        for (Button cell : allCells) {
+            if (cell != null) {
+                addCellToGridDirect(cell);
+            }
+        }
+    }
+
+    private void addCellToGridDirect(Button cell) {
+        int targetRow = findNextAvailableRow();
+        grid.get(targetRow).add(cell);
     }
 
     public boolean removeLastCell() {
@@ -108,7 +300,13 @@ public final class Grid extends Widget {
 
         List<Button> lastRow = grid.get(grid.size() - 1);
         lastRow.remove(lastRow.size() - 1);
+        compactGrid();
         markForUpdate();
+
+        if (contextMenu != null) {
+            contextMenu.hide();
+        }
+
         return true;
     }
 
@@ -117,6 +315,10 @@ public final class Grid extends Widget {
         grid.add(new ArrayList<>());
         resetScrollProgress();
         markForUpdate();
+
+        if (contextMenu != null) {
+            contextMenu.hide();
+        }
     }
 
     public void resetScrollProgress() {
@@ -141,6 +343,17 @@ public final class Grid extends Widget {
 
     public boolean isMouseOverCell() {
         return getHoveredCell() != null;
+    }
+
+    private GridPosition findCellPosition(Button targetCell) {
+        for (int row = 0; row < grid.size(); row++) {
+            for (int col = 0; col < grid.get(row).size(); col++) {
+                if (grid.get(row).get(col) == targetCell) {
+                    return new GridPosition(row, col);
+                }
+            }
+        }
+        return null;
     }
 
     @Override
@@ -287,6 +500,9 @@ public final class Grid extends Widget {
 
     private void markForUpdate() {
         this.needsUpdate = true;
+    }
+
+    private record GridPosition(int row, int col) {
     }
 
     private static class GridConfig {

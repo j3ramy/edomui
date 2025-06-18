@@ -114,6 +114,10 @@ public class TextField extends Button {
         this(x, y, width, height, placeholder, FontSize.BASE, null, null);
     }
 
+    public TextField(int x, int y, int width, int height) {
+        this(x, y, width, height, "", FontSize.BASE, null, null);
+    }
+
     @Override
     public void render(PoseStack poseStack) {
         if (isHidden()) return;

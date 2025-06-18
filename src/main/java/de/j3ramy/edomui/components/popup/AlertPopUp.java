@@ -13,5 +13,9 @@ public final class AlertPopUp extends PopUp {
                 this.getTopPos() + this.getHeight() - GuiPresets.POPUP_BUTTON_HEIGHT - GuiPresets.POPUP_BUTTON_MARGIN_BOTTOM,
                 GuiPresets.POPUP_BUTTON_WIDTH, GuiPresets.POPUP_BUTTON_HEIGHT, buttonTitle, () -> hostView.getWidgets().removeIf(w -> w == this)));
     }
+
+    public AlertPopUp(View hostView, int xPos, int yPos, String title, String content, String buttonTitle) {
+        this(hostView, xPos, yPos, title, content, buttonTitle, PopUpType.DEFAULT);
+    }
 }
 

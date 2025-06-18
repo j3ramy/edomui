@@ -9,10 +9,12 @@ import de.j3ramy.edomui.components.text.Text;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
 public final class Checkbox extends Button {
-    private boolean checked;
+    private static final int LABEL_PADDING = 5;
+    private static final int CHECK_MARGIN = 2;
+
     private final Text label;
 
-    private static final int LABEL_PADDING = 5;
+    private boolean checked;
 
     public boolean isChecked() {
         return checked;
@@ -63,8 +65,8 @@ public final class Checkbox extends Button {
         if (checked) {
             AbstractContainerScreen.fill(
                     poseStack,
-                    boxX + 1, boxY + 1,
-                    boxX + boxSize - 1, boxY + boxSize - 1,
+                    boxX + CHECK_MARGIN, boxY + CHECK_MARGIN,
+                    boxX + boxSize - CHECK_MARGIN, boxY + boxSize - CHECK_MARGIN,
                     GuiPresets.CHECKBOX_CHECK_COLOR
             );
         }

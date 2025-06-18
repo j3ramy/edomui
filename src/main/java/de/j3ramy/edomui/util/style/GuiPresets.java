@@ -33,7 +33,7 @@ public class GuiPresets {
     public static final int POPUP_BUTTON_MARGIN_X = 10;
     public static final int POPUP_BUTTON_WIDTH = 60;
     public static final int POPUP_BUTTON_HEIGHT= 13;
-    public static final int POPUP_TITLE_MARGIN_TOP = 10;
+    public static final int POPUP_TITLE_MARGIN_TOP = 7;
     public static final int POPUP_PROGRESS_BAR_WIDTH = 100;
     public static final int POPUP_PROGRESS_BAR_HEIGHT = 14;
     public static final FontSize POPUP_TITLE_FONT_SIZE = FontSize.BASE;

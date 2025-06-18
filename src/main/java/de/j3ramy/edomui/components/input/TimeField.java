@@ -11,16 +11,21 @@ public final class TimeField extends TextField {
     private final boolean isAmPm;
     private final Pattern allowedPattern;
 
-    public TimeField(int x, int y, int width, int height, TimeFormat format, @Nullable IValueAction onTextChange) {
-        super(x, y, width, height, format.getFormat(), onTextChange);
+    public TimeField(int x, int y, int width, int height, TimeFormat format, @Nullable IValueAction onTextChange,
+                     @Nullable IValueAction onPressEnterAction) {
+        super(x, y, width, height, format.getFormat(), onTextChange, onPressEnterAction);
         this.isAmPm = format == TimeFormat.HOURS_12;
         this.allowedPattern = isAmPm
                 ? Pattern.compile("[0-9APMapm]")
                 : Pattern.compile("[0-9]");
     }
 
+    public TimeField(int x, int y, int width, int height, TimeFormat format, @Nullable IValueAction onTextChange) {
+        this(x, y, width, height, format, onTextChange, null);
+    }
+
     public TimeField(int x, int y, int width, int height, TimeFormat format) {
-        this(x, y, width, height, format, null);
+        this(x, y, width, height, format, null, null);
     }
 
     @Override

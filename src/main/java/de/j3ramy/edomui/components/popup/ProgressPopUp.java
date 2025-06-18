@@ -17,18 +17,11 @@ public final class ProgressPopUp extends PopUp {
 
         int barX = this.getLeftPos() + this.getWidth() / 2 - GuiPresets.POPUP_PROGRESS_BAR_WIDTH / 2;
         int barY = this.getTopPos() + this.getHeight() - GuiPresets.POPUP_PROGRESS_BAR_HEIGHT - GuiPresets.POPUP_PROGRESS_BAR_MARGIN_BOTTOM;
-        hostView.addWidget(new ProgressBar(
-                barX,
-                barY,
-                GuiPresets.POPUP_PROGRESS_BAR_WIDTH,
-                GuiPresets.POPUP_PROGRESS_BAR_HEIGHT,
-                duration,
+        view.addWidget(new ProgressBar(barX, barY, GuiPresets.POPUP_PROGRESS_BAR_WIDTH, GuiPresets.POPUP_PROGRESS_BAR_HEIGHT, duration,
                 () -> {
                     this.finishAction.execute();
                     hostView.getWidgets().remove(this);
-                },
-                barColor
-        ));
+                }, barColor));
     }
 
     public ProgressPopUp(View hostView, int xPos, int yPos, String title, String content, PopUpType type, int duration, IAction finishAction) {

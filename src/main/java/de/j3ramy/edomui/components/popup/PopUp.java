@@ -2,6 +2,7 @@ package de.j3ramy.edomui.components.popup;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.components.input.TextArea;
+import de.j3ramy.edomui.util.style.Color;
 import de.j3ramy.edomui.view.View;
 import de.j3ramy.edomui.enums.PopUpType;
 import de.j3ramy.edomui.util.style.GuiPresets;
@@ -10,7 +11,7 @@ import de.j3ramy.edomui.components.Widget;
 
 import java.awt.Rectangle;
 
-public class PopUp extends Widget {
+public abstract class PopUp extends Widget {
     protected final View view = new View();
 
     public PopUp(int xPos, int yPos, String title, String content, PopUpType type) {
@@ -36,15 +37,13 @@ public class PopUp extends Widget {
                 GuiPresets.POPUP_TEXT
         ));
 
-        TextArea textArea = new TextArea(
-                xPos,
-                yPos + 22,
-                this.getWidth(),
-                this.getHeight() - 22 - 30
+        TextArea textArea = new TextArea(xPos, yPos + 18, this.getWidth(), this.getHeight() - GuiPresets.POPUP_BUTTON_HEIGHT -
+                GuiPresets.POPUP_BUTTON_MARGIN_BOTTOM - GuiPresets.POPUP_TITLE_MARGIN_TOP
         );
-        textArea.setEnabled(false);
-        textArea.noBorder();
         textArea.setText(content);
+        textArea.setTextColor(Color.DARK_GRAY);
+        //textArea.setEnabled(false);
+        textArea.hideBackground();
 
         this.view.addWidget(textArea);
     }
@@ -61,6 +60,12 @@ public class PopUp extends Widget {
         if (this.isHidden()) return;
         super.update(x, y);
         this.view.update(x, y);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        this.view.tick();
     }
 
     @Override

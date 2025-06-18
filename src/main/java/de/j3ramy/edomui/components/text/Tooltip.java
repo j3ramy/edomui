@@ -3,11 +3,9 @@ package de.j3ramy.edomui.components.text;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.util.style.GuiPresets;
 import de.j3ramy.edomui.components.Widget;
-import de.j3ramy.edomui.components.basic.EmptyWidget;
 import de.j3ramy.edomui.enums.FontSize;
 import net.minecraft.client.Minecraft;
 
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,10 +16,6 @@ public final class Tooltip extends Widget {
     private final FontSize fontSize;
 
     private String[] wrappedLines;
-
-    public Tooltip(String text, Rectangle hoverArea) {
-        this(text, new EmptyWidget(hoverArea.x, hoverArea.y, hoverArea.width, hoverArea.height));
-    }
 
     public Tooltip(String text, Widget target) {
         this(text, target, 200);
@@ -114,7 +108,6 @@ public final class Tooltip extends Widget {
                     lines.add(currentLine.toString());
                     currentLine = new StringBuilder(word);
                 } else {
-                    // Single word too long - add anyway
                     lines.add(word);
                 }
             }
@@ -155,10 +148,8 @@ public final class Tooltip extends Widget {
     @Override
     public void render(PoseStack poseStack) {
         if (!isHidden()) {
-            // Background is rendered by parent Widget
             super.render(poseStack);
 
-            // Render text lines
             renderText(poseStack);
         }
     }
@@ -169,12 +160,12 @@ public final class Tooltip extends Widget {
         Minecraft minecraft = Minecraft.getInstance();
         float fontScale = getFontScale();
 
-        int padding = 3; // Gleicher Wert wie in calculateSize()
-        int x = this.getLeftPos() + padding; // War vorher 3, jetzt dynamisch
-        int y = this.getTopPos() + padding;  // War vorher 3, jetzt dynamisch
+        int padding = 3;
+        int x = this.getLeftPos() + padding;
+        int y = this.getTopPos() + padding;
 
         int lineHeight = (int)(7 * fontScale);
-        int lineSpacing = 5; // Gleich wie in calculateSize()
+        int lineSpacing = 5;
 
         for (int i = 0; i < wrappedLines.length; i++) {
             String line = wrappedLines[i];

@@ -1,8 +1,8 @@
 package de.j3ramy.edomui.components.presentation;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.j3ramy.edomui.components.presentation.context.ContextMenu;
-import de.j3ramy.edomui.components.presentation.context.DynamicContextMenuBuilder;
+import de.j3ramy.edomui.components.presentation.contextmenu.ContextMenu;
+import de.j3ramy.edomui.components.presentation.contextmenu.DynamicContextMenuBuilder;
 import de.j3ramy.edomui.enums.ButtonType;
 import de.j3ramy.edomui.interfaces.ContextMenuProvider;
 import de.j3ramy.edomui.interfaces.IAction;
@@ -252,11 +252,12 @@ public class ScrollableList extends Widget {
 
     public void removeElement(int index) {
         if (index >= 0 && index < content.size()) {
-            content.remove(index);
-
             if (selectedIndex == index) {
                 unselect();
-            } else if (selectedIndex > index) {
+            }
+
+            content.remove(index);
+            if (selectedIndex > index) {
                 selectedIndex--;
             }
 

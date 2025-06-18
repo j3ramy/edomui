@@ -39,6 +39,7 @@ public class TextArea extends Widget {
     private boolean caretVisible = true;
     private int caretTickCounter = 0;
     private int scrollOffset = 0;
+    private int textColor = GuiPresets.TEXT_FIELD_TEXT;
 
     // Multi-click handling
     private long lastClickTime = 0;
@@ -52,10 +53,6 @@ public class TextArea extends Widget {
     private final Set<Character> forbiddenCharacters = new HashSet<>();
     private boolean wordWrap = true;
     private boolean touched = false;
-
-    // ================================
-    // CONSTRUCTORS
-    // ================================
 
     public TextArea(int x, int y, int width, int height) {
         this(x, y, width, height, FontSize.S, "", null);
@@ -154,7 +151,7 @@ public class TextArea extends Widget {
                     lineY,
                     line,
                     fontSize,
-                    this.isEmpty()  ? GuiPresets.TEXT_FIELD_PLACEHOLDER_TEXT : GuiPresets.TEXT_FIELD_TEXT
+                    this.isEmpty()  ? GuiPresets.TEXT_FIELD_PLACEHOLDER_TEXT : this.textColor
             );
             lineRenderer.disableTruncate();
             lineRenderer.render(poseStack);
@@ -773,6 +770,10 @@ public class TextArea extends Widget {
 
     public String getText() {
         return String.join(LINE_DELIMITER, lines);
+    }
+
+    public void setTextColor(int textColor){
+        this.textColor = textColor;
     }
 
     public void setText(String text) {

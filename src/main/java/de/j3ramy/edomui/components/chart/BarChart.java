@@ -44,7 +44,7 @@ public final class BarChart extends Widget {
         this.view.clear();
     }
 
-    public void setDataPoints(List<DataPoint> dataPoints) {
+    public void addDataPoints(List<DataPoint> dataPoints) {
         this.dataPoints = new ArrayList<>(dataPoints);
         refresh();
     }
@@ -80,12 +80,20 @@ public final class BarChart extends Widget {
             this.view.addWidget(bar);
 
             String suffix = tooltipSuffix != null ? tooltipSuffix : "";
-            this.view.addWidget(new Tooltip(point.getXLabel() + ": " + point.getYValue() + " " + suffix, bar.toRect()));
+            this.view.addWidget(new Tooltip(point.getXLabel() + ": " + point.getYValue() + " " + suffix, bar));
         }
     }
 
     public void setBarColor(int barColor) {
         this.barColor = barColor;
+    }
+
+    public void setTextColor(int textColor){
+        for(Widget widget : this.view.getWidgets()){
+            if(widget instanceof Text){
+                ((Text)widget).setTextColor(textColor);
+            }
+        }
     }
 
     public void setYAxisRange(int min, int max) {

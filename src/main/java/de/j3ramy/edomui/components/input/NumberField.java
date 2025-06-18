@@ -29,8 +29,16 @@ public final class NumberField extends TextField {
         this.setMaxLength(10);
     }
 
+    public NumberField(int x, int y, int width, int height, String placeholderText, @Nullable IValueAction onTextChangeAction){
+        this(x, y, width, height, placeholderText, onTextChangeAction, null);
+    }
+
     public NumberField(int x, int y, int width, int height, String placeholderText){
         this(x, y, width, height, placeholderText, null, null);
+    }
+
+    public NumberField(int x, int y, int width, int height){
+        this(x, y, width, height, "", null, null);
     }
 
     @Override

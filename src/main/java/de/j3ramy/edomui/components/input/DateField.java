@@ -16,8 +16,7 @@ public final class DateField extends TextField {
     private final char separatorChar;
     private final Pattern numericPattern = Pattern.compile("[0-9]");
 
-    public DateField(int x, int y, int width, int height, DateFormat format,
-                     @Nullable IValueAction onTextChangeAction,
+    public DateField(int x, int y, int width, int height, DateFormat format, @Nullable IValueAction onTextChangeAction,
                      @Nullable IValueAction onPressEnterAction) {
 
         super(x, y, width, height, GuiUtils.getDateFormat(format), FontSize.BASE, onTextChangeAction, onPressEnterAction);
@@ -37,6 +36,10 @@ public final class DateField extends TextField {
                 separatorPositions.add(i);
             }
         }
+    }
+
+    public DateField(int x, int y, int width, int height, DateFormat format, @Nullable IValueAction onTextChangeAction) {
+        this(x, y, width, height, format, onTextChangeAction, null);
     }
 
     public DateField(int x, int y, int width, int height, DateFormat format) {

@@ -62,6 +62,11 @@ public final class InputPopUp extends PopUp {
         this.view.getWidgets().removeIf(widget -> widget instanceof TextArea);
     }
 
+    public InputPopUp(View hostView, int xPos, int yPos, String title, String confirmButtonTitle, String cancelButtonTitle,
+                      String inputValue, String inputPlaceholder, PopUpType popUpType, IValueAction confirmAction){
+        this(hostView, xPos, yPos, title, confirmButtonTitle, cancelButtonTitle, inputValue, inputPlaceholder, popUpType, confirmAction, false);
+    }
+
     public InputPopUp(View hostView, int xPos, int yPos, String title, String confirmButtonTitle, String cancelButtonTitle, IValueAction confirmAction) {
         this(hostView, xPos, yPos, title, confirmButtonTitle, cancelButtonTitle, "", "", PopUpType.NOTICE, confirmAction, false);
     }

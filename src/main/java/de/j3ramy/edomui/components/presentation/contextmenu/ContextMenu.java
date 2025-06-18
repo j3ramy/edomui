@@ -1,4 +1,4 @@
-package de.j3ramy.edomui.components.presentation.context;
+package de.j3ramy.edomui.components.presentation.contextmenu;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.components.button.Button;
