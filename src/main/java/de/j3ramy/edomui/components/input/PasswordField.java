@@ -1,8 +1,6 @@
 package de.j3ramy.edomui.components.input;
 
-import de.j3ramy.edomui.enums.FontSize;
 import de.j3ramy.edomui.interfaces.IValueAction;
-import de.j3ramy.edomui.util.style.GuiPresets;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 
@@ -11,11 +9,11 @@ import javax.annotation.Nullable;
 public final class PasswordField extends TextField {
     public PasswordField(int x, int y, int width, int height, String placeholderText, @Nullable IValueAction onTextChangeAction,
                          @Nullable IValueAction onPressEnterAction) {
-        super(x, y, width, height, placeholderText, FontSize.BASE, onTextChangeAction, onPressEnterAction);
+        super(x, y, width, height, placeholderText, onTextChangeAction, onPressEnterAction);
     }
 
     public PasswordField(int x, int y, int width, int height, String placeholderText, @Nullable IValueAction onTextChangeAction) {
-        super(x, y, width, height, placeholderText, FontSize.BASE, onTextChangeAction, null);
+        super(x, y, width, height, placeholderText, onTextChangeAction, null);
     }
 
     public PasswordField(int x, int y, int width, int height, String placeholderText) {
@@ -29,7 +27,7 @@ public final class PasswordField extends TextField {
     @Override
     protected int getCaretRenderX() {
         int starsWidth = Minecraft.getInstance().font.width("*".repeat(Math.max(0, caretCharPos - scrollOffset)));
-        return getLeftPos() + padding + starsWidth;
+        return getLeftPos() + this.textFieldStyle.getPadding() + starsWidth;
     }
 
     @Override
@@ -43,7 +41,7 @@ public final class PasswordField extends TextField {
         String realText = getText();
         String masked = "*".repeat(realText.length());
 
-        int fieldWidth = getWidth() - 2 * padding;
+        int fieldWidth = getWidth() - 2 * this.textFieldStyle.getPadding();
 
         while (caretCharPos < scrollOffset && scrollOffset > 0) scrollOffset--;
 
@@ -64,6 +62,6 @@ public final class PasswordField extends TextField {
 
         boolean isEmpty = realText.isEmpty();
         getTitle().setHidden(!isEmpty);
-        getTitle().setTextColor(isEmpty ? GuiPresets.TEXT_FIELD_PLACEHOLDER_TEXT : visibleText.getTextColor());
+        getTitle().setTextColor(isEmpty ? this.textFieldStyle.getPlaceholderColor() : visibleText.getTextColor());
     }
 }

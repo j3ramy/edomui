@@ -1,6 +1,8 @@
 package de.j3ramy.edomui.components.input;
 
 import de.j3ramy.edomui.interfaces.IValueAction;
+import de.j3ramy.edomui.util.style.GuiPresets;
+import net.minecraft.client.Minecraft;
 
 import javax.annotation.Nullable;
 
@@ -26,7 +28,6 @@ public final class NumberField extends TextField {
     public NumberField(int x, int y, int width, int height, String placeholderText, @Nullable IValueAction onTextChangeAction,
                        @Nullable IValueAction onPressEnterAction){
         super(x, y, width, height, placeholderText, onTextChangeAction, onPressEnterAction);
-        this.setMaxLength(10);
     }
 
     public NumberField(int x, int y, int width, int height, String placeholderText, @Nullable IValueAction onTextChangeAction){
@@ -46,7 +47,7 @@ public final class NumberField extends TextField {
         if (this.isFocused()) {
             String c = String.valueOf(codePoint);
 
-            if (!isCharAllowed(c)) return;
+            if (!isCharAllowed(c) || text.length() >= GuiPresets.NUMBER_FIELD_CHAR_LIMIT) return;
 
             if (codePoint == '.' && this.getText().contains(".")) return;
 
@@ -57,6 +58,20 @@ public final class NumberField extends TextField {
 
             super.charTyped(codePoint);
         }
+    }
+
+    @Override
+    protected void paste() {
+        String clip = Minecraft.getInstance().keyboardHandler.getClipboard();
+        if (clip.isEmpty()) return;
+        deleteSelectionIfNeeded();
+
+        for (char c : clip.toCharArray()) {
+            if (isCharAllowed(c) && text.length() < GuiPresets.NUMBER_FIELD_CHAR_LIMIT) {
+                text.insert(caretCharPos++, c);
+            }
+        }
+        triggerTextChanged();
     }
 
     private boolean isCharAllowed(String c) {

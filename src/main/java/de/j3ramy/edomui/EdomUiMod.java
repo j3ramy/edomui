@@ -1,6 +1,8 @@
 package de.j3ramy.edomui;
 
 import com.mojang.logging.LogUtils;
+import de.j3ramy.edomui.theme.ThemeManager;
+import de.j3ramy.edomui.util.style.Color;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -19,8 +21,7 @@ public class EdomUiMod
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public EdomUiMod()
-    {
+    public EdomUiMod() {
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 
@@ -28,8 +29,8 @@ public class EdomUiMod
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    private void setup(final FMLCommonSetupEvent event)
-    {
-
+    private void setup(final FMLCommonSetupEvent event) {
+        ThemeManager.getDefaultButtonStyle().setBackgroundColor(Color.RED);
+        ThemeManager.getDefaultButtonStyle().setTextColor(Color.GREEN);
     }
 }

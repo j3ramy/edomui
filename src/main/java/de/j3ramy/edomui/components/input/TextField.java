@@ -3,9 +3,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.components.button.Button;
 import de.j3ramy.edomui.components.text.VerticalCenteredText;
 import de.j3ramy.edomui.enums.ButtonType;
-import de.j3ramy.edomui.enums.FontSize;
 import de.j3ramy.edomui.interfaces.IValueAction;
+import de.j3ramy.edomui.theme.ThemeManager;
+import de.j3ramy.edomui.theme.input.TextFieldStyle;
 import de.j3ramy.edomui.util.style.GuiPresets;
+import de.j3ramy.edomui.util.style.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
@@ -17,16 +19,15 @@ import java.util.Set;
 
 public class TextField extends Button {
     protected final VerticalCenteredText visibleText;
-    protected final int padding = 2;
+    protected final TextFieldStyle textFieldStyle;
 
-    private final StringBuilder text = new StringBuilder();
+    protected final StringBuilder text = new StringBuilder();
     private final Set<Character> forbiddenCharacters = new HashSet<>();
     private final IValueAction onTextChangeAction, onPressEnterAction;
+    private final String placeholder;
 
-    private String placeholder;
     private boolean focused = false;
     private int caretTickCounter = 0;
-    private int maxLength = 256;
     private long lastClickTime = 0;
     private int lastClickCaretChar = -1;
     private int clickCount = 0;
@@ -58,19 +59,6 @@ public class TextField extends Button {
         updateVisibleText();
     }
 
-    public String getPlaceholder() {
-        return this.placeholder;
-    }
-
-    public void setMaxLength(int max) {
-        this.maxLength = max;
-    }
-
-    public void setPlaceholder(String text) {
-        this.placeholder = text;
-        this.getTitle().setText(text);
-    }
-
     public boolean isFocused() {
         return focused;
     }
@@ -83,39 +71,43 @@ public class TextField extends Button {
         this.focused = true;
     }
 
-    public TextField(int x, int y, int width, int height, String placeholder, FontSize fontSize, @Nullable IValueAction onTextChange, @Nullable IValueAction onEnter) {
-        super(x, y, width, height, placeholder, fontSize, null, ButtonType.TEXT_FIELD);
+    public TextField(int x, int y, int width, int height, String placeholder, @Nullable IValueAction onTextChange,
+                     @Nullable IValueAction onEnter) {
+        super(x, y, width, height, placeholder, null, ButtonType.TEXT_FIELD);
         this.placeholder = placeholder;
         this.onTextChangeAction = onTextChange;
         this.onPressEnterAction = onEnter;
         this.setHoverable(true);
 
-        this.visibleText = new VerticalCenteredText(this.toRect(), x + padding, "", fontSize, GuiPresets.TEXT_FIELD_TEXT);
+        this.textFieldStyle = new TextFieldStyle(ThemeManager.getDefaultTextFieldStyle());
+        this.setStyle(this.textFieldStyle);
+
+        this.visibleText = new VerticalCenteredText(this.toRect(), x + this.textFieldStyle.getPadding(), "",
+                this.textFieldStyle.getFontSize(), this.textFieldStyle.getTextColor());
         this.visibleText.disableTruncate();
 
-        this.getTitle().setTextColor(GuiPresets.TEXT_FIELD_PLACEHOLDER_TEXT);
-        this.getTitle().setHidden(false);
-        this.getTitle().setLeftPos(x + padding);
-    }
+        this.title = this.createTitle(ButtonType.TEXT_FIELD, placeholder, this.textFieldStyle.getPadding());
 
-    public TextField(int x, int y, int width, int height, String placeholder, @Nullable IValueAction onTextChange, @Nullable IValueAction onEnter) {
-        this(x, y, width, height, placeholder, FontSize.BASE, onTextChange, onEnter);
+        this.getTitle().setTextColor(this.textFieldStyle.getPlaceholderColor());
+        this.getTitle().setHidden(false);
+        this.getTitle().setLeftPos(x + this.textFieldStyle.getPadding());
     }
 
     public TextField(int x, int y, int width, int height, String placeholder, @Nullable IValueAction onTextChange) {
         this(x, y, width, height, placeholder, onTextChange, null);
     }
 
-    public TextField(int x, int y, int width, int height, String placeholder, FontSize fontSize) {
-        this(x, y, width, height, placeholder, fontSize, null, null);
-    }
-
     public TextField(int x, int y, int width, int height, String placeholder) {
-        this(x, y, width, height, placeholder, FontSize.BASE, null, null);
+        this(x, y, width, height, placeholder, null, null);
     }
 
     public TextField(int x, int y, int width, int height) {
-        this(x, y, width, height, "", FontSize.BASE, null, null);
+        this(x, y, width, height, "", null, null);
+    }
+
+    @Override
+    public TextFieldStyle getStyle() {
+        return this.textFieldStyle;
     }
 
     @Override
@@ -123,6 +115,7 @@ public class TextField extends Button {
         if (isHidden()) return;
         super.render(poseStack);
 
+        int padding = this.textFieldStyle.getPadding();
         if (selectionStart != -1 && caretCharPos != selectionStart) {
             int from = Math.min(caretCharPos, selectionStart);
             int to = Math.max(caretCharPos, selectionStart);
@@ -130,22 +123,23 @@ public class TextField extends Button {
             int clampedFrom = Math.max(from, scrollOffset);
             int clampedTo = Math.max(clampedFrom, Math.min(to, text.length()));
 
-            int left = getLeftPos() + padding +
-                    (int) visibleText.getSubstringTextWidth(0, clampedFrom - scrollOffset);
+            int left = getLeftPos() + padding + Math.round(Minecraft.getInstance().font.width(
+                    text.substring(scrollOffset, clampedFrom)) * GuiUtils.getFontScale(textFieldStyle.getFontSize()));
 
-            int right = getLeftPos() + padding +
-                    (int) visibleText.getSubstringTextWidth(0, clampedTo - scrollOffset);
+            int right = getLeftPos() + padding + Math.round(Minecraft.getInstance().font.width(
+                    text.substring(scrollOffset, clampedTo)) * GuiUtils.getFontScale(textFieldStyle.getFontSize()));
 
             AbstractContainerScreen.fill(poseStack, left, getTopPos() + padding,
                     right, getTopPos() + getHeight() - padding,
-                    GuiPresets.TEXT_FIELD_ALL_SELECTED_BACKGROUND);
+                    this.textFieldStyle.getSelectionColor());
         }
 
         visibleText.render(poseStack);
 
         if (focused && caretVisible) {
             int caretX = getCaretRenderX();
-            AbstractContainerScreen.fill(poseStack, caretX, getTopPos() + padding, caretX + 1, getTopPos() + getHeight() - padding, visibleText.getTextColor());
+            AbstractContainerScreen.fill(poseStack, caretX, getTopPos() + padding,
+                    caretX + 1, getTopPos() + getHeight() - padding, this.textFieldStyle.getTextColor());
         }
     }
 
@@ -153,7 +147,7 @@ public class TextField extends Button {
     public void tick() {
         if (!focused) return;
         caretTickCounter++;
-        if (caretTickCounter >= 20) {
+        if (caretTickCounter >= GuiPresets.CURSOR_BLINK_TICK_TIME) {
             caretVisible = !caretVisible;
             caretTickCounter = 0;
         }
@@ -175,12 +169,12 @@ public class TextField extends Button {
             caretVisible = true;
             caretTickCounter = 0;
 
-            int clickX = getMousePosition().x - getLeftPos() - padding;
+            int clickX = getMousePosition().x - getLeftPos() - this.textFieldStyle.getPadding();
             int clickedCharIndex = visibleText.getCharIndexFromPixel(clickX);
             caretCharPos = Math.min(scrollOffset + clickedCharIndex, text.length());
 
             long now = System.currentTimeMillis();
-            if (now - lastClickTime < 250 && caretCharPos == lastClickCaretChar) {
+            if (now - lastClickTime < GuiPresets.DOUBLE_CLICK_THRESHOLD_FAST && caretCharPos == lastClickCaretChar) {
                 clickCount++;
             } else {
                 clickCount = 1;
@@ -204,7 +198,7 @@ public class TextField extends Button {
 
     @Override
     public void charTyped(char c) {
-        if (!focused || !isCharAllowed(c) || text.length() >= maxLength) return;
+        if (!focused || !isCharAllowed(c) || text.length() >= GuiPresets.TEXT_FIELD_CHAR_LIMIT) return;
 
         deleteSelectionIfNeeded();
         text.insert(caretCharPos, c);
@@ -261,7 +255,11 @@ public class TextField extends Button {
     }
 
     protected int getCaretRenderX() {
-        return getLeftPos() + padding + Minecraft.getInstance().font.width(text.substring(scrollOffset, caretCharPos));
+        String textBeforeCaret = text.substring(scrollOffset, caretCharPos);
+        float scale = GuiUtils.getFontScale(this.textFieldStyle.getFontSize());
+        int scaledWidth = Math.round(Minecraft.getInstance().font.width(textBeforeCaret) * scale);
+
+        return getLeftPos() + textFieldStyle.getPadding() + scaledWidth;
     }
 
     protected void backspace() {
@@ -289,7 +287,7 @@ public class TextField extends Button {
         deleteSelectionIfNeeded();
 
         for (char c : clip.toCharArray()) {
-            if (isCharAllowed(c) && text.length() < maxLength) {
+            if (isCharAllowed(c) && text.length() <  GuiPresets.TEXT_FIELD_CHAR_LIMIT) {
                 text.insert(caretCharPos++, c);
             }
         }
@@ -297,7 +295,7 @@ public class TextField extends Button {
     }
 
     protected void updateVisibleText() {
-        int fieldWidth = getWidth() - 2 * padding;
+        int fieldWidth = getWidth() - 2 * this.textFieldStyle.getPadding();
         String fullText = text.toString();
 
         while (caretCharPos < scrollOffset && scrollOffset > 0) {
@@ -319,7 +317,7 @@ public class TextField extends Button {
 
         boolean isEmpty = text.isEmpty();
         getTitle().setHidden(!isEmpty);
-        getTitle().setTextColor(isEmpty ? GuiPresets.TEXT_FIELD_PLACEHOLDER_TEXT : visibleText.getTextColor());
+        getTitle().setTextColor(isEmpty ? this.textFieldStyle.getPlaceholderColor() : visibleText.getTextColor());
     }
 
     private void moveCaret(int delta, boolean shift) {
@@ -375,7 +373,7 @@ public class TextField extends Button {
         if (onTextChangeAction != null) onTextChangeAction.execute(this.getText());
     }
 
-    private boolean isCharAllowed(char c) {
+    protected boolean isCharAllowed(char c) {
         return !forbiddenCharacters.contains(c);
     }
 

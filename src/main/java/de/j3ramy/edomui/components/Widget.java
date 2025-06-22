@@ -3,25 +3,22 @@ package de.j3ramy.edomui.components;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.enums.WidgetState;
 import de.j3ramy.edomui.interfaces.IWidget;
-import de.j3ramy.edomui.util.style.Color;
+import de.j3ramy.edomui.theme.ThemeManager;
 import de.j3ramy.edomui.util.style.WidgetStyle;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
 import java.awt.*;
 import java.awt.Rectangle;
 
-import static de.j3ramy.edomui.util.style.GuiPresets.DEFAULT_STYLE;
-
 public abstract class Widget implements IWidget {
     private final Point mousePosition = new Point();
 
+    private WidgetStyle style = ThemeManager.getGlobalDefaultStyle();
     private int width, height, leftPos, topPos;
     private boolean isEnabled = true;
     private boolean isHoverable;
     private boolean isHidden;
     private boolean showBackground = true;
-
-    private WidgetStyle style;
 
     public int getWidth() { return width; }
     public void setWidth(int width) { this.width = width; }
@@ -54,18 +51,16 @@ public abstract class Widget implements IWidget {
     public Point getMousePosition() { return mousePosition; }
 
     public WidgetStyle getStyle() { return style; }
-    public void setStyle(WidgetStyle style) { this.style = style; }
+
+    public void setStyle(WidgetStyle style) {
+        this.style = style;
+    }
 
     public Widget(int x, int y, int width, int height) {
         this.leftPos = x;
         this.topPos = y;
         this.width = width;
         this.height = height;
-        this.style = new WidgetStyle(DEFAULT_STYLE);
-    }
-
-    protected WidgetStyle defaultStyle() {
-        return new WidgetStyle(Color.GRAY, Color.BLACK, Color.GRAY, Color.DARK_GRAY, Color.DARK_GRAY, Color.BLACK, 1);
     }
 
     @Override

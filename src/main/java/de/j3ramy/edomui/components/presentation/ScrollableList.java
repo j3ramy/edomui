@@ -34,6 +34,14 @@ public class ScrollableList extends Widget {
     private DynamicContextMenuBuilder menuBuilder;
     private boolean dynamicMenuEnabled = false;
 
+    public ContextMenu getContextMenu() {
+        return contextMenu;
+    }
+
+    public VerticalScrollbar getScrollbar() {
+        return scrollbar;
+    }
+
     public ScrollableList(int x, int y, int width, int height, int elementHeight, int selectedColor) {
         super(x, y, width, height);
         this.elementHeight = elementHeight;
@@ -221,7 +229,7 @@ public class ScrollableList extends Widget {
     public void addElement(String title, @Nullable IAction clickAction) {
         Button button = new Button(getLeftPos(), getTopPos() + content.size() * elementHeight,
                 getWidth() - GuiPresets.SCROLLBAR_TRACK_WIDTH - 2 * GuiPresets.INPUT_LABEL_LEFT_MARGIN, elementHeight, title,
-                GuiPresets.SCROLLABLE_LIST_FONT_SIZE, clickAction, null, ButtonType.TEXT_FIELD);
+                clickAction, null, ButtonType.TEXT_FIELD);
 
         button.noBorder();
         button.getStyle().setBackgroundColor(this.getStyle().getBackgroundColor());

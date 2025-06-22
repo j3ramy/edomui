@@ -250,8 +250,7 @@ public final class Table extends ScrollableList {
 
         public TableRow(int x, int y, int width, int height, List<String> columnData,
                         int textColor, boolean renderTooltip, boolean isHeader) {
-            super(x, y, width, height, "", GuiPresets.SCROLLABLE_LIST_FONT_SIZE,
-                    null, null, ButtonType.TEXT_FIELD);
+            super(x, y, width, height, "", null, null, ButtonType.TEXT_FIELD);
 
             this.columnData = new ArrayList<>(columnData);
             this.isHeader = isHeader;

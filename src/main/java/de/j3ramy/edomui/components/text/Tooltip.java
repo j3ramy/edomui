@@ -4,6 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.util.style.GuiPresets;
 import de.j3ramy.edomui.components.Widget;
 import de.j3ramy.edomui.enums.FontSize;
+import de.j3ramy.edomui.theme.ThemeManager;
+import de.j3ramy.edomui.util.style.GuiUtils;
 import net.minecraft.client.Minecraft;
 
 import java.util.ArrayList;
@@ -48,7 +50,7 @@ public final class Tooltip extends Widget {
 
     private void calculateSize() {
         Minecraft minecraft = Minecraft.getInstance();
-        float fontScale = getFontScale();
+        float fontScale = GuiUtils.getFontScale(this.fontSize);
 
         // Check if text fits in one line
         int singleLineWidth = (int)(minecraft.font.width(text) * fontScale);
@@ -91,7 +93,7 @@ public final class Tooltip extends Widget {
 
     private String[] wrapText(String text, int maxWidth) {
         Minecraft minecraft = Minecraft.getInstance();
-        float fontScale = getFontScale();
+        float fontScale = GuiUtils.getFontScale(this.fontSize);
 
         String[] words = text.split(" ");
         List<String> lines = new ArrayList<>();
@@ -158,7 +160,7 @@ public final class Tooltip extends Widget {
         if (wrappedLines == null || wrappedLines.length == 0) return;
 
         Minecraft minecraft = Minecraft.getInstance();
-        float fontScale = getFontScale();
+        float fontScale = GuiUtils.getFontScale(this.fontSize);
 
         int padding = 3;
         int x = this.getLeftPos() + padding;
@@ -180,15 +182,5 @@ public final class Tooltip extends Widget {
             minecraft.font.draw(poseStack, line, scaledX, scaledY, GuiPresets.TOOLTIP_TEXT);
             poseStack.popPose();
         }
-    }
-
-    private float getFontScale() {
-        return switch (fontSize) {
-            case XXS -> 0.4f;
-            case XS -> 0.5f;
-            case S -> 0.75f;
-            case L -> 1.5f;
-            default -> 1f;
-        };
     }
 }

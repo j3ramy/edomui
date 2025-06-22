@@ -19,7 +19,7 @@ public final class DateField extends TextField {
     public DateField(int x, int y, int width, int height, DateFormat format, @Nullable IValueAction onTextChangeAction,
                      @Nullable IValueAction onPressEnterAction) {
 
-        super(x, y, width, height, GuiUtils.getDateFormat(format), FontSize.BASE, onTextChangeAction, onPressEnterAction);
+        super(x, y, width, height, GuiUtils.getDateFormat(format), onTextChangeAction, onPressEnterAction);
 
         this.formatMask = GuiUtils.getDateFormat(format);
         char sep = '.';

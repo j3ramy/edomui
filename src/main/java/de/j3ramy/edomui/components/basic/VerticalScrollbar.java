@@ -1,18 +1,29 @@
 package de.j3ramy.edomui.components.basic;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.j3ramy.edomui.util.style.GuiPresets;
+import de.j3ramy.edomui.theme.ThemeManager;
+import de.j3ramy.edomui.theme.VerticalScrollbarStyle;
 import de.j3ramy.edomui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
 public final class VerticalScrollbar extends Widget {
     private final int maxVisibleElements;
+    private final VerticalScrollbarStyle scrollbarStyle;
+
     private int currentScrollIndex, contentSize;
 
     public VerticalScrollbar(Widget widget, int contentSize, int maxVisibleElements) {
         super(widget.getLeftPos(), widget.getTopPos(), widget.getWidth(), widget.getHeight());
         this.contentSize = Math.max(0, contentSize);
         this.maxVisibleElements = Math.max(1, maxVisibleElements);
+
+        this.scrollbarStyle = ThemeManager.getVerticalScrollbarStyle();
+        this.setStyle(this.scrollbarStyle);
+    }
+
+    @Override
+    public VerticalScrollbarStyle getStyle() {
+        return this.scrollbarStyle;
     }
 
     @Override
@@ -20,7 +31,7 @@ public final class VerticalScrollbar extends Widget {
         if (this.isHidden()) return;
         if (contentSize <= 0 || getHeight() <= 0 || maxVisibleElements <= 0) return;
 
-        int trackLeft = getLeftPos() + getWidth() - GuiPresets.SCROLLBAR_TRACK_WIDTH;
+        int trackLeft = getLeftPos() + getWidth() - this.scrollbarStyle.getScrollbarTrackWidth();
         int trackRight = getLeftPos() + getWidth();
         int trackTop = getTopPos();
         int trackBottom = getTopPos() + getHeight();
@@ -37,7 +48,7 @@ public final class VerticalScrollbar extends Widget {
         int thumbTop = getTopPos() + thumbStep * currentScrollIndex;
         int thumbBottom = thumbTop + thumbHeight;
 
-        AbstractContainerScreen.fill(poseStack, trackLeft, thumbTop, trackRight, thumbBottom, GuiPresets.SCROLLBAR_THUMB_COLOR);
+        AbstractContainerScreen.fill(poseStack, trackLeft, thumbTop, trackRight, thumbBottom, this.scrollbarStyle.getThumbColor());
     }
 
     public void updateScrollIndex(int newScrollIndex) {

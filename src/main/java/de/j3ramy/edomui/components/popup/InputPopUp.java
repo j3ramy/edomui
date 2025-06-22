@@ -17,6 +17,14 @@ public final class InputPopUp extends PopUp {
         this.inputField.addForbiddenCharacters(chars);
     }
 
+    public Button getConfirmButton() {
+        return confirmButton;
+    }
+
+    public TextField getInputField() {
+        return inputField;
+    }
+
     public InputPopUp(View hostView, int xPos, int yPos, String title, String confirmButtonTitle, String cancelButtonTitle,
                       String inputValue, String inputPlaceholder, PopUpType popUpType, IValueAction confirmAction, boolean isPassword) {
         super(xPos - GuiPresets.POPUP_WIDTH / 2, yPos - GuiPresets.POPUP_HEIGHT / 2, title, "", popUpType);

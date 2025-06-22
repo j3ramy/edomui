@@ -30,6 +30,14 @@ public final class Grid extends Widget {
 
     private boolean needsUpdate = true;
 
+    public ContextMenu getContextMenu() {
+        return contextMenu;
+    }
+
+    public VerticalScrollbar getScrollbar() {
+        return scrollbar;
+    }
+
     public Grid(int x, int y, int width, int height, int cellWidth, int cellHeight, int cellMargin) {
         super(x, y, width, height);
 
@@ -230,7 +238,7 @@ public final class Grid extends Widget {
     }
 
     public void add(String label, int labelColor, int backgroundColor, IAction leftClickAction) {
-        Button button = new Button(0, 0, config.cellWidth, config.cellHeight, label, FontSize.S, leftClickAction);
+        Button button = new Button(0, 0, config.cellWidth, config.cellHeight, label, leftClickAction);
         button.getTitle().setFontSize(FontSize.S);
         button.setTitle(label);
         button.getTitle().setTextColor(labelColor);

@@ -3,27 +3,55 @@ package de.j3ramy.edomui.util.style;
 import de.j3ramy.edomui.enums.FontSize;
 
 public class GuiPresets {
-    public static final int DEFAULT_BORDER_WIDTH = 1;
+    public static int CURSOR_BLINK_TICK_TIME = 20;
+    public static int DOUBLE_CLICK_THRESHOLD_FAST = 250; // TextField
+    public static int DOUBLE_CLICK_THRESHOLD_NORMAL = 500; // TextArea
+    public static int TEXT_FIELD_CHAR_LIMIT = 256;
+    public static int NUMBER_FIELD_CHAR_LIMIT = 10;
+    public static int TEXT_AREA_CHAR_LIMIT = 131072;
+    public static String TEXT_AREA_DELIMITER = "\n";
+    public static float MAX_PROGRESS_BAR_VALUE = 1;
+    public static int MAX_TEXT_LENGTH = 256;
 
-    public static final WidgetStyle DEFAULT_STYLE = new WidgetStyle(
-            Color.GRAY, Color.BLACK, Color.GRAY, Color.DARK_GRAY, Color.DARK_GRAY, Color.BLACK, DEFAULT_BORDER_WIDTH
-    );
+    public static void setCursorBlinkTickTime(int cursorBlinkTickTime) {
+        CURSOR_BLINK_TICK_TIME = cursorBlinkTickTime;
+    }
+
+    public static void setDoubleClickThresholdFast(int doubleClickThresholdFast) {
+        DOUBLE_CLICK_THRESHOLD_FAST = doubleClickThresholdFast;
+    }
+
+    public static void setDoubleClickThresholdNormal(int doubleClickThresholdNormal) {
+        DOUBLE_CLICK_THRESHOLD_NORMAL = doubleClickThresholdNormal;
+    }
+
+    public static void setTextFieldCharLimit(int textFieldCharLimit) {
+        TEXT_FIELD_CHAR_LIMIT = textFieldCharLimit;
+    }
+
+    public static void setTextAreaCharLimit(int textAreaCharLimit) {
+        TEXT_AREA_CHAR_LIMIT = textAreaCharLimit;
+    }
+
+    public static void setTextAreaDelimiter(String textAreaDelimiter) {
+        TEXT_AREA_DELIMITER = textAreaDelimiter;
+    }
+
+    public static void setMaxProgressBarValue(float maxProgressBarValue) {
+        MAX_PROGRESS_BAR_VALUE = maxProgressBarValue;
+    }
+
+    public static void setNumberFieldCharLimit(int numberFieldCharLimit) {
+        NUMBER_FIELD_CHAR_LIMIT = numberFieldCharLimit;
+    }
+
+    public static void setMaxTextLength(int maxTextLength) {
+        MAX_TEXT_LENGTH = maxTextLength;
+    }
 
     public static final int TEXT_DEFAULT = Color.WHITE;
 
-
-    public static final int CHECKBOX_LABEL_LEFT_MARGIN = 5;
-    public static final FontSize CHECKBOX_FONT_SIZE = FontSize.S;
-    public static final int CHECKBOX_CHECK_COLOR = Color.WHITE;
-
     public static final int INPUT_LABEL_LEFT_MARGIN = 5;
-
-    public static final FontSize DROPDOWN_FONT_SIZE = FontSize.S;
-    public static final int DROPDOWN_OPTION_HEIGHT = 13;
-
-    public static final int TEXT_FIELD_MAX_LENGTH = 128;
-    public static final int TEXT_FIELD_TEXT_PADDING = 2;
-    public static final FontSize TEXT_FIELD_FONT_SIZE = FontSize.S;
 
     public static final int POPUP_BORDER_WIDTH = 3;
     public static final int POPUP_WIDTH = 150;
@@ -37,30 +65,10 @@ public class GuiPresets {
     public static final int POPUP_PROGRESS_BAR_WIDTH = 100;
     public static final int POPUP_PROGRESS_BAR_HEIGHT = 14;
     public static final FontSize POPUP_TITLE_FONT_SIZE = FontSize.BASE;
-    public static final FontSize POPUP_CONTENT_FONT_SIZE = FontSize.XS;
-
-    public static final FontSize SCROLLABLE_LIST_FONT_SIZE = FontSize.S;
-
-    public static final FontSize TOOLTIP_FONT_SIZE = FontSize.S;
 
     public static final FontSize TABLE_COLUMN_FONT_SIZE = FontSize.S;
 
     public static final int SCROLLBAR_TRACK_WIDTH = 3;
-
-    public static final int TEXTAREA_DEFAULT_MAX_LENGTH = 4096;
-    public static final int TEXTAREA_BORDER_PADDING = 2;
-    public static final int TEXTAREA_LINE_HEIGHT = 8;
-    public static final String TEXTAREA_LINE_DELIMITER = "</br>";
-
-    public static final int BUTTON_BACKGROUND = Color.DARK_GRAY;
-    public static final int BUTTON_BORDER = Color.BLACK;
-    public static final int BUTTON_TEXT = Color.WHITE;
-    public static final int BUTTON_BACKGROUND_HOVER = Color.GRAY;
-    public static final int BUTTON_BORDER_HOVER = Color.DARK_GRAY;
-    public static final int BUTTON_TEXT_HOVER = BUTTON_TEXT;
-    public static final int BUTTON_BACKGROUND_DISABLED = BUTTON_BACKGROUND;
-    public static final int BUTTON_BORDER_DISABLED = BUTTON_BORDER;
-    public static final int BUTTON_TEXT_DISABLED = Color.GRAY;
 
     public static final int TEXT_DEFAULT_HOVER = Color.WHITE;
     public static final int TEXT_DEFAULT_DISABLED = Color.GRAY;
@@ -72,17 +80,8 @@ public class GuiPresets {
     public static final int POPUP_BACKGROUND = Color.WHITE;
     public static final int POPUP_TEXT = Color.DARK_GRAY;
 
-    public static final int PROGRESS_BAR_BACKGROUND = Color.DARK_GRAY;
-    public static final int PROGRESS_BAR_BORDER = Color.BLACK;
     public static final int PROGRESS_BAR_BAR_COLOR = Color.BLUE;
 
     public static final int TOOLTIP_BACKGROUND = Color.GRAY;
     public static final int TOOLTIP_TEXT = Color.WHITE;
-
-    public static final int TEXT_FIELD_TEXT = Color.WHITE;
-    public static final int TEXT_FIELD_ALL_SELECTED_BACKGROUND = Color.YELLOW;
-    public static final int TEXT_FIELD_ALL_SELECTED_TEXT = Color.DARK_GRAY;
-    public static final int TEXT_FIELD_PLACEHOLDER_TEXT = Color.DARK_GRAY;
-
-    public static final int SCROLLBAR_THUMB_COLOR = Color.GRAY;
 }

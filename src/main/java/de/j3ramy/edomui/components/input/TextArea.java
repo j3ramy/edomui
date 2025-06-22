@@ -4,10 +4,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.components.Widget;
 import de.j3ramy.edomui.components.basic.VerticalScrollbar;
 import de.j3ramy.edomui.components.text.Text;
-import de.j3ramy.edomui.enums.FontSize;
 import de.j3ramy.edomui.interfaces.IValueAction;
-import de.j3ramy.edomui.util.style.Color;
+import de.j3ramy.edomui.theme.ThemeManager;
+import de.j3ramy.edomui.theme.input.TextFieldStyle;
 import de.j3ramy.edomui.util.style.GuiPresets;
+import de.j3ramy.edomui.util.style.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -16,16 +17,13 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class TextArea extends Widget {
-    private static final int DEFAULT_PADDING = 3;
-    private static final String LINE_DELIMITER = "\n";
-
     private final List<String> lines = new ArrayList<>();
     private final VerticalScrollbar scrollbar;
-    private final FontSize fontSize;
     private final IValueAction onTextChangeAction;
     private final Text placeholderRenderer;
     private final int lineHeight;
     private final int maxVisibleLines;
+    private final TextFieldStyle textAreaStyle;
 
     // Cursor & Selection
     private int caretRow = 0;
@@ -39,7 +37,6 @@ public class TextArea extends Widget {
     private boolean caretVisible = true;
     private int caretTickCounter = 0;
     private int scrollOffset = 0;
-    private int textColor = GuiPresets.TEXT_FIELD_TEXT;
 
     // Multi-click handling
     private long lastClickTime = 0;
@@ -48,59 +45,52 @@ public class TextArea extends Widget {
     private int clickCount = 0;
 
     // Configuration
-    private int maxLength = 10000;
     private String placeholder;
     private final Set<Character> forbiddenCharacters = new HashSet<>();
     private boolean wordWrap = true;
     private boolean touched = false;
 
-    public TextArea(int x, int y, int width, int height) {
-        this(x, y, width, height, FontSize.S, "", null);
+    public Text getPlaceholderRenderer() {
+        return placeholderRenderer;
     }
 
-    public TextArea(int x, int y, int width, int height, @Nullable IValueAction onTextChange) {
-        this(x, y, width, height, FontSize.S, "", onTextChange);
+    public TextArea(int x, int y, int width, int height) {
+        this(x, y, width, height,"", null);
     }
 
     public TextArea(int x, int y, int width, int height, String placeholder) {
-        this(x, y, width, height, FontSize.S, placeholder, null);
+        this(x, y, width, height, placeholder, null);
+    }
+
+    public TextArea(int x, int y, int width, int height, @Nullable IValueAction onTextChange) {
+        this(x, y, width, height, "", onTextChange);
     }
 
     public TextArea(int x, int y, int width, int height, String placeholder, @Nullable IValueAction onTextChange) {
-        this(x, y, width, height, FontSize.S, placeholder, onTextChange);
-    }
-
-    public TextArea(int x, int y, int width, int height, FontSize fontSize) {
-        this(x, y, width, height, fontSize, "", null);
-    }
-
-    public TextArea(int x, int y, int width, int height, FontSize fontSize, @Nullable IValueAction onTextChange) {
-        this(x, y, width, height, fontSize, "", onTextChange);
-    }
-
-    public TextArea(int x, int y, int width, int height, FontSize fontSize, String placeholder, @Nullable IValueAction onTextChange) {
         super(x, y, width, height);
 
-        this.fontSize = fontSize;
         this.placeholder = placeholder;
         this.onTextChangeAction = onTextChange;
 
+        this.textAreaStyle = new TextFieldStyle(ThemeManager.getDefaultTextAreaStyle());
+        super.setStyle(this.textAreaStyle);
+
         // Initialize text renderers first
-        Text textRenderer = new Text(x + DEFAULT_PADDING, y + DEFAULT_PADDING, "", fontSize,
-                GuiPresets.TEXT_FIELD_TEXT);
+        int padding = this.textAreaStyle.getPadding();
+        Text textRenderer = new Text(x + padding, y + padding, "", this.textAreaStyle.getFontSize(),
+                this.textAreaStyle.getTextColor());
         textRenderer.disableTruncate();
 
-        this.placeholderRenderer = new Text(x + DEFAULT_PADDING, y + DEFAULT_PADDING, placeholder, fontSize,
-                GuiPresets.TEXT_FIELD_PLACEHOLDER_TEXT);
+        this.placeholderRenderer = new Text(x + padding, y + padding, placeholder, this.textAreaStyle.getFontSize(),
+                this.textAreaStyle.getPlaceholderColor());
 
         // Calculate proper line height based on actual font rendering
-        float fontScale = getFontSizeScale();
+        float fontScale = GuiUtils.getFontScale(this.textAreaStyle.getFontSize());
         int lineSpacing = 5;
         this.lineHeight = (int)(7 * fontScale) + lineSpacing; // 7 = Text.LETTER_HEIGHT
-        this.maxVisibleLines = Math.max(1, (height - 2 * DEFAULT_PADDING) / lineHeight);
+        this.maxVisibleLines = Math.max(1, (height - 2 * padding) / lineHeight);
 
         this.scrollbar = new VerticalScrollbar(this, 1, maxVisibleLines);
-        this.getStyle().setBorderColor(Color.BLACK);
 
         // Initialize with empty line
         lines.add("");
@@ -143,15 +133,15 @@ public class TextArea extends Widget {
             String line = lines.get(lineIndex);
 
             // Calculate position with consistent line height
-            int lineY = getTopPos() + DEFAULT_PADDING + (i * lineHeight);
+            int lineY = getTopPos() + this.textAreaStyle.getPadding() + (i * lineHeight);
 
             // Create temporary text renderer for each line
             Text lineRenderer = new Text(
-                    getLeftPos() + DEFAULT_PADDING,
+                    getLeftPos() + this.textAreaStyle.getPadding(),
                     lineY,
                     line,
-                    fontSize,
-                    this.isEmpty()  ? GuiPresets.TEXT_FIELD_PLACEHOLDER_TEXT : this.textColor
+                    this.textAreaStyle.getFontSize(),
+                    this.isEmpty()  ? this.textAreaStyle.getPlaceholderColor() : this.textAreaStyle.getTextColor()
             );
             lineRenderer.disableTruncate();
             lineRenderer.render(poseStack);
@@ -161,8 +151,8 @@ public class TextArea extends Widget {
     private void renderPlaceholder(PoseStack poseStack) {
         if (!isEmpty() || placeholder.isEmpty() || focused) return;
 
-        placeholderRenderer.setLeftPos(getLeftPos() + DEFAULT_PADDING);
-        placeholderRenderer.setTopPos(getTopPos() + DEFAULT_PADDING);
+        placeholderRenderer.setLeftPos(getLeftPos() + this.textAreaStyle.getPadding());
+        placeholderRenderer.setTopPos(getTopPos() + this.textAreaStyle.getPadding());
         placeholderRenderer.render(poseStack);
     }
 
@@ -176,7 +166,7 @@ public class TextArea extends Widget {
         int endCol = (caretRow > selectionStartRow || (caretRow == selectionStartRow && caretCol > selectionStartCol))
                 ? caretCol : selectionStartCol;
 
-        float fontScale = getFontSizeScale();
+        float fontScale = GuiUtils.getFontScale(this.textAreaStyle.getFontSize());
 
         for (int row = startRow; row <= endRow; row++) {
             if (row < scrollOffset || row >= scrollOffset + maxVisibleLines) continue;
@@ -190,12 +180,12 @@ public class TextArea extends Widget {
                 String beforeSelection = line.substring(0, lineStartCol);
                 String selection = line.substring(lineStartCol, lineEndCol);
 
-                int x1 = getLeftPos() + DEFAULT_PADDING + (int)(Minecraft.getInstance().font.width(beforeSelection) * fontScale);
+                int x1 = getLeftPos() + this.textAreaStyle.getPadding() + (int)(Minecraft.getInstance().font.width(beforeSelection) * fontScale);
                 int x2 = x1 + (int)(Minecraft.getInstance().font.width(selection) * fontScale);
-                int y1 = getTopPos() + DEFAULT_PADDING + (row - scrollOffset) * lineHeight;
+                int y1 = getTopPos() + this.textAreaStyle.getPadding() + (row - scrollOffset) * lineHeight;
                 int y2 = y1 + (int)(7 * fontScale); // Only cover the actual text height
 
-                AbstractContainerScreen.fill(poseStack, x1, y1, x2, y2, GuiPresets.TEXT_FIELD_ALL_SELECTED_BACKGROUND);
+                AbstractContainerScreen.fill(poseStack, x1, y1, x2, y2, this.textAreaStyle.getSelectionColor());
             }
         }
     }
@@ -207,16 +197,16 @@ public class TextArea extends Widget {
 
         String line = lines.get(caretRow);
         String beforeCaret = line.substring(0, Math.min(caretCol, line.length()));
-        float fontScale = getFontSizeScale();
+        float fontScale = GuiUtils.getFontScale(this.textAreaStyle.getFontSize());
 
-        int x = getLeftPos() + DEFAULT_PADDING + (int)(Minecraft.getInstance().font.width(beforeCaret) * fontScale);
-        int y1 = getTopPos() + DEFAULT_PADDING + (caretRow - scrollOffset) * lineHeight;
+        int x = getLeftPos() + this.textAreaStyle.getPadding() + (int)(Minecraft.getInstance().font.width(beforeCaret) * fontScale);
+        int y1 = getTopPos() + this.textAreaStyle.getPadding() + (caretRow - scrollOffset) * lineHeight;
         int y2 = y1 + (int)(7 * fontScale); // Match text height exactly
 
         // Scale cursor width with font size
         int cursorWidth = Math.max(1, (int)(fontScale));
 
-        AbstractContainerScreen.fill(poseStack, x, y1, x + cursorWidth, y2, GuiPresets.TEXT_FIELD_TEXT);
+        AbstractContainerScreen.fill(poseStack, x, y1, x + cursorWidth, y2, this.textAreaStyle.getTextColor());
     }
 
     // ================================
@@ -241,7 +231,7 @@ public class TextArea extends Widget {
         if (!focused) return;
 
         caretTickCounter++;
-        if (caretTickCounter >= 20) {
+        if (caretTickCounter >= GuiPresets.CURSOR_BLINK_TICK_TIME) {
             caretVisible = !caretVisible;
             caretTickCounter = 0;
         }
@@ -258,8 +248,8 @@ public class TextArea extends Widget {
             caretTickCounter = 0;
 
             // Calculate clicked position
-            int clickX = getMousePosition().x - getLeftPos() - DEFAULT_PADDING;
-            int clickY = getMousePosition().y - getTopPos() - DEFAULT_PADDING;
+            int clickX = getMousePosition().x - getLeftPos() - this.textAreaStyle.getPadding();
+            int clickY = getMousePosition().y - getTopPos() - this.textAreaStyle.getPadding();
 
             int clickedRow = scrollOffset + (clickY / lineHeight);
             clickedRow = Math.max(0, Math.min(clickedRow, lines.size() - 1));
@@ -270,7 +260,7 @@ public class TextArea extends Widget {
             // Multi-click detection
             long currentTime = System.currentTimeMillis();
             boolean samePosition = (clickedRow == lastClickRow && clickedCol == lastClickCol);
-            boolean withinTimeWindow = (currentTime - lastClickTime) < 500;
+            boolean withinTimeWindow = (currentTime - lastClickTime) < GuiPresets.DOUBLE_CLICK_THRESHOLD_NORMAL;
 
             if (samePosition && withinTimeWindow) {
                 clickCount++;
@@ -373,7 +363,7 @@ public class TextArea extends Widget {
 
     @Override
     public void charTyped(char c) {
-        if (!focused || !isCharAllowed(c) || getTotalCharCount() >= maxLength) return;
+        if (!focused || !isCharAllowed(c) || getTotalCharCount() >= GuiPresets.TEXT_AREA_CHAR_LIMIT) return;
 
         deleteSelectionIfExists();
         insertCharAtCaret(c);
@@ -642,10 +632,10 @@ public class TextArea extends Widget {
 
         deleteSelectionIfExists();
 
-        String[] pasteLines = clipboard.split(LINE_DELIMITER);
+        String[] pasteLines = clipboard.split(GuiPresets.TEXT_AREA_DELIMITER);
         if (pasteLines.length == 1) {
             for (char c : pasteLines[0].toCharArray()) {
-                if (isCharAllowed(c) && getTotalCharCount() < maxLength) {
+                if (isCharAllowed(c) && getTotalCharCount() < GuiPresets.TEXT_AREA_CHAR_LIMIT) {
                     insertCharAtCaret(c);
                 }
             }
@@ -691,7 +681,7 @@ public class TextArea extends Widget {
             }
 
             if (row < endRow) {
-                result.append(LINE_DELIMITER);
+                result.append(GuiPresets.TEXT_AREA_CHAR_LIMIT);
             }
         }
 
@@ -717,30 +707,20 @@ public class TextArea extends Widget {
     }
 
     private int getContentWidth() {
-        return getWidth() - 2 * DEFAULT_PADDING - (needsScrolling() ? GuiPresets.SCROLLBAR_TRACK_WIDTH : 0);
+        return getWidth() - 2 * this.textAreaStyle.getPadding() - (needsScrolling() ? this.scrollbar.getStyle().getScrollbarTrackWidth(): 0);
     }
 
     private int getTextWidth(String text) {
-        return (int)(Minecraft.getInstance().font.width(text) * getFontSizeScale());
+        return (int)(Minecraft.getInstance().font.width(text) * GuiUtils.getFontScale(this.textAreaStyle.getFontSize()));
     }
 
     private int getCharIndexFromPixel(String line, int pixelX) {
         // Scale pixel position for accurate character detection
-        float fontScale = getFontSizeScale();
+        float fontScale = GuiUtils.getFontScale(this.textAreaStyle.getFontSize());
         float scaledPixelX = pixelX / fontScale;
 
-        Text tempText = new Text(0, 0, line, fontSize);
+        Text tempText = new Text(0, 0, line, this.textAreaStyle.getFontSize());
         return tempText.getCharIndexFromPixel((int)scaledPixelX);
-    }
-
-    private float getFontSizeScale() {
-        return switch (fontSize) {
-            case XXS -> 0.4f;
-            case XS -> 0.5f;
-            case S -> 0.75f;
-            case L -> 1.5f;
-            default -> 1f; // BASE
-        };
     }
 
     private boolean isCharAllowed(char c) {
@@ -769,11 +749,7 @@ public class TextArea extends Widget {
     // ================================
 
     public String getText() {
-        return String.join(LINE_DELIMITER, lines);
-    }
-
-    public void setTextColor(int textColor){
-        this.textColor = textColor;
+        return String.join(GuiPresets.TEXT_AREA_DELIMITER, lines);
     }
 
     public void setText(String text) {
@@ -781,8 +757,8 @@ public class TextArea extends Widget {
 
         if (text.isEmpty()) {
             lines.add("");
-        } else if (text.contains(LINE_DELIMITER)) {
-            String[] textLines = text.split(LINE_DELIMITER, -1);
+        } else if (text.contains(GuiPresets.TEXT_AREA_DELIMITER)) {
+            String[] textLines = text.split(GuiPresets.TEXT_AREA_DELIMITER, -1);
             Collections.addAll(lines, textLines);
         } else {
             if (needsAutoWrap(text)) {
@@ -837,10 +813,6 @@ public class TextArea extends Widget {
         }
     }
 
-    public void setMaxLength(int maxLength) {
-        this.maxLength = maxLength;
-    }
-
     public void setPlaceholder(String placeholder) {
         this.placeholder = placeholder;
         placeholderRenderer.setText(placeholder);
@@ -865,5 +837,10 @@ public class TextArea extends Widget {
 
     public int getCurrentColumn() {
         return caretCol;
+    }
+
+    @Override
+    public TextFieldStyle getStyle() {
+        return this.textAreaStyle;
     }
 }

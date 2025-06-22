@@ -5,6 +5,7 @@ import de.j3ramy.edomui.enums.FontSize;
 import de.j3ramy.edomui.util.style.Color;
 import de.j3ramy.edomui.util.style.GuiUtils;
 import de.j3ramy.edomui.components.Widget;
+import de.j3ramy.edomui.theme.ThemeManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 
@@ -101,7 +102,7 @@ public class Text extends Widget {
         super.render(poseStack);
 
         int renderColor = isEnabled() ? (isHoverable() && isMouseOver() ? hoverTextColor : textColor) : disabledTextColor;
-        float scale = getFontSizeScale();
+        float scale = GuiUtils.getFontScale(this.fontSize);
         float ratio = 1 / scale;
 
         String[] lines = text.toString().split("\n");
@@ -133,20 +134,10 @@ public class Text extends Widget {
 
     public float getSubstringTextWidth(int from, int to) {
         to = Math.min(to, text.length());
-        float scale = getFontSizeScale();
+        float scale = GuiUtils.getFontScale(this.fontSize);
         String sub = text.substring(from, to);
         String result = truncateLabel ? GuiUtils.getTruncatedLabel(sub, scale, maxTextWidth) : sub;
         return Math.max(Minecraft.getInstance().font.width(result) * scale, 0);
-    }
-
-    public float getFontSizeScale() {
-        return switch (fontSize) {
-            case XXS -> 0.4f;
-            case XS -> 0.5f;
-            case S -> 0.75f;
-            case L -> 1.5f;
-            default -> 1f;
-        };
     }
 
     public boolean isEmpty() {
@@ -156,7 +147,7 @@ public class Text extends Widget {
     public boolean isTruncated() {
         if (!truncateLabel) return false;
         String[] lines = text.toString().split("\n");
-        float scale = getFontSizeScale();
+        float scale = GuiUtils.getFontScale(this.fontSize);
 
         for (String line : lines) {
             int fullWidth = Minecraft.getInstance().font.width(line);
@@ -206,6 +197,6 @@ public class Text extends Widget {
 
     private void autoHeight() {
         int lines = Math.max(1, text.toString().split("\n").length);
-        setHeight((int) (LETTER_HEIGHT * getFontSizeScale() * lines));
+        setHeight((int) (LETTER_HEIGHT * GuiUtils.getFontScale(this.fontSize) * lines));
     }
 }

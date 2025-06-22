@@ -9,12 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public final class Image extends Widget {
     private final int uOffset, vOffset, textureWidth, textureHeight;
-
-    private ResourceLocation textureLoc;
-
-    public void setTextureLoc(ResourceLocation textureLoc) {
-        this.textureLoc = textureLoc;
-    }
+    private final ResourceLocation textureLoc;
 
     public Image(int x, int y, int width, int height, int uOffset, int vOffset, int textureWidth, int textureHeight, ResourceLocation textureLoc){
         super(x, y, width, height);

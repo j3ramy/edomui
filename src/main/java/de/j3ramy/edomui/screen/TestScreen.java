@@ -47,7 +47,7 @@ public class TestScreen extends Screen {
 
         textArea.setText("Hallo Jaimy,\n\nmein Name ist DIngsbums\n\n\nhahahaha");
 
-        this.view.addWidget(new Checkbox(200, 5, 10, 10, "Ich bin eine Checkbox"));
+        this.view.addWidget(new Checkbox(200, 5, 11, 11, "Ich bin eine Checkbox"));
 
         ScrollableList list = new ScrollableList(5, 20, 100, 100, 13, Color.RED).enableDynamicContextMenu().addContextDeleteAction();
         this.view.addWidget(list);
@@ -109,19 +109,20 @@ public class TestScreen extends Screen {
         //view.addWidget(new SpriteImageButton(100, 100, 20, 20, 20, 20, 256, 256, image, ()->System.out.println("HIHI2")));
 
         BarChart barChart;
-        view.addWidget(barChart = new BarChart(250, 100, 100, 60, Color.RED, 5));
+        view.addWidget(barChart = new BarChart(250, 100, 100, 60));
         barChart.setTooltipSuffix("Anzahl Verkaufe");
         barChart.addDataPoints(List.of(new DataPoint("Banane", 5),
                 new DataPoint("Apfel", 75), new DataPoint("Gurke", 35), new DataPoint("Erdbeere", 23)));
-        barChart.setTextColor(Color.WHITE);
+        barChart.getStyle().setLabelColor(Color.WHITE);
         barChart.setHidden(true);
 
         LineChart lineChart;
-        view.addWidget(lineChart = new LineChart(250, 100, 100, 60, Color.RED, 1));
+        view.addWidget(lineChart = new LineChart(250, 100, 100, 60));
+        lineChart.getStyle().setLineColor(Color.PURPLE);
         lineChart.setTooltipSuffix("€");
         lineChart.addDataPoints(List.of(new DataPoint("Januar", 56),
                 new DataPoint("Februar", 75), new DataPoint("März", 35), new DataPoint("April", 23)));
-        lineChart.setHidden(true);
+        //lineChart.setHidden(true);
 
         //view.addWidget(new Line(5, 5, 10, 10, 1, Color.RED));
 

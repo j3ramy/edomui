@@ -1,9 +1,9 @@
 package de.j3ramy.edomui.components.chart;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import de.j3ramy.edomui.theme.chart.LineChartStyle;
+import de.j3ramy.edomui.theme.ThemeManager;
 import de.j3ramy.edomui.view.View;
-import de.j3ramy.edomui.enums.FontSize;
-import de.j3ramy.edomui.util.style.Color;
 import de.j3ramy.edomui.util.chart.DataPoint;
 import de.j3ramy.edomui.components.Widget;
 import de.j3ramy.edomui.components.basic.Circle;
@@ -16,33 +16,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class LineChart extends Widget {
-    private static final int LABEL_OFFSET_LEFT = 15;
-    private static final int LABEL_SPACING_BOTTOM = 5;
-    private static final int CIRCLE_RADIUS = 2;
+    private final View view = new View();
+    private final LineChartStyle lineChartStyle;
 
     private List<DataPoint> dataPoints = new ArrayList<>();
-    private int lineColor;
-    private int lineWidth;
     private int yAxisMin = 0;
     private int yAxisMax = 100;
     private int numberOfTicks = 5;
     private String tooltipSuffix = "";
 
-    private final View view = new View();
-
-    public LineChart(int xPos, int yPos, int width, int height, int lineColor, int lineWidth) {
+    public LineChart(int xPos, int yPos, int width, int height) {
         super(xPos, yPos, width, height);
 
-        this.lineColor = lineColor;
-        this.lineWidth = lineWidth;
+        this.lineChartStyle = ThemeManager.getDefaultLineChartStyle();
+        this.setStyle(lineChartStyle);
     }
 
-    public LineChart(int xPos, int yPos, int width, int height, int lineColor) {
-        this(xPos, yPos, width, height, lineColor, 1);
-    }
-
-    public LineChart(int xPos, int yPos, int width, int height) {
-        this(xPos, yPos, width, height, Color.BLACK, 1);
+    @Override
+    public LineChartStyle getStyle() {
+        return this.lineChartStyle;
     }
 
     public void clear(){
@@ -76,11 +68,12 @@ public final class LineChart extends Widget {
             int endX = getXForIndex(i + 1);
             int endY = getYForValue(end.getYValue());
 
-            System.out.println(lineWidth);
-            this.view.addWidget(new Line(startX, startY, endX, endY, lineWidth, lineColor));
+            this.view.addWidget(new Line(startX, startY, endX, endY, this.lineChartStyle.getLineThickness(),
+                    this.lineChartStyle.getLineColor()));
 
             Circle c;
-            this.view.addWidget(c = new Circle(startX + CIRCLE_RADIUS / 2, startY + CIRCLE_RADIUS / 2, CIRCLE_RADIUS, lineColor));
+            int radius = this.lineChartStyle.getDataPointRadius();
+            this.view.addWidget(c = new Circle(startX + radius / 2, startY + radius / 2, radius, this.lineChartStyle.getLineColor()));
             this.view.addWidget(new Tooltip(start.getYValue() + " " + tooltipSuffix, c));
         }
 
@@ -88,28 +81,12 @@ public final class LineChart extends Widget {
         int lx = getXForIndex(dataPoints.size() - 1);
         int ly = getYForValue(last.getYValue());
         Circle c;
-        this.view.addWidget(c = new Circle(lx, ly, 2, lineColor));
+        this.view.addWidget(c = new Circle(lx, ly, 2, this.lineChartStyle.getLineColor()));
         this.view.addWidget(new Tooltip(last.getYValue() + " " + tooltipSuffix, c));
     }
 
     public void setTooltipSuffix(String tooltipSuffix) {
         this.tooltipSuffix = tooltipSuffix;
-    }
-
-    public void setLineColor(int lineColor) {
-        this.lineColor = lineColor;
-    }
-
-    public void setLineWidth(int lineWidth) {
-        this.lineWidth = lineWidth;
-    }
-
-    public void setTextColor(int textColor){
-        for(Widget widget : this.view.getWidgets()){
-            if(widget instanceof Text){
-                ((Text)widget).setTextColor(textColor);
-            }
-        }
     }
 
     public void setYAxisRange(int min, int max) {
@@ -159,7 +136,8 @@ public final class LineChart extends Widget {
             int yValue = yAxisMin + Math.round(tickSpacing * i);
             int yPosition = getTopPos() + getHeight() - Math.round((yValue - yAxisMin) * yScale);
 
-            this.view.addWidget(new Text(getLeftPos() - LABEL_OFFSET_LEFT, yPosition - 1, String.valueOf(yValue), FontSize.XS, Color.BLACK));
+            this.view.addWidget(new Text(getLeftPos() + this.lineChartStyle.getYAxisLabelOffset(), yPosition - 1, String.valueOf(yValue),
+                   this.lineChartStyle.getFontSize(), this.lineChartStyle.getLabelColor()));
         }
     }
 
@@ -169,12 +147,14 @@ public final class LineChart extends Widget {
         for (int i = 0; i < dataPoints.size(); i++) {
             DataPoint point = dataPoints.get(i);
             int xPosition = getLeftPos() + i * xSpacing;
-            int yPosition = getTopPos() + getHeight() + LABEL_SPACING_BOTTOM;
+            int yPosition = getTopPos() + getHeight() + this.lineChartStyle.getXAxisLabelOffset();
 
-            this.view.addWidget(new Text(xPosition - 3, yPosition, point.getXLabel(), FontSize.XS, Color.BLACK));
+            this.view.addWidget(new Text(xPosition - 5, yPosition, point.getXLabel(),
+                    this.lineChartStyle.getFontSize(), this.lineChartStyle.getLabelColor()));
 
             if(i > 0 && i < this.dataPoints.size() -1){
-                this.view .addWidget(new VerticalLine(xPosition, this.getTopPos(), 1, this.getHeight(), Color.GRAY));
+                this.view .addWidget(new VerticalLine(xPosition, this.getTopPos(), 1, this.getHeight(),
+                        this.lineChartStyle.getBorderColor()));
             }
         }
     }

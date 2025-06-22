@@ -5,28 +5,39 @@ import de.j3ramy.edomui.components.button.Button;
 import de.j3ramy.edomui.components.presentation.ScrollableList;
 import de.j3ramy.edomui.enums.ButtonType;
 import de.j3ramy.edomui.interfaces.IValueAction;
+import de.j3ramy.edomui.theme.ThemeManager;
+import de.j3ramy.edomui.theme.input.DropdownStyle;
 import de.j3ramy.edomui.util.style.Color;
-import de.j3ramy.edomui.util.style.GuiPresets;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class Dropdown extends Button {
-    public static final int MAX_VISIBLE_ELEMENTS = 4;
-
     private final String placeholder;
     private final IValueAction onChangeAction;
+    private final DropdownStyle dropdownStyle;
+
     private boolean isUnfolded;
     private ScrollableList menu;
     private String lastSelectedElement = "";
 
+    public ScrollableList getMenu() {
+        return menu;
+    }
+
     public Dropdown(ArrayList<String> options, int x, int y, int width, int height, String placeholder, int selectedColor, IValueAction onChangeAction) {
-        super(x, y, width, height, placeholder, GuiPresets.DROPDOWN_FONT_SIZE, null, ButtonType.DROPDOWN);
+        super(x, y, width, height, placeholder, null, ButtonType.DROPDOWN);
+
+        this.dropdownStyle = new DropdownStyle(ThemeManager.getDefaultDropdownStyle());
+        this.setStyle(this.dropdownStyle);
+
         this.onChangeAction = onChangeAction;
         if (options != null) {
             setOptions(options, selectedColor);
         }
+
+        this.title = this.createTitle(ButtonType.DROPDOWN, placeholder, this.dropdownStyle.getPadding());
 
         this.placeholder = placeholder;
         setTitle(placeholder);
@@ -139,8 +150,8 @@ public final class Dropdown extends Button {
     }
 
     public void setOptions(List<String> options, int selectedColor) {
-        final int elementHeight = GuiPresets.DROPDOWN_OPTION_HEIGHT;
-        int listHeight = Math.min(MAX_VISIBLE_ELEMENTS, options.size()) * elementHeight;
+        final int elementHeight = this.dropdownStyle.getOptionHeight();
+        int listHeight = Math.min(this.dropdownStyle.getMaxVisibleElements(), options.size()) * elementHeight;
 
         menu = new ScrollableList(getLeftPos(), getTopPos() + getHeight() + 2, getWidth(), listHeight, elementHeight, selectedColor);
         menu.clear();

@@ -1,9 +1,9 @@
 package de.j3ramy.edomui.components.chart;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import de.j3ramy.edomui.theme.chart.BarChartStyle;
+import de.j3ramy.edomui.theme.ThemeManager;
 import de.j3ramy.edomui.view.View;
-import de.j3ramy.edomui.enums.FontSize;
-import de.j3ramy.edomui.util.style.Color;
 import de.j3ramy.edomui.util.chart.DataPoint;
 import de.j3ramy.edomui.components.basic.HorizontalLine;
 import de.j3ramy.edomui.components.basic.Rectangle;
@@ -15,28 +15,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class BarChart extends Widget {
-    private static final int LABEL_OFFSET_LEFT = 15;
-    private static final int LABEL_SPACING_BOTTOM = 5;
-    private static final int MIN_BAR_HEIGHT = 2;
+    private final BarChartStyle barChartStyle;
 
     private List<DataPoint> dataPoints = new ArrayList<>();
-    private int barColor = Color.BLACK;
     private int yAxisMin = 0;
     private int yAxisMax = 100;
     private int numberOfTicks = 5;
-    private int barSpacing = 5;
     private String tooltipSuffix = "";
 
     private final View view = new View();
 
     public BarChart(int xPos, int yPos, int width, int height) {
         super(xPos, yPos, width, height);
-    }
 
-    public BarChart(int xPos, int yPos, int width, int height, int barColor, int barSpacing) {
-        this(xPos, yPos, width, height);
-        this.barColor = barColor;
-        this.barSpacing = barSpacing;
+        this.barChartStyle = ThemeManager.getDefaultBarChartStyle();
+        this.setStyle(barChartStyle);
     }
 
     public void clear() {
@@ -49,12 +42,17 @@ public final class BarChart extends Widget {
         refresh();
     }
 
+    @Override
+    public BarChartStyle getStyle() {
+        return this.barChartStyle;
+    }
+
     public void refresh() {
         this.view.clear();
 
         if (dataPoints.isEmpty()) return;
 
-        int totalSpacing = (dataPoints.size() - 1) * barSpacing;
+        int totalSpacing = (dataPoints.size() - 1) * this.barChartStyle.getBarSpacing();
         int availableWidth = getWidth() - totalSpacing;
         int barWidth = Math.max(availableWidth / dataPoints.size(), 1);
 
@@ -68,31 +66,19 @@ public final class BarChart extends Widget {
         addYAxisLabels();
 
         float yScale = getYAxisScale();
-        int xSpacing = barWidth + barSpacing;
+        int xSpacing = barWidth + this.barChartStyle.getBarSpacing();
 
         for (int i = 0; i < dataPoints.size(); i++) {
             DataPoint point = dataPoints.get(i);
             int x = getLeftPos() + i * xSpacing;
-            int barHeight = Math.max(Math.round((point.getYValue() - yAxisMin) * yScale), MIN_BAR_HEIGHT);
+            int barHeight = Math.max(Math.round((point.getYValue() - yAxisMin) * yScale), this.barChartStyle.getMinBarHeight());
             int y = getTopPos() + getHeight() - barHeight;
 
-            Rectangle bar = new Rectangle(x, y, barWidth, barHeight, barColor);
+            Rectangle bar = new Rectangle(x, y, barWidth, barHeight, this.barChartStyle.getBarColor());
             this.view.addWidget(bar);
 
             String suffix = tooltipSuffix != null ? tooltipSuffix : "";
             this.view.addWidget(new Tooltip(point.getXLabel() + ": " + point.getYValue() + " " + suffix, bar));
-        }
-    }
-
-    public void setBarColor(int barColor) {
-        this.barColor = barColor;
-    }
-
-    public void setTextColor(int textColor){
-        for(Widget widget : this.view.getWidgets()){
-            if(widget instanceof Text){
-                ((Text)widget).setTextColor(textColor);
-            }
         }
     }
 
@@ -107,10 +93,6 @@ public final class BarChart extends Widget {
 
     public void setTooltipSuffix(String tooltipSuffix) {
         this.tooltipSuffix = tooltipSuffix;
-    }
-
-    public void setBarSpacing(int barSpacing) {
-        this.barSpacing = barSpacing;
     }
 
     private float getYAxisScale() {
@@ -139,26 +121,27 @@ public final class BarChart extends Widget {
             int yValue = yAxisMin + Math.round(tickSpacing * i);
             int y = getTopPos() + getHeight() - Math.round((yValue - yAxisMin) * yScale);
 
-            view.addWidget(new Text(getLeftPos() - LABEL_OFFSET_LEFT, y - 1, String.valueOf(yValue), FontSize.XS, Color.BLACK));
+            view.addWidget(new Text(getLeftPos() + this.barChartStyle.getYAxisLabelOffset(), y - 1, String.valueOf(yValue),
+                    this.barChartStyle.getFontSize(), this.barChartStyle.getLabelColor()));
 
             if (i > 0 && i < numberOfTicks) {
-                view.addWidget(new HorizontalLine(getLeftPos(), y, getWidth(), 1, Color.GRAY));
+                view.addWidget(new HorizontalLine(getLeftPos(), y, getWidth(), 1, this.barChartStyle.getBorderColor()));
             }
         }
     }
 
     private void addXAxisLabels(int barWidth) {
-        int xSpacing = barWidth + barSpacing;
+        int xSpacing = barWidth + this.barChartStyle.getBarSpacing();
 
         for (int i = 0; i < dataPoints.size(); i++) {
             DataPoint point = dataPoints.get(i);
             int x = getLeftPos() + i * xSpacing;
-            Text tempText = new Text(0, 0, point.getXLabel(), FontSize.XS, Color.BLACK);
+            Text tempText = new Text(0, 0, point.getXLabel(), this.barChartStyle.getFontSize(), this.barChartStyle.getLabelColor());
             int textWidth = tempText.getWidth();
             int textX = x + (barWidth - textWidth) / 2;
-            int y = getTopPos() + getHeight() + LABEL_SPACING_BOTTOM;
+            int y = getTopPos() + getHeight() + this.barChartStyle.getXAxisLabelOffset();
 
-            view.addWidget(new Text(textX, y, point.getXLabel(), FontSize.XS, Color.BLACK));
+            view.addWidget(new Text(textX, y, point.getXLabel(), this.barChartStyle.getFontSize(), this.barChartStyle.getLabelColor()));
         }
     }
 }

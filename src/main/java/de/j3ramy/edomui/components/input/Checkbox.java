@@ -2,17 +2,16 @@ package de.j3ramy.edomui.components.input;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.components.button.Button;
-import de.j3ramy.edomui.enums.FontSize;
-import de.j3ramy.edomui.util.style.Color;
-import de.j3ramy.edomui.util.style.GuiPresets;
+import de.j3ramy.edomui.components.text.VerticalCenteredText;
+import de.j3ramy.edomui.theme.input.CheckboxStyle;
+import de.j3ramy.edomui.theme.ThemeManager;
 import de.j3ramy.edomui.components.text.Text;
+import de.j3ramy.edomui.util.style.GuiPresets;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
 public final class Checkbox extends Button {
-    private static final int LABEL_PADDING = 5;
-    private static final int CHECK_MARGIN = 2;
-
     private final Text label;
+    private final CheckboxStyle checkboxStyle;
 
     private boolean checked;
 
@@ -24,14 +23,23 @@ public final class Checkbox extends Button {
         this.checked = checked;
     }
 
+    public Text getLabel() {
+        return label;
+    }
+
     public Checkbox(int x, int y, int width, int height, String title, boolean isChecked) {
-        super(x, y, width, height, "", GuiPresets.CHECKBOX_FONT_SIZE, null);
+        super(x, y, width, height, "", null);
+
+        this.checkboxStyle = new CheckboxStyle(ThemeManager.getDefaultCheckboxStyle());
+        this.setStyle(this.checkboxStyle);
 
         this.checked = isChecked;
         this. setLeftClickAction(() -> this.checked = !this.checked);
 
-        int labelX = x + this.getWidth() + LABEL_PADDING;
-        this.label = new Text(labelX, y + 1, title, FontSize.BASE, Color.WHITE);
+        int labelX = x + this.getWidth() + this.checkboxStyle.getLabelLeftMargin();
+        java.awt.Rectangle labelArea = new java.awt.Rectangle(labelX, y, GuiPresets.MAX_TEXT_LENGTH, height);
+        this.label = new VerticalCenteredText(labelArea, labelX, title, this.checkboxStyle.getFontSize(),
+                this.checkboxStyle.getTextColor());
     }
 
     public Checkbox(int x, int y, int width, int height, String title) {
@@ -63,11 +71,12 @@ public final class Checkbox extends Button {
         );
 
         if (checked) {
+            int checkMargin = this.checkboxStyle.getCheckMargin();
             AbstractContainerScreen.fill(
                     poseStack,
-                    boxX + CHECK_MARGIN, boxY + CHECK_MARGIN,
-                    boxX + boxSize - CHECK_MARGIN, boxY + boxSize - CHECK_MARGIN,
-                    GuiPresets.CHECKBOX_CHECK_COLOR
+                    boxX + checkMargin, boxY + checkMargin,
+                    boxX + boxSize - checkMargin, boxY + boxSize - checkMargin,
+                   this.checkboxStyle.getCheckColor()
             );
         }
 
@@ -92,5 +101,10 @@ public final class Checkbox extends Button {
         int dy = topPos - getTopPos();
         super.setTopPos(topPos);
         label.setTopPos(label.getTopPos() + dy);
+    }
+
+    @Override
+    public CheckboxStyle getStyle() {
+        return this.checkboxStyle;
     }
 }

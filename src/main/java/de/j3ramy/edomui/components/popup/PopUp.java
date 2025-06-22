@@ -14,6 +14,17 @@ import java.awt.Rectangle;
 public abstract class PopUp extends Widget {
     protected final View view = new View();
 
+    private final HorizontalCenteredText title;
+    private final TextArea content;
+
+    public HorizontalCenteredText getTitle() {
+        return title;
+    }
+
+    public TextArea getContent() {
+        return content;
+    }
+
     public PopUp(int xPos, int yPos, String title, String content, PopUpType type) {
         super(xPos, yPos, GuiPresets.POPUP_WIDTH, GuiPresets.POPUP_HEIGHT);
 
@@ -29,7 +40,7 @@ public abstract class PopUp extends Widget {
         Rectangle rect = this.toRect();
         rect.x += 5;
         rect.width -= 10;
-        this.view.addWidget(new HorizontalCenteredText(
+        this.view.addWidget(this.title = new HorizontalCenteredText(
                 rect,
                 this.getTopPos() + GuiPresets.POPUP_TITLE_MARGIN_TOP,
                 title,
@@ -37,15 +48,15 @@ public abstract class PopUp extends Widget {
                 GuiPresets.POPUP_TEXT
         ));
 
-        TextArea textArea = new TextArea(xPos, yPos + 18, this.getWidth(), this.getHeight() - GuiPresets.POPUP_BUTTON_HEIGHT -
+        this.content = new TextArea(xPos, yPos + 18, this.getWidth(), this.getHeight() - GuiPresets.POPUP_BUTTON_HEIGHT -
                 GuiPresets.POPUP_BUTTON_MARGIN_BOTTOM - GuiPresets.POPUP_TITLE_MARGIN_TOP
         );
-        textArea.setText(content);
-        textArea.setTextColor(Color.DARK_GRAY);
-        //textArea.setEnabled(false);
-        textArea.hideBackground();
+        this.content.setText(content);
+        this.content.getStyle().setTextColor(Color.DARK_GRAY);
+        this.content.setEnabled(false);
+        this.content.hideBackground();
 
-        this.view.addWidget(textArea);
+        this.view.addWidget(this.content);
     }
 
     @Override

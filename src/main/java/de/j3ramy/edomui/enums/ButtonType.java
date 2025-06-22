@@ -5,4 +5,5 @@ public enum ButtonType {
     CHECKBOX,
     DROPDOWN,
     TEXT_FIELD,
+    IMAGE
 }

@@ -2,6 +2,7 @@ package de.j3ramy.edomui.util.style;
 
 import de.j3ramy.edomui.enums.CompareOperation;
 import de.j3ramy.edomui.enums.DateFormat;
+import de.j3ramy.edomui.enums.FontSize;
 import de.j3ramy.edomui.enums.TimeFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -16,6 +17,16 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 public class GuiUtils {
+    public static float getFontScale(FontSize fontSize) {
+        return switch (fontSize) {
+            case XXS -> 0.4f;
+            case XS -> 0.5f;
+            case S -> 0.75f;
+            case L -> 1.5f;
+            default -> 1f;
+        };
+    }
+
     public static int getTextWidth(String text, float fontSizeScale){
         return (int) (Minecraft.getInstance().font.width(text) * fontSizeScale);
     }
