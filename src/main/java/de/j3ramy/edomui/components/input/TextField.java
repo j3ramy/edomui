@@ -26,11 +26,11 @@ public class TextField extends Button {
     private final IValueAction onTextChangeAction, onPressEnterAction;
     private final String placeholder;
 
-    private boolean focused = false;
-    private int caretTickCounter = 0;
-    private long lastClickTime = 0;
-    private int lastClickCaretChar = -1;
-    private int clickCount = 0;
+    protected boolean focused = false;
+    protected int caretTickCounter = 0;
+    protected long lastClickTime = 0;
+    protected int lastClickCaretChar = -1;
+    protected int clickCount = 0;
 
     protected int selectionStart = -1;
     protected boolean caretVisible = true, touched;
@@ -170,7 +170,9 @@ public class TextField extends Button {
             caretTickCounter = 0;
 
             int clickX = getMousePosition().x - getLeftPos() - this.textFieldStyle.getPadding();
-            int clickedCharIndex = visibleText.getCharIndexFromPixel(clickX);
+            float scale = GuiUtils.getFontScale(this.textFieldStyle.getFontSize());
+            int scaledClickX = Math.round(clickX / scale);
+            int clickedCharIndex = visibleText.getCharIndexFromPixel(scaledClickX);
             caretCharPos = Math.min(scrollOffset + clickedCharIndex, text.length());
 
             long now = System.currentTimeMillis();
@@ -297,18 +299,37 @@ public class TextField extends Button {
     protected void updateVisibleText() {
         int fieldWidth = getWidth() - 2 * this.textFieldStyle.getPadding();
         String fullText = text.toString();
+        float scale = GuiUtils.getFontScale(this.textFieldStyle.getFontSize());
 
         while (caretCharPos < scrollOffset && scrollOffset > 0) {
             scrollOffset--;
         }
 
+        if (caretCharPos == scrollOffset && scrollOffset > 0) {
+            int maxScrollBack = Math.min(5, scrollOffset);
+            for (int i = 1; i <= maxScrollBack; i++) {
+                int testOffset = scrollOffset - i;
+                if (testOffset >= 0) {
+                    Font font = Minecraft.getInstance().font;
+                    String testText = fullText.substring(testOffset);
+                    if (font.width(testText) * scale <= fieldWidth) {
+                        scrollOffset = testOffset;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+
         Font font = Minecraft.getInstance().font;
-        while (caretCharPos > scrollOffset && font.width(fullText.substring(scrollOffset, caretCharPos)) > fieldWidth) {
+        while (caretCharPos > scrollOffset &&
+                font.width(fullText.substring(scrollOffset, caretCharPos)) * scale > fieldWidth) {
             scrollOffset++;
         }
 
         int end = scrollOffset;
-        while (end < fullText.length() && font.width(fullText.substring(scrollOffset, end + 1)) <= fieldWidth) {
+        while (end < fullText.length() &&
+                font.width(fullText.substring(scrollOffset, end + 1)) * scale <= fieldWidth) {
             end++;
         }
 
@@ -349,7 +370,7 @@ public class TextField extends Button {
         }
     }
 
-    private void selectAll() {
+    protected void selectAll() {
         caretCharPos = text.length();
         selectionStart = 0;
     }
@@ -377,7 +398,7 @@ public class TextField extends Button {
         return !forbiddenCharacters.contains(c);
     }
 
-    private void selectWordAtCaret() {
+    protected void selectWordAtCaret() {
         if (text.isEmpty()) return;
 
         int start = caretCharPos;

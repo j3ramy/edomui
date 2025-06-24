@@ -23,6 +23,7 @@ public class ThemeManager {
     private static DropdownStyle defaultDropdownStyle = new DropdownStyle(globalDefaultStyle);
     private static TextFieldStyle defaultTextAreaStyle = new TextFieldStyle(globalDefaultStyle);
     private static ProgressBarStyle defaultProgressBarStyle = new ProgressBarStyle(globalDefaultStyle);
+    private static PopUpStyle defaultPopUpStyle = new PopUpStyle(globalDefaultStyle);
 
     public static void setGlobalDefaultStyle(WidgetStyle style) {
         globalDefaultStyle = new WidgetStyle(style);
@@ -80,6 +81,10 @@ public class ThemeManager {
         return defaultLineChartStyle;
     }
 
+    public static PopUpStyle getDefaultPopUpStyle() {
+        return defaultPopUpStyle;
+    }
+
     public static void setDefaultLineChartStyle(LineChartStyle defaultLineChartStyle) {
         ThemeManager.defaultLineChartStyle = defaultLineChartStyle;
     }
@@ -102,5 +107,9 @@ public class ThemeManager {
 
     public static void setDefaultProgressBarStyle(ProgressBarStyle defaultProgressBarStyle) {
         ThemeManager.defaultProgressBarStyle = defaultProgressBarStyle;
+    }
+
+    public static void setDefaultPopUpStyle(PopUpStyle defaultPopUpStyle) {
+        ThemeManager.defaultPopUpStyle = defaultPopUpStyle;
     }
 }

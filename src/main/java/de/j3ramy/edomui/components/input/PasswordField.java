@@ -1,12 +1,15 @@
 package de.j3ramy.edomui.components.input;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.interfaces.IValueAction;
+import de.j3ramy.edomui.util.style.GuiUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
 import javax.annotation.Nullable;
 
 public final class PasswordField extends TextField {
+
     public PasswordField(int x, int y, int width, int height, String placeholderText, @Nullable IValueAction onTextChangeAction,
                          @Nullable IValueAction onPressEnterAction) {
         super(x, y, width, height, placeholderText, onTextChangeAction, onPressEnterAction);
@@ -26,42 +29,84 @@ public final class PasswordField extends TextField {
 
     @Override
     protected int getCaretRenderX() {
-        int starsWidth = Minecraft.getInstance().font.width("*".repeat(Math.max(0, caretCharPos - scrollOffset)));
-        return getLeftPos() + this.textFieldStyle.getPadding() + starsWidth;
-    }
+        String maskedTextBeforeCaret = "*".repeat(Math.max(0, caretCharPos - scrollOffset));
+        float scale = GuiUtils.getFontScale(this.textFieldStyle.getFontSize());
+        int scaledWidth = Math.round(Minecraft.getInstance().font.width(maskedTextBeforeCaret) * scale);
 
-    @Override
-    public void setText(String text) {
-        super.setText(text);
-        this.visibleText.setText("*".repeat(text.length()));
+        return getLeftPos() + this.textFieldStyle.getPadding() + scaledWidth;
     }
 
     @Override
     protected void updateVisibleText() {
         String realText = getText();
-        String masked = "*".repeat(realText.length());
+        String maskedText = "*".repeat(realText.length());
 
         int fieldWidth = getWidth() - 2 * this.textFieldStyle.getPadding();
 
-        while (caretCharPos < scrollOffset && scrollOffset > 0) scrollOffset--;
-
-        Font font = Minecraft.getInstance().font;
+        while (caretCharPos < scrollOffset && scrollOffset > 0) {
+            scrollOffset--;
+        }
 
         while (caretCharPos > scrollOffset &&
-                font.width(masked.substring(scrollOffset, caretCharPos)) > fieldWidth) {
+                Minecraft.getInstance().font.width(maskedText.substring(scrollOffset, caretCharPos)) *
+                        GuiUtils.getFontScale(this.textFieldStyle.getFontSize()) > fieldWidth) {
             scrollOffset++;
         }
 
         int end = scrollOffset;
-        while (end < masked.length() &&
-                font.width(masked.substring(scrollOffset, end + 1)) < fieldWidth) {
+        while (end < maskedText.length() &&
+                Minecraft.getInstance().font.width(maskedText.substring(scrollOffset, end + 1)) *
+                        GuiUtils.getFontScale(this.textFieldStyle.getFontSize()) <= fieldWidth) {
             end++;
         }
 
-        visibleText.setText(masked.substring(scrollOffset, end));
+        visibleText.setText(maskedText.substring(scrollOffset, end));
 
         boolean isEmpty = realText.isEmpty();
         getTitle().setHidden(!isEmpty);
         getTitle().setTextColor(isEmpty ? this.textFieldStyle.getPlaceholderColor() : visibleText.getTextColor());
+    }
+
+    @Override
+    public void render(PoseStack poseStack) {
+        if (isHidden()) return;
+
+        if (this.isShowBackground()) {
+            renderBorder(poseStack);
+            renderBackground(poseStack);
+        }
+
+        if (title != null) {
+            title.render(poseStack);
+        }
+
+        int padding = this.textFieldStyle.getPadding();
+        if (selectionStart != -1 && caretCharPos != selectionStart) {
+            int from = Math.min(caretCharPos, selectionStart);
+            int to = Math.max(caretCharPos, selectionStart);
+
+            int clampedFrom = Math.max(from, scrollOffset);
+            int clampedTo = Math.max(clampedFrom, Math.min(to, text.length()));
+
+            String maskedTextFromStart = "*".repeat(clampedFrom - scrollOffset);
+            String maskedTextToStart = "*".repeat(clampedTo - scrollOffset);
+
+            int left = getLeftPos() + padding + Math.round(Minecraft.getInstance().font.width(
+                    maskedTextFromStart) * GuiUtils.getFontScale(textFieldStyle.getFontSize()));
+
+            int right = getLeftPos() + padding + Math.round(Minecraft.getInstance().font.width(
+                    maskedTextToStart) * GuiUtils.getFontScale(textFieldStyle.getFontSize()));
+
+            AbstractContainerScreen.fill(poseStack, left, getTopPos() + padding,
+                    right, getTopPos() + getHeight() - padding,
+                    this.textFieldStyle.getSelectionColor());
+        }
+
+        visibleText.render(poseStack);
+        if (this.isFocused() && caretVisible) {
+            int caretX = getCaretRenderX();
+            AbstractContainerScreen.fill(poseStack, caretX, getTopPos() + padding,
+                    caretX + 1, getTopPos() + getHeight() - padding, this.textFieldStyle.getTextColor());
+        }
     }
 }

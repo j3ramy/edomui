@@ -1,24 +1,23 @@
 package de.j3ramy.edomui.components.popup;
 
 import de.j3ramy.edomui.components.input.PasswordField;
-import de.j3ramy.edomui.components.input.TextArea;
 import de.j3ramy.edomui.components.input.TextField;
 import de.j3ramy.edomui.interfaces.IValueAction;
 import de.j3ramy.edomui.view.View;
 import de.j3ramy.edomui.enums.PopUpType;
-import de.j3ramy.edomui.util.style.GuiPresets;
 import de.j3ramy.edomui.components.button.Button;
 
 public final class InputPopUp extends PopUp {
     private final Button confirmButton;
+    private final Button cancelButton;
     private final TextField inputField;
-
-    public void addForbiddenCharacter(char[] chars) {
-        this.inputField.addForbiddenCharacters(chars);
-    }
 
     public Button getConfirmButton() {
         return confirmButton;
+    }
+
+    public Button getCancelButton() {
+        return cancelButton;
     }
 
     public TextField getInputField() {
@@ -27,15 +26,22 @@ public final class InputPopUp extends PopUp {
 
     public InputPopUp(View hostView, int xPos, int yPos, String title, String confirmButtonTitle, String cancelButtonTitle,
                       String inputValue, String inputPlaceholder, PopUpType popUpType, IValueAction confirmAction, boolean isPassword) {
-        super(xPos - GuiPresets.POPUP_WIDTH / 2, yPos - GuiPresets.POPUP_HEIGHT / 2, title, "", popUpType);
+        super(0, 0, title, popUpType);
 
-        int inputX = this.getLeftPos() + this.getWidth() / 2 - 45;
-        int inputY = this.getTopPos() + this.getHeight() / 2 - 7;
+        int centeredX = xPos - this.getWidth() / 2;
+        int centeredY = yPos - this.getHeight() / 2;
+        this.setLeftPos(centeredX);
+        this.setTopPos(centeredY);
+
+        int inputX = this.getLeftPos() + (this.getWidth() - this.popUpStyle.getInputWidth()) / 2;
+        int inputY = this.getTopPos() + this.popUpStyle.getTitleHeight() + this.popUpStyle.getMargin();
 
         if (isPassword) {
-            this.view.addWidget(this.inputField = new PasswordField(inputX, inputY, 90, 13, inputPlaceholder));
+            this.inputField = new PasswordField(inputX, inputY, this.popUpStyle.getInputWidth(),
+                    this.popUpStyle.getWidgetHeight(), inputPlaceholder);
         } else {
-            this.view.addWidget(this.inputField = new TextField(inputX, inputY, 90, 13, inputPlaceholder));
+            this.inputField = new TextField(inputX, inputY, this.popUpStyle.getInputWidth(),
+                    this.popUpStyle.getWidgetHeight(), inputPlaceholder);
         }
 
         if (!inputValue.isEmpty()) {
@@ -43,31 +49,33 @@ public final class InputPopUp extends PopUp {
         }
 
         this.inputField.setFocused();
+        this.view.addWidget(this.inputField);
 
-        int buttonY = this.getTopPos() + this.getHeight() - GuiPresets.POPUP_BUTTON_HEIGHT - GuiPresets.POPUP_BUTTON_MARGIN_BOTTOM;
+        int buttonY = this.getTopPos() + this.getHeight() - this.popUpStyle.getWidgetHeight() - this.popUpStyle.getMargin();
 
-        this.view.addWidget(this.confirmButton = new Button(
-                this.getLeftPos() + GuiPresets.POPUP_BUTTON_MARGIN_X,
+        this.confirmButton = new Button(
+                this.getLeftPos() + this.popUpStyle.getMargin(),
                 buttonY,
-                GuiPresets.POPUP_BUTTON_WIDTH,
-                GuiPresets.POPUP_BUTTON_HEIGHT,
+                this.popUpStyle.getButtonWidth(),
+                this.popUpStyle.getWidgetHeight(),
                 confirmButtonTitle,
                 () -> {
                     confirmAction.execute(this.inputField.getText());
                     hostView.getWidgets().remove(this);
                 }
-        ));
+        );
 
-        this.view.addWidget(new Button(
-                this.getLeftPos() + this.getWidth() - GuiPresets.POPUP_BUTTON_WIDTH - GuiPresets.POPUP_BUTTON_MARGIN_X,
+        this.cancelButton = new Button(
+                this.getLeftPos() + this.getWidth() - this.popUpStyle.getButtonWidth() - this.popUpStyle.getMargin(),
                 buttonY,
-                GuiPresets.POPUP_BUTTON_WIDTH,
-                GuiPresets.POPUP_BUTTON_HEIGHT,
+                this.popUpStyle.getButtonWidth(),
+                this.popUpStyle.getWidgetHeight(),
                 cancelButtonTitle,
                 () -> hostView.getWidgets().remove(this)
-        ));
+        );
 
-        this.view.getWidgets().removeIf(widget -> widget instanceof TextArea);
+        this.view.addWidget(this.confirmButton);
+        this.view.addWidget(this.cancelButton);
     }
 
     public InputPopUp(View hostView, int xPos, int yPos, String title, String confirmButtonTitle, String cancelButtonTitle,

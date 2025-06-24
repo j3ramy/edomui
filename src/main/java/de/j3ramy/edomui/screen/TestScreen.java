@@ -137,11 +137,13 @@ public class TestScreen extends Screen {
             timeField.setEnabled(false);
         }));
 
-        /*
+
+                      /*
         this.view.addWidget(new ConfirmPopUp(view, 150, 100, "Der Computer wurde infiziert", "Der Computer wurde mit einem " +
                 "Virus infiziert. Bitte schließen Sie alle Programme und schreiben Sie an folgende E-Mail Ihre Passwörter, " +
                 "um diese sicher zu verwahren: passwoerter-sind-cool@scam.de", "Ja", "Nein", PopUpType.SUCCESS,
                 () -> {System.out.println("JUHUUUU");}));
+
 
         this.view.addWidget(new InputPopUp(view, 150, 100, "Geben Sie Ihr Passwort ein", "Anmelden",
                 "Abbrechen", "", "Passwort", PopUpType.NOTICE, System.out::println, true));
@@ -149,11 +151,20 @@ public class TestScreen extends Screen {
         this.view.addWidget(new InputPopUp(view, 150, 100, "Ordnername ändern", "Speichern",
                 "Abbrechen", "folder-1", "Name", PopUpType.NOTICE, System.out::println));
 
-         */
 
-        this.view
-                .addWidget(new ProgressPopUp(view, 150, 100, "Lade Daten...", "Die Daten werden aus dem Archiv geladen."
-                , PopUpType.NOTICE, 6, ()-> {System.out.println("FINISH");}, Color.PURPLE));
+
+
+        ProgressPopUp progressPopUp;
+        this.view.addWidget(progressPopUp = new ProgressPopUp(view, 150, 100, "Lade Daten...", "Die Daten werden aus dem Archiv geladen.",
+                PopUpType.NOTICE, 6, () -> System.out.println("FINISH")));
+        progressPopUp.getProgressBar().getStyle().setBarColor(Color.DARK_RED);
+
+               */
+
+        this.view.addWidget(new AlertPopUp(view, 150, 100, "Fehler", "Ihr Passwort ist falsch",
+                "Schließen", PopUpType.ERROR));
+
+
     }
 
     @Override

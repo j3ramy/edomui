@@ -86,9 +86,17 @@ public class TextArea extends Widget {
 
         // Calculate proper line height based on actual font rendering
         float fontScale = GuiUtils.getFontScale(this.textAreaStyle.getFontSize());
-        int lineSpacing = 5;
-        this.lineHeight = (int)(7 * fontScale) + lineSpacing; // 7 = Text.LETTER_HEIGHT
-        this.maxVisibleLines = Math.max(1, (height - 2 * padding) / lineHeight);
+        int baseLineHeight = (int)(7 * fontScale);
+        int lineSpacing = this.textAreaStyle.getLineSpacing();
+        this.lineHeight = baseLineHeight + lineSpacing;
+
+        int availableHeight = height - 2 * padding;
+        if (availableHeight >= baseLineHeight) {
+            int remainingHeight = availableHeight - baseLineHeight;
+            this.maxVisibleLines = 1 + Math.max(0, remainingHeight / lineHeight);
+        } else {
+            this.maxVisibleLines = 1;
+        }
 
         this.scrollbar = new VerticalScrollbar(this, 1, maxVisibleLines);
 
@@ -221,7 +229,7 @@ public class TextArea extends Widget {
             scrollbar.update(x, y);
         }
 
-        if (!isManuallyScrolling) {
+        if (!isManuallyScrolling && this.isEnabled()) {
             ensureCaretVisible();
         }
     }
@@ -239,7 +247,7 @@ public class TextArea extends Widget {
 
     @Override
     public void onClick(int mouseButton) {
-        if (mouseButton != 0) return;
+        if (mouseButton != 0 || !this.isEnabled()) return;
 
         if (isMouseOver()) {
             touched = true;
@@ -343,6 +351,9 @@ public class TextArea extends Widget {
 
     @Override
     public void onScroll(double delta) {
+        System.out.println(isMouseOver());
+        System.out.println(needsScrolling());
+        System.out.println("----------");
         if (!isMouseOver() || !needsScrolling()) return;
 
         isManuallyScrolling = true;
@@ -402,21 +413,6 @@ public class TextArea extends Widget {
             case 88 -> cut();
             case 86 -> paste();
         }
-    }
-
-    public void setTextWithAutoWrap(String text) {
-        clear();
-
-        for (char c : text.toCharArray()) {
-            if (c == '\n') {
-                insertNewLine();
-            } else {
-                insertCharAtCaret(c);
-            }
-        }
-
-        setCaretPosition(0, 0);
-        clearSelection();
     }
 
     // ================================
@@ -707,11 +703,16 @@ public class TextArea extends Widget {
     }
 
     private int getContentWidth() {
-        return getWidth() - 2 * this.textAreaStyle.getPadding() - (needsScrolling() ? this.scrollbar.getStyle().getScrollbarTrackWidth(): 0);
+        int baseWidth = getWidth() - 2 * this.textAreaStyle.getPadding() -
+                (needsScrolling() ? this.scrollbar.getStyle().getScrollbarTrackWidth() : 0);
+
+        float fontScale = GuiUtils.getFontScale(this.textAreaStyle.getFontSize());
+        return (int)(baseWidth / fontScale);
     }
 
     private int getTextWidth(String text) {
-        return (int)(Minecraft.getInstance().font.width(text) * GuiUtils.getFontScale(this.textAreaStyle.getFontSize()));
+        float fontScale = GuiUtils.getFontScale(this.textAreaStyle.getFontSize());
+        return (int)(Minecraft.getInstance().font.width(text) * fontScale);
     }
 
     private int getCharIndexFromPixel(String line, int pixelX) {

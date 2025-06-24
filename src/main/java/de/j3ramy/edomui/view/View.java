@@ -3,6 +3,7 @@ package de.j3ramy.edomui.view;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.components.button.Button;
 import de.j3ramy.edomui.components.input.Dropdown;
+import de.j3ramy.edomui.components.input.TextArea;
 import de.j3ramy.edomui.components.popup.PopUp;
 import de.j3ramy.edomui.interfaces.IWidget;
 import de.j3ramy.edomui.components.*;
@@ -212,7 +213,6 @@ public class View implements IWidget {
             }
         }
     }
-
 
     private boolean shouldMoveToForeground(Widget widget) {
         return widget instanceof ScrollableList;
