@@ -8,13 +8,13 @@ import java.awt.*;
 
 public final class Circle extends Widget {
 
-    public Circle(int xPos, int yPos, int radius, int color) {
+    public Circle(int xPos, int yPos, int radius, Color color) {
         super(xPos - radius ,yPos - radius, radius * 2, radius * 2);
 
         this.getStyle().setBackgroundColor(color);
     }
 
-    public Circle(Point pos, int radius, int color) {
+    public Circle(Point pos, int radius, Color color) {
         this(pos.x , pos.y, radius, color);
     }
 
@@ -28,6 +28,6 @@ public final class Circle extends Widget {
                 this.getTopPos(),
                 this.getLeftPos() + this.getWidth(),
                 this.getTopPos() + this.getHeight(),
-                this.getStyle().getBackgroundColor());
+                this.getStyle().getBackgroundColor().getRGB());
     }
 }

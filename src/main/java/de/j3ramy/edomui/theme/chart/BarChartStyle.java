@@ -1,18 +1,19 @@
 package de.j3ramy.edomui.theme.chart;
 
-import de.j3ramy.edomui.util.style.Color;
 import de.j3ramy.edomui.util.style.WidgetStyle;
+
+import java.awt.*;
 
 public class BarChartStyle extends ChartStyle {
     private int minBarHeight = 2;
-    private int barColor = Color.BLACK;
+    private Color barColor = Color.BLACK;
     private int barSpacing = 5;
 
     public int getMinBarHeight() {
         return minBarHeight;
     }
 
-    public int getBarColor() {
+    public Color getBarColor() {
         return barColor;
     }
 
@@ -24,7 +25,7 @@ public class BarChartStyle extends ChartStyle {
         this.minBarHeight = minBarHeight;
     }
 
-    public void setBarColor(int barColor) {
+    public void setBarColor(Color barColor) {
         this.barColor = barColor;
     }
 

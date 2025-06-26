@@ -4,18 +4,18 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
-public final class VerticalLine extends Widget {
-    private final int thickness, color;
+import java.awt.*;
 
-    public VerticalLine(int x, int y, int thickness, int height, int color) {
+public final class VerticalLine extends Widget {
+    public VerticalLine(int x, int y, int thickness, int height, Color color) {
         super(x, y, thickness, height);
 
-        this.thickness = this.getWidth();
-        this.color = color;
+        this.getStyle().setBorderWidth(thickness);
+        this.getStyle().setBackgroundColor(color);
     }
 
     public void render(PoseStack poseStack) {
-        AbstractContainerScreen.fill(poseStack, this.getLeftPos(), this.getTopPos(), this.getLeftPos() + this.thickness,
-                this.getTopPos() + this.getHeight(), this.color);
+        AbstractContainerScreen.fill(poseStack, this.getLeftPos(), this.getTopPos(), this.getLeftPos() + this.getStyle().getBorderWidth(),
+                this.getTopPos() + this.getHeight(), this.getStyle().getBackgroundColor().getRGB());
     }
 }

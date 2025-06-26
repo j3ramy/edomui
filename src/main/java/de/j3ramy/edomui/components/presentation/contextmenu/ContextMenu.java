@@ -4,19 +4,33 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.components.button.Button;
 import de.j3ramy.edomui.components.presentation.ScrollableList;
 import de.j3ramy.edomui.interfaces.IAction;
-import de.j3ramy.edomui.util.style.Color;
+import de.j3ramy.edomui.theme.ContextMenuStyle;
+import de.j3ramy.edomui.theme.ThemeManager;
+
+import java.awt.*;
 
 public class ContextMenu extends ScrollableList {
-    private boolean isVisible = false;
+    private final ContextMenuStyle contextMenuStyle;
+
     private int targetX, targetY;
 
-    public ContextMenu(int elementHeight, int selectedColor) {
-        super(0, 0, 0, 0, elementHeight, selectedColor);
+    @Override
+    public ContextMenuStyle getStyle() {
+        return this.contextMenuStyle;
+    }
+
+    public ContextMenu(Color selectedColor) {
+        super(0, 0, 0, 0, selectedColor);
+
+        this.contextMenuStyle = new ContextMenuStyle(ThemeManager.getDefaultContextMenuStyle());
+        this.setStyle(this.contextMenuStyle);
+
+        this.setHidden(true);
     }
 
     @Override
     public void render(PoseStack stack) {
-        if (!isVisible) return;
+        if (isHidden()) return;
         renderBackground(stack);
         renderBorder(stack);
 
@@ -27,8 +41,6 @@ public class ContextMenu extends ScrollableList {
 
     @Override
     public void update(int x, int y) {
-        if (!isVisible) return;
-
         super.update(x, y);
 
         for (Button button : content) {
@@ -38,7 +50,7 @@ public class ContextMenu extends ScrollableList {
 
     @Override
     public void onClick(int mouseButton) {
-        if (!isVisible) return;
+        if (this.isHidden()) return;
 
         for (Button button : content) {
             if (button.isMouseOver()) {
@@ -54,18 +66,14 @@ public class ContextMenu extends ScrollableList {
     public void show(int x, int y) {
         this.targetX = x;
         this.targetY = y;
-        this.isVisible = true;
+        this.setHidden(false);
         updatePosition();
         layoutButtons();
     }
 
     public void hide() {
-        this.isVisible = false;
+        this.setHidden(true);
         unselect();
-    }
-
-    public boolean isVisible() {
-        return isVisible;
     }
 
     public void addMenuItem(String title, IAction action, boolean enabled) {
@@ -76,8 +84,8 @@ public class ContextMenu extends ScrollableList {
             lastButton.setEnabled(enabled);
 
             if (!enabled) {
-                lastButton.getTitle().setTextColor(Color.GRAY);
-                lastButton.getStyle().setBackgroundColor(Color.DARK_GRAY);
+                lastButton.getTitle().getStyle().setTextColor(this.getStyle().getTextDisabledColor());
+                lastButton.getStyle().setBackgroundColor(this.getStyle().getDisabledBackgroundColor());
             }
         }
     }
@@ -94,14 +102,14 @@ public class ContextMenu extends ScrollableList {
     }
 
     private void updateSize() {
-        int menuHeight = content.size() * elementHeight;
+        int menuHeight = content.size() * this.listStyle.getElementHeight();
         setHeight(menuHeight);
 
         int maxWidth = content.stream()
                 .mapToInt(b -> b.getTitle().getWidth())
                 .max()
-                .orElse(100);
-        setWidth(Math.max(100, maxWidth + 40));
+                .orElse(this.contextMenuStyle.getMinWidth());
+        setWidth(Math.max(this.contextMenuStyle.getMinWidth(), maxWidth + 40));
     }
 
     @Override

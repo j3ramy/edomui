@@ -36,7 +36,7 @@ public final class VerticalScrollbar extends Widget {
         int trackTop = getTopPos();
         int trackBottom = getTopPos() + getHeight();
 
-        AbstractContainerScreen.fill(poseStack, trackLeft, trackTop, trackRight, trackBottom, this.getStyle().getBorderColor());
+        AbstractContainerScreen.fill(poseStack, trackLeft, trackTop, trackRight, trackBottom, this.getStyle().getBorderColor().getRGB());
 
         int invisibleElements = contentSize - maxVisibleElements;
         if (invisibleElements <= 0) return;
@@ -48,7 +48,7 @@ public final class VerticalScrollbar extends Widget {
         int thumbTop = getTopPos() + thumbStep * currentScrollIndex;
         int thumbBottom = thumbTop + thumbHeight;
 
-        AbstractContainerScreen.fill(poseStack, trackLeft, thumbTop, trackRight, thumbBottom, this.scrollbarStyle.getThumbColor());
+        AbstractContainerScreen.fill(poseStack, trackLeft, thumbTop, trackRight, thumbBottom, this.scrollbarStyle.getThumbColor().getRGB());
     }
 
     public void updateScrollIndex(int newScrollIndex) {

@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.TranslatableComponent;
 
+import java.awt.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -380,6 +381,14 @@ public class GuiUtils {
     public static <E extends Enum<E>> ArrayList<String> enumToStringList(Class<E> enumClass) {
         return Arrays.stream(enumClass.getEnumConstants())
                 .map(Enum::name).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public static Color getContrastColor(Color color) {
+        double luminance = (0.299 * color.getRed() +
+                0.587 * color.getGreen() +
+                0.114 * color.getBlue()) / 255.0;
+
+        return luminance > 0.65 ? Color.BLACK : Color.WHITE;
     }
 
     public static String getFormatting(Formatting formatting){

@@ -1,19 +1,21 @@
 package de.j3ramy.edomui.theme;
 
 import de.j3ramy.edomui.enums.FontSize;
-import de.j3ramy.edomui.util.style.Color;
+import de.j3ramy.edomui.util.style.GuiUtils;
 import de.j3ramy.edomui.util.style.WidgetStyle;
 
+import java.awt.*;
+
 public class PopUpStyle extends WidgetStyle {
-    private int textColor = Color.BLACK;
+    private Color textColor = Color.BLACK;
     private FontSize titleFontSize = FontSize.BASE;
     private FontSize contentFontSize = FontSize.XS;
     private int width = 150;
     private int height = 84;
-    private int defaultColor = Color.DARK_GRAY;
-    private int successColor = Color.DARK_GREEN;
-    private int errorColor = Color.RED;
-    private int noticeColor = Color.ORANGE;
+    private Color defaultColor = Color.DARK_GRAY;
+    private Color successColor = Color.GREEN;
+    private Color errorColor = Color.RED;
+    private Color noticeColor = Color.ORANGE;
     private int margin = 10;
     private int titleHeight = 20;
 
@@ -22,7 +24,7 @@ public class PopUpStyle extends WidgetStyle {
     private int inputWidth = 100;
     private int progressBarWidth = 100;
 
-    public int getTextColor() {
+    public Color getTextColor() {
         return textColor;
     }
 
@@ -42,19 +44,19 @@ public class PopUpStyle extends WidgetStyle {
         return height;
     }
 
-    public int getDefaultColor() {
+    public Color getDefaultColor() {
         return defaultColor;
     }
 
-    public int getSuccessColor() {
+    public Color getSuccessColor() {
         return successColor;
     }
 
-    public int getErrorColor() {
+    public Color getErrorColor() {
         return errorColor;
     }
 
-    public int getNoticeColor() {
+    public Color getNoticeColor() {
         return noticeColor;
     }
 
@@ -82,7 +84,7 @@ public class PopUpStyle extends WidgetStyle {
         return widgetHeight;
     }
 
-    public void setTextColor(int textColor) {
+    public void setTextColor(Color textColor) {
         this.textColor = textColor;
     }
 
@@ -90,11 +92,11 @@ public class PopUpStyle extends WidgetStyle {
         this.contentFontSize = contentFontSize;
     }
 
-    public void setDefaultColor(int defaultColor) {
+    public void setDefaultColor(Color defaultColor) {
         this.defaultColor = defaultColor;
     }
 
-    public void setErrorColor(int errorColor) {
+    public void setErrorColor(Color errorColor) {
         this.errorColor = errorColor;
     }
 
@@ -102,11 +104,11 @@ public class PopUpStyle extends WidgetStyle {
         this.height = height;
     }
 
-    public void setNoticeColor(int noticeColor) {
+    public void setNoticeColor(Color noticeColor) {
         this.noticeColor = noticeColor;
     }
 
-    public void setSuccessColor(int successColor) {
+    public void setSuccessColor(Color successColor) {
         this.successColor = successColor;
     }
 
@@ -146,5 +148,6 @@ public class PopUpStyle extends WidgetStyle {
         super(style);
 
         this.setBorderWidth(3);
+        this.setTextColor(GuiUtils.getContrastColor(this.getBackgroundColor()));
     }
 }

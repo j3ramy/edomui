@@ -64,7 +64,7 @@ public final class PasswordField extends TextField {
 
         boolean isEmpty = realText.isEmpty();
         getTitle().setHidden(!isEmpty);
-        getTitle().setTextColor(isEmpty ? this.textFieldStyle.getPlaceholderColor() : visibleText.getTextColor());
+        getTitle().getStyle().setTextColor(isEmpty ? this.textFieldStyle.getPlaceholderColor() : visibleText.getStyle().getTextColor());
     }
 
     @Override
@@ -99,14 +99,14 @@ public final class PasswordField extends TextField {
 
             AbstractContainerScreen.fill(poseStack, left, getTopPos() + padding,
                     right, getTopPos() + getHeight() - padding,
-                    this.textFieldStyle.getSelectionColor());
+                    this.textFieldStyle.getSelectionColor().getRGB());
         }
 
         visibleText.render(poseStack);
         if (this.isFocused() && caretVisible) {
             int caretX = getCaretRenderX();
             AbstractContainerScreen.fill(poseStack, caretX, getTopPos() + padding,
-                    caretX + 1, getTopPos() + getHeight() - padding, this.textFieldStyle.getTextColor());
+                    caretX + 1, getTopPos() + getHeight() - padding, this.textFieldStyle.getTextColor().getRGB());
         }
     }
 }

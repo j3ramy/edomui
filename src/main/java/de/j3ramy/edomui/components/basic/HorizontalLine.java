@@ -4,12 +4,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
-public final class HorizontalLine extends Widget {
-    private final int color;
+import java.awt.*;
 
-    public HorizontalLine(int x, int y, int width, int thickness, int color) {
+public final class HorizontalLine extends Widget {
+    public HorizontalLine(int x, int y, int width, int thickness, Color color) {
         super(x, y, width, thickness);
-        this.color = color;
+
+        this.getStyle().setBackgroundColor(color);
     }
 
     @Override
@@ -22,7 +23,7 @@ public final class HorizontalLine extends Widget {
                 getTopPos(),
                 getLeftPos() + getWidth(),
                 getTopPos() + getHeight(),
-                color
+                this.getStyle().getBackgroundColor().getRGB()
         );
     }
 }

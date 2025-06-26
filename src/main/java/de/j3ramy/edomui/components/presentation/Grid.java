@@ -6,11 +6,14 @@ import de.j3ramy.edomui.components.basic.VerticalScrollbar;
 import de.j3ramy.edomui.components.button.Button;
 import de.j3ramy.edomui.components.presentation.contextmenu.ContextMenu;
 import de.j3ramy.edomui.components.presentation.contextmenu.DynamicContextMenuBuilder;
-import de.j3ramy.edomui.enums.FontSize;
+import de.j3ramy.edomui.enums.ButtonType;
 import de.j3ramy.edomui.interfaces.ContextMenuProvider;
 import de.j3ramy.edomui.interfaces.IAction;
+import de.j3ramy.edomui.theme.GridStyle;
+import de.j3ramy.edomui.theme.ThemeManager;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -22,6 +25,7 @@ public final class Grid extends Widget {
     private final GridConfig config;
     private final VisibleRange visibleRange;
     private final VerticalScrollbar scrollbar;
+    private final GridStyle gridStyle;
 
     private ContextMenu contextMenu;
     private ContextMenuProvider contextMenuProvider;
@@ -38,10 +42,18 @@ public final class Grid extends Widget {
         return scrollbar;
     }
 
+    @Override
+    public GridStyle getStyle() {
+        return this.gridStyle;
+    }
+
     public Grid(int x, int y, int width, int height, int cellWidth, int cellHeight, int cellMargin) {
         super(x, y, width, height);
 
-        this.config = new GridConfig(cellWidth, cellHeight, cellMargin, width, height);
+        this.gridStyle = new GridStyle(ThemeManager.getDefaultGridStyle());
+        this.setStyle(gridStyle);
+
+        this.config = new GridConfig(cellWidth, cellHeight, cellMargin, width, height, this.gridStyle.getPadding());
         this.visibleRange = new VisibleRange(config.maxVisibleRows);
         this.grid = new ArrayList<>();
         this.grid.add(new ArrayList<>());
@@ -61,7 +73,7 @@ public final class Grid extends Widget {
 
         renderVisibleCells(poseStack);
 
-        if (contextMenu != null && contextMenu.isVisible()) {
+        if (contextMenu != null && !contextMenu.isHidden()) {
             contextMenu.render(poseStack);
             return;
         }
@@ -76,7 +88,7 @@ public final class Grid extends Widget {
         super.update(x, y);
         updateCellPositions();
 
-        if (contextMenu != null && contextMenu.isVisible()) {
+        if (contextMenu != null && !contextMenu.isHidden()) {
             if (needsScrolling()) {
                 scrollbar.updateContentSize(grid.size());
             }
@@ -95,7 +107,7 @@ public final class Grid extends Widget {
     public void onClick(int mouseButton) {
         if (isHidden()) return;
 
-        if (contextMenu != null && contextMenu.isVisible()) {
+        if (contextMenu != null && !contextMenu.isHidden()) {
             if (contextMenu.isMouseOver()) {
                 contextMenu.onClick(mouseButton);
                 return;
@@ -131,8 +143,11 @@ public final class Grid extends Widget {
     }
 
     public Grid enableDynamicContextMenu() {
-        int menuButtonHeight = 13;
-        this.contextMenu = new ContextMenu(menuButtonHeight, getStyle().getBackgroundColor());
+        return this.enableDynamicContextMenu(getStyle().getBackgroundColor());
+    }
+
+    public Grid enableDynamicContextMenu(Color selectionColor) {
+        this.contextMenu = new ContextMenu(selectionColor);
         this.menuBuilder = DynamicContextMenuBuilder.create();
         this.dynamicMenuEnabled = true;
         return this;
@@ -199,9 +214,9 @@ public final class Grid extends Widget {
         return menuBuilder;
     }
 
-    public void setContextMenuProvider(ContextMenuProvider provider) {
+    public void setContextMenuProvider(ContextMenuProvider provider, Color selectedColor) {
         if (contextMenu == null) {
-            this.contextMenu = new ContextMenu(config.cellHeight, getStyle().getBackgroundColor());
+            this.contextMenu = new ContextMenu(selectedColor);
         }
         this.contextMenuProvider = provider;
         this.dynamicMenuEnabled = false;
@@ -237,16 +252,28 @@ public final class Grid extends Widget {
         addCellToGrid(button);
     }
 
-    public void add(String label, int labelColor, int backgroundColor, IAction leftClickAction) {
-        Button button = new Button(0, 0, config.cellWidth, config.cellHeight, label, leftClickAction);
-        button.getTitle().setFontSize(FontSize.S);
+    public void add(String label, Color backgroundColor, Color backgroundHoverColor, IAction leftClickAction) {
+        Button button = new Button(0, 0, config.cellWidth, config.cellHeight, label, leftClickAction, ButtonType.DEFAULT, this.gridStyle.getPadding());
         button.setTitle(label);
-        button.getTitle().setTextColor(labelColor);
         button.getStyle().setBackgroundColor(backgroundColor);
+        button.getStyle().setHoverBackgroundColor(backgroundHoverColor);
         button.noBorder();
         button.enableTooltip();
 
         addButton(button);
+    }
+
+    public void add(String label, Color backgroundColor, IAction leftClickAction) {
+        this.add(label, backgroundColor, backgroundColor, leftClickAction);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+
+        this.grid.stream()
+                .flatMap(List::stream)
+                .forEach(button -> button.setEnabled(enabled));
     }
 
     public boolean removeCell(int rowIndex, int columnIndex) {
@@ -514,15 +541,16 @@ public final class Grid extends Widget {
     }
 
     private static class GridConfig {
-        final int cellWidth, cellHeight, cellMargin;
+        final int cellWidth, cellHeight, cellMargin, cellPadding;
         final int maxVisibleRows, maxVisibleCols;
 
-        GridConfig(int cellWidth, int cellHeight, int cellMargin, int gridWidth, int gridHeight) {
+        GridConfig(int cellWidth, int cellHeight, int cellMargin, int gridWidth, int gridHeight, int cellPadding) {
             this.cellWidth = cellWidth;
             this.cellHeight = cellHeight;
             this.cellMargin = cellMargin;
             this.maxVisibleRows = gridHeight / (cellHeight + cellMargin);
             this.maxVisibleCols = gridWidth / (cellWidth + cellMargin);
+            this.cellPadding = cellPadding;
         }
     }
 

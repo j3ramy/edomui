@@ -5,18 +5,18 @@ import de.j3ramy.edomui.enums.ButtonType;
 import de.j3ramy.edomui.interfaces.IAction;
 import de.j3ramy.edomui.theme.ButtonStyle;
 import de.j3ramy.edomui.theme.ThemeManager;
-import de.j3ramy.edomui.util.style.Color;
 import de.j3ramy.edomui.components.*;
 import de.j3ramy.edomui.components.text.CenteredText;
 import de.j3ramy.edomui.components.text.Text;
 import de.j3ramy.edomui.components.text.Tooltip;
 import de.j3ramy.edomui.components.text.VerticalCenteredText;
 
+import java.awt.*;
+
 public class Button extends Widget {
     private final IAction rightClickAction;
     private final ButtonStyle buttonStyle;
 
-    private int originalTextColor;
     private IAction leftClickAction;
     public Tooltip tooltip;
     private boolean tooltipEnabled = false;
@@ -40,59 +40,88 @@ public class Button extends Widget {
         this.leftClickAction = leftClickAction;
         this.rightClickAction = rightClickAction;
 
-        this.buttonStyle = ThemeManager.getDefaultButtonStyle();
+        this.buttonStyle = new ButtonStyle(ThemeManager.getDefaultButtonStyle());
         this.setStyle(this.buttonStyle);
 
         this.setHoverable(true);
         this.title = createTitle(type, text, 0);
-
-        if(title != null) {
-            this.originalTextColor = this.title.getTextColor();
-        }
     }
 
     public Button(int x, int y, int width, int height, String title, IAction leftClickAction) {
         this(x, y, width, height, title, leftClickAction, null, ButtonType.DEFAULT);
     }
 
+    public Button(int x, int y, int width, int height, String title, IAction leftClickAction, ButtonType type, int padding) {
+        this(x, y, width, height, title, leftClickAction, null, ButtonType.DEFAULT);
+
+        this.title = this.createTitle(type, title, padding);
+    }
+
     public Button(int x, int y, int width, int height, String title, IAction leftClickAction, ButtonType type) {
         this(x, y, width, height, title, leftClickAction, null, type);
     }
 
-    protected Text createTitle(ButtonType type, String text, int leftPadding) {
+    protected Text createTitle(ButtonType type, String text, int padding) {
         int left = this.getLeftPos();
         int width = this.getWidth();
-        return switch (type) {
+
+        Text title = switch (type) {
             case DROPDOWN -> new VerticalCenteredText(
                     this.toRect(),
-                    left + leftPadding,
+                    left + padding,
                     text,
                     this.buttonStyle.getFontSize(),
-                    width - 2 * leftPadding - 16,
+                    width - 2 * padding - 20,
                     this.buttonStyle.getTextColor(),
                     this.buttonStyle.getTextHoverColor(),
                     this.buttonStyle.getTextDisabledColor()
-            );
+            ){
+                @Override
+                public boolean isMouseOver() {
+                    return Button.this.isMouseOver();
+                }
+            };
             case TEXT_FIELD -> new VerticalCenteredText(
                     this.toRect(),
-                    left + leftPadding,
+                    left + padding,
                     text,
                     this.buttonStyle.getFontSize(),
-                    width - 2 * leftPadding,
+                    width - 2 * padding,
                     this.buttonStyle.getTextColor(),
                     this.buttonStyle.getTextHoverColor(),
                     this.buttonStyle.getTextDisabledColor()
-            );
+            ){
+                @Override
+                public boolean isMouseOver() {
+                    return Button.this.isMouseOver();
+                }
+            };
             case IMAGE -> null;
-            default -> new CenteredText(
-                    this.toRect(),
-                    text,
-                    this.buttonStyle.getFontSize(),
-                    this.buttonStyle.getTextColor(),
-                    this.buttonStyle.getTextHoverColor(),
-                    this.buttonStyle.getTextDisabledColor()
-            );
+            default -> {
+                Rectangle rect = this.toRect();
+                rect.width -= 2 * padding;
+                rect.x += padding;
+
+                yield new CenteredText(rect,
+                        text,
+                        this.buttonStyle.getFontSize(),
+                        this.buttonStyle.getTextColor(),
+                        this.buttonStyle.getTextHoverColor(),
+                        this.buttonStyle.getTextDisabledColor()
+                ){
+                    @Override
+                    public boolean isMouseOver() {
+                        return Button.this.isMouseOver();
+                    }
+                };
+            }
         };
+
+        if (title != null) {
+            title.setHoverable(true);
+        }
+
+        return title;
     }
 
     @Override
@@ -123,13 +152,23 @@ public class Button extends Widget {
             tooltip.update(x, y);
         }
 
-        if(title != null){
-            if (isShowBackground() && isHoverable() && isMouseOver() ) {
-                title.setTextColor(Color.getContrastColor(getStyle().getHoverBackgroundColor()));
-            } else {
-                title.setTextColor(originalTextColor);
+        if (this.title != null) {
+            this.title.update(x, y);
+
+            if(this.titleColorsNeedUpdate()){
+                this.title.getStyle().setTextColor(this.buttonStyle.getTextColor());
+                this.title.getStyle().setTextHoverColor(this.buttonStyle.getTextHoverColor());
+                this.title.getStyle().setTextDisabledColor(this.buttonStyle.getTextDisabledColor());
             }
         }
+    }
+
+    private boolean titleColorsNeedUpdate() {
+        if (this.title == null) return false;
+
+        return !this.title.getStyle().getTextColor().equals(this.buttonStyle.getTextColor()) ||
+                !this.title.getStyle().getTextHoverColor().equals(this.buttonStyle.getTextHoverColor()) ||
+                !this.title.getStyle().getTextDisabledColor().equals(this.buttonStyle.getTextDisabledColor());
     }
 
     @Override
@@ -174,7 +213,6 @@ public class Button extends Widget {
     public void setTitle(String text) {
         if(title != null){
             title.setText(text);
-            title.setTextColor(originalTextColor);
         }
     }
 

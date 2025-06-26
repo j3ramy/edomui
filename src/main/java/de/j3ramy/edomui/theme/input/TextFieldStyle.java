@@ -1,18 +1,19 @@
 package de.j3ramy.edomui.theme.input;
 
-import de.j3ramy.edomui.util.style.Color;
 import de.j3ramy.edomui.util.style.WidgetStyle;
 
+import java.awt.*;
+
 public class TextFieldStyle extends InputStyle {
-    private int placeholderColor = Color.DARK_GRAY;
-    private int selectionColor = Color.YELLOW;
+    private Color placeholderColor = Color.DARK_GRAY;
+    private Color selectionColor = Color.YELLOW;
     private int lineSpacing = 5;
 
-    public int getPlaceholderColor() {
+    public Color getPlaceholderColor() {
         return placeholderColor;
     }
 
-    public int getSelectionColor() {
+    public Color getSelectionColor() {
         return selectionColor;
     }
 
@@ -20,11 +21,11 @@ public class TextFieldStyle extends InputStyle {
         return lineSpacing;
     }
 
-    public void setPlaceholderColor(int placeholderColor) {
+    public void setPlaceholderColor(Color placeholderColor) {
         this.placeholderColor = placeholderColor;
     }
 
-    public void setSelectionColor(int selectionColor) {
+    public void setSelectionColor(Color selectionColor) {
         this.selectionColor = selectionColor;
     }
 

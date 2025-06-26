@@ -7,27 +7,37 @@ import de.j3ramy.edomui.components.text.CenteredText;
 import de.j3ramy.edomui.components.button.Button;
 import de.j3ramy.edomui.components.text.Tooltip;
 import de.j3ramy.edomui.enums.ButtonType;
-import de.j3ramy.edomui.util.style.Color;
-import de.j3ramy.edomui.util.style.GuiPresets;
+import de.j3ramy.edomui.theme.TableStyle;
+import de.j3ramy.edomui.theme.ThemeManager;
 import de.j3ramy.edomui.view.View;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public final class Table extends ScrollableList {
-    private static final int DEFAULT_PADDING = 3;
+    private final TableStyle tableStyle;
 
-    private final int headerHeight;
     private TableRow headerRow;
-    private int headerBackgroundColor;
-    private boolean isHeaderFixed;
 
-    public Table(int x, int y, int width, int height, int rowHeight, int selectedColor) {
-        super(x, y, width, height, rowHeight, selectedColor);
-        this.headerHeight = rowHeight;
+    @Override
+    public TableStyle getStyle() {
+        return tableStyle;
     }
+
+    public Table(int x, int y, int width, int height, Color selectionColor) {
+        super(x, y, width, height, selectionColor);
+
+        this.tableStyle = new TableStyle(ThemeManager.getDefaultTableStyle());
+        this.setStyle(this.tableStyle);
+
+        this.tableStyle.setSelectionColor(this.listStyle.getSelectionColor());
+        this.tableStyle.setBackgroundColor(this.listStyle.getBackgroundColor());
+        this.tableStyle.setTextColor(this.listStyle.getTextColor());
+        this.tableStyle.setTextHoverColor(this.listStyle.getTextHoverColor());
+    }
+
 
     @Override
     public void render(PoseStack stack) {
@@ -36,7 +46,7 @@ public final class Table extends ScrollableList {
         super.render(stack);
 
         // Render fixed header
-        if (isHeaderFixed && headerRow != null) {
+        if (headerRow != null) {
             headerRow.setTopPos(this.getTopPos());
             headerRow.renderWithoutTooltips(stack);
         }
@@ -47,27 +57,27 @@ public final class Table extends ScrollableList {
 
     private void renderAllTooltips(PoseStack stack) {
         // Header tooltips have priority
-        if (isHeaderFixed && headerRow != null && headerRow.isMouseOver()) {
+        if (headerRow != null && headerRow.isMouseOver()) {
             headerRow.renderTooltips(stack);
             return;
         }
 
         // Render tooltips from visible rows
         for (Button button : getVisibleButtons()) {
-            if (button instanceof TableRow row) {
+            if (button instanceof TableRow row && row.isMouseOver()) {
                 // Skip tooltip rendering for rows that are overlapped by fixed header
-                if (isHeaderFixed && headerRow != null && isRowOverlappedByHeader(row)) {
+                if (headerRow != null && isRowOverlappedByHeader(row)) {
                     continue;
                 }
 
                 row.renderTooltips(stack);
+                break;
             }
         }
     }
 
-    // Helper method to check if a row is overlapped by the fixed header
     private boolean isRowOverlappedByHeader(TableRow row) {
-        if (!isHeaderFixed || headerRow == null) return false;
+        if (headerRow == null) return false;
 
         int headerBottom = headerRow.getTopPos() + headerRow.getHeight();
         int rowTop = row.getTopPos();
@@ -81,7 +91,7 @@ public final class Table extends ScrollableList {
 
         super.update(x, y);
 
-        if (isHeaderFixed && headerRow != null) {
+        if (headerRow != null) {
             headerRow.update(x, y);
         }
     }
@@ -90,15 +100,11 @@ public final class Table extends ScrollableList {
     public void onClick(int mouseButton) {
         if (isHidden() || !isMouseOver() || !isEnabled()) return;
 
-        if (isHeaderFixed && headerRow != null && headerRow.isMouseOver()) {
+        if (headerRow != null && headerRow.isMouseOver()) {
             return;
         }
 
         super.onClick(mouseButton);
-
-        if (headerRow != null) {
-            headerRow.getStyle().setBackgroundColor(headerBackgroundColor);
-        }
     }
 
     @Override
@@ -129,24 +135,17 @@ public final class Table extends ScrollableList {
         return new ArrayList<>();
     }
 
-    public void addHeader(List<String> headers, int textColor) {
-        addHeader(headers, this.getStyle().getBackgroundColor(), textColor, true, true);
+    public void addHeader(List<String> headers) {
+        addHeader(headers, true);
     }
 
-    public void addHeader(List<String> headers, int backgroundColor, int textColor) {
-        addHeader(headers, backgroundColor, textColor, true, true);
-    }
-
-    public void addHeader(List<String> headers, int backgroundColor, int textColor, boolean isFixed, boolean renderTooltip) {
-        this.headerBackgroundColor = backgroundColor;
-        this.isHeaderFixed = isFixed;
-
+    public void addHeader(List<String> headers, boolean renderTooltip) {
         this.headerRow = new TableRow(
-                getLeftPos(), getTopPos(), getContentWidth(), headerHeight,
-                new ArrayList<>(headers), textColor, renderTooltip, true
+                getLeftPos(), getTopPos(), getContentWidth(), this.tableStyle.getElementHeight(),
+                new ArrayList<>(headers), renderTooltip, true
         );
 
-        headerRow.getStyle().setBackgroundColor(backgroundColor);
+        headerRow.getStyle().setBackgroundColor(this.listStyle.getSelectionColor());
         headerRow.setHoverable(false);
 
         content.add(0, headerRow);
@@ -154,29 +153,21 @@ public final class Table extends ScrollableList {
         layoutButtons();
     }
 
-    public void addRow(List<String> rowData, int textColor, boolean renderTooltip) {
+    public void addRow(List<String> rowData, boolean renderTooltip) {
         TableRow row = new TableRow(
-                getLeftPos(), calculateRowPosition(content.size()), getContentWidth(), elementHeight,
-                new ArrayList<>(rowData), textColor, renderTooltip, false
+                getLeftPos(), calculateRowPosition(content.size()), getContentWidth(), this.listStyle.getElementHeight(),
+                new ArrayList<>(rowData), renderTooltip, false
         );
 
-        row.getStyle().setHoverBackgroundColor(selectedColor);
+        row.getStyle().setHoverBackgroundColor(this.listStyle.getSelectionColor());
 
         content.add(row);
         scrollbar.updateContentSize(content.size());
         layoutButtons();
     }
 
-    public void addRow(List<String> rowData, int textColor) {
-        addRow(rowData, textColor, true);
-    }
-
-    public void addRow(ArrayList<String> rowData, int textColor, boolean renderTooltip) {
-        addRow((List<String>) rowData, textColor, renderTooltip);
-    }
-
-    public void addRow(ArrayList<String> rowData, int textColor) {
-        addRow((List<String>) rowData, textColor);
+    public void addRow(List<String> rowData) {
+        addRow(rowData, true);
     }
 
     public List<List<String>> getTableData() {
@@ -211,7 +202,6 @@ public final class Table extends ScrollableList {
     public void clear() {
         super.clear();
         headerRow = null;
-        isHeaderFixed = false;
     }
 
     private boolean hasHeader() {
@@ -219,37 +209,38 @@ public final class Table extends ScrollableList {
     }
 
     private int getContentWidth() {
-        return getWidth() - (needsScrolling() ? GuiPresets.SCROLLBAR_TRACK_WIDTH : 0);
+        return getWidth() - (needsScrolling() ? this.scrollbar.getWidth() : 0);
     }
 
     private int calculateRowPosition(int rowIndex) {
         int basePosition = getTopPos();
-        if (isHeaderFixed && hasHeader()) {
-            basePosition += headerHeight;
+        if (hasHeader()) {
+            basePosition += this.tableStyle.getElementHeight();
         }
-        return basePosition + rowIndex * elementHeight;
+        return basePosition + rowIndex * this.listStyle.getElementHeight();
     }
 
     private boolean needsScrolling() {
         int availableHeight = getHeight();
-        if (isHeaderFixed && hasHeader()) {
-            availableHeight -= headerHeight;
+        if (hasHeader()) {
+            availableHeight -= this.tableStyle.getElementHeight();
         }
-        return content.size() * elementHeight > availableHeight;
+        return content.size() * this.listStyle.getElementHeight() > availableHeight;
     }
 
     // ================================
     // INNER CLASS: TableRow
     // ================================
-
     public final class TableRow extends Button {
+        private final List<CenteredText> columnTexts = new ArrayList<>();
+        private final List<Tooltip> columnTooltips = new ArrayList<>();
+
         private final View columnView = new View();
         private final List<String> columnData;
         private final boolean isHeader;
         private int[] columnWidths;
 
-        public TableRow(int x, int y, int width, int height, List<String> columnData,
-                        int textColor, boolean renderTooltip, boolean isHeader) {
+        public TableRow(int x, int y, int width, int height, List<String> columnData, boolean renderTooltip, boolean isHeader) {
             super(x, y, width, height, "", null, null, ButtonType.TEXT_FIELD);
 
             this.columnData = new ArrayList<>(columnData);
@@ -257,11 +248,14 @@ public final class Table extends ScrollableList {
             this.noBorder();
 
             if (!isHeader) {
-                this.getStyle().setHoverBackgroundColor(selectedColor);
+                this.setHoverable(true);
+                this.getStyle().setHoverBackgroundColor(listStyle.getSelectionColor());
+            } else {
+                this.setHoverable(false);
             }
 
             calculateColumnWidths();
-            buildColumns(textColor, renderTooltip);
+            buildColumns(renderTooltip);
         }
 
         @Override
@@ -282,9 +276,14 @@ public final class Table extends ScrollableList {
         }
 
         public void renderTooltips(PoseStack poseStack) {
-            for (Widget widget : columnView.getWidgets()) {
-                if (widget instanceof Tooltip) {
-                    widget.render(poseStack);
+            for (int i = 0; i < columnTexts.size(); i++) {
+                CenteredText columnText = columnTexts.get(i);
+                if (columnText.isMouseOver() && i < columnTooltips.size()) {
+                    Tooltip tooltip = columnTooltips.get(i);
+                    if (tooltip != null) {
+                        tooltip.render(poseStack);
+                    }
+                    break;
                 }
             }
         }
@@ -292,6 +291,17 @@ public final class Table extends ScrollableList {
         @Override
         public void update(int x, int y) {
             super.update(x, y);
+
+            if (!isHeader) {
+                for (CenteredText textWidget : columnTexts) {
+                    if (this.isMouseOver()) {
+                        textWidget.getStyle().setTextColor(this.getStyle().getTextHoverColor());
+                    } else {
+                        textWidget.getStyle().setTextColor(this.getStyle().getTextColor());
+                    }
+                }
+            }
+
             columnView.update(x, y);
         }
 
@@ -313,7 +323,7 @@ public final class Table extends ScrollableList {
         public void setWidth(int width) {
             super.setWidth(width);
             calculateColumnWidths();
-            buildColumns(Color.WHITE, true);
+            buildColumns(true);
         }
 
         private void updateWidgetPositions(int deltaX, int deltaY) {
@@ -334,8 +344,10 @@ public final class Table extends ScrollableList {
             Arrays.fill(columnWidths, baseWidth);
         }
 
-        private void buildColumns(int textColor, boolean renderTooltip) {
+        private void buildColumns(boolean renderTooltip) {
             columnView.clear();
+            columnTexts.clear();
+            columnTooltips.clear();
 
             if (columnData.isEmpty()) return;
 
@@ -345,28 +357,42 @@ public final class Table extends ScrollableList {
                 String text = columnData.get(i);
                 int columnWidth = columnWidths[i];
 
-                // Create text widget
                 Rectangle textRect = new Rectangle(
-                        currentX + DEFAULT_PADDING, getTopPos(),
-                        columnWidth - 2 * DEFAULT_PADDING, getHeight()
+                        currentX + tableStyle.getPadding(), getTopPos(),
+                        columnWidth - 2 * tableStyle.getPadding(), getHeight()
                 );
+
+                Color textColor = this.getStyle().getTextColor();
+                Color hoverTextColor = this.getStyle().getTextHoverColor();
 
                 CenteredText columnText = new CenteredText(
-                        textRect, text, GuiPresets.TABLE_COLUMN_FONT_SIZE,
-                        textRect.width, textColor, selectedColor, -1
+                        textRect, text, listStyle.getFontSize(),
+                        textRect.width, textColor,
+                        tableStyle.getSelectionColor(), null
                 );
+
+                if (!isHeader) {
+                    columnText.setHoverable(true);
+                    columnText.getStyle().setTextHoverColor(hoverTextColor);
+                } else {
+                    columnText.setHoverable(false);
+                }
+
                 columnView.addWidget(columnText);
+                columnTexts.add(columnText);
 
                 // Add tooltip
+                Tooltip cellTooltip = null;
                 if (renderTooltip && !text.trim().isEmpty()) {
-                    Tooltip cellTooltip = new Tooltip(text, columnText);
+                    cellTooltip = new Tooltip(text, columnText);
                     columnView.addWidget(cellTooltip);
                 }
+                columnTooltips.add(cellTooltip);
 
                 // Add column separator
                 if (i < columnData.size() - 1) {
                     VerticalLine separator = new VerticalLine(
-                            currentX + columnWidth - 1, getTopPos(), 1, getHeight(), Color.WHITE
+                            currentX + columnWidth - 1, getTopPos(), 1, getHeight(), tableStyle.getBorderColor()
                     );
                     columnView.addWidget(separator);
                 }

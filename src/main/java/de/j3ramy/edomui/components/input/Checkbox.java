@@ -39,7 +39,7 @@ public final class Checkbox extends Button {
         int labelX = x + this.getWidth() + this.checkboxStyle.getLabelLeftMargin();
         java.awt.Rectangle labelArea = new java.awt.Rectangle(labelX, y, GuiPresets.MAX_TEXT_LENGTH, height);
         this.label = new VerticalCenteredText(labelArea, labelX, title, this.checkboxStyle.getFontSize(),
-                this.checkboxStyle.getTextColor());
+                this.checkboxStyle.getTextColor(), this.checkboxStyle.getTextHoverColor(), this.checkboxStyle.getTextDisabledColor());
     }
 
     public Checkbox(int x, int y, int width, int height, String title) {
@@ -63,20 +63,13 @@ public final class Checkbox extends Button {
         int boxY = getTopPos();
         int boxSize = getWidth();
 
-        AbstractContainerScreen.fill(
-                poseStack,
-                boxX, boxY,
-                boxX + boxSize, boxY + boxSize,
-                isMouseOver() ? this.getStyle().getHoverBackgroundColor() : this.getStyle().getBackgroundColor()
-        );
-
         if (checked) {
             int checkMargin = this.checkboxStyle.getCheckMargin();
             AbstractContainerScreen.fill(
                     poseStack,
                     boxX + checkMargin, boxY + checkMargin,
                     boxX + boxSize - checkMargin, boxY + boxSize - checkMargin,
-                   this.checkboxStyle.getCheckColor()
+                   this.checkboxStyle.getCheckColor().getRGB()
             );
         }
 

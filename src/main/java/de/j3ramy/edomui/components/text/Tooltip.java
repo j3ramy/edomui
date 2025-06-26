@@ -1,10 +1,10 @@
 package de.j3ramy.edomui.components.text;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.j3ramy.edomui.util.style.GuiPresets;
+import de.j3ramy.edomui.theme.text.TooltipStyle;
 import de.j3ramy.edomui.components.Widget;
-import de.j3ramy.edomui.enums.FontSize;
 import de.j3ramy.edomui.theme.ThemeManager;
+import de.j3ramy.edomui.util.style.GuiPresets;
 import de.j3ramy.edomui.util.style.GuiUtils;
 import net.minecraft.client.Minecraft;
 
@@ -13,24 +13,21 @@ import java.util.List;
 
 public final class Tooltip extends Widget {
     private final Widget target;
-    private final int maxWidth;
     private final String text;
-    private final FontSize fontSize;
+    private final TooltipStyle tooltipStyle;
 
     private String[] wrappedLines;
 
     public Tooltip(String text, Widget target) {
-        this(text, target, 200);
-    }
-
-    public Tooltip(String text, Widget target, int maxWidth) {
-        super(target.getLeftPos(), target.getTopPos(), maxWidth, 20);
+        super(target.getLeftPos(), target.getTopPos(), 0, 0);
         this.target = target;
-        this.maxWidth = maxWidth;
         this.text = text;
-        this.fontSize = FontSize.S;
 
-        this.getStyle().setBackgroundColor(GuiPresets.TOOLTIP_BACKGROUND);
+        this.tooltipStyle = new TooltipStyle(ThemeManager.getDefaultTooltipStyle());
+        this.setStyle(tooltipStyle);
+
+        this.setWidth(this.tooltipStyle.getMinWidth());
+        this.setHeight(this.tooltipStyle.getMinHeight());
 
         calculateSize();
         setHidden(true);
@@ -50,19 +47,19 @@ public final class Tooltip extends Widget {
 
     private void calculateSize() {
         Minecraft minecraft = Minecraft.getInstance();
-        float fontScale = GuiUtils.getFontScale(this.fontSize);
+        float fontScale = GuiUtils.getFontScale(this.tooltipStyle.getFontSize());
 
         // Check if text fits in one line
         int singleLineWidth = (int)(minecraft.font.width(text) * fontScale);
-        int padding = 3;
+        int padding = this.tooltipStyle.getPadding();
 
-        if (singleLineWidth + padding <= maxWidth) {
+        if (singleLineWidth + padding <= this.tooltipStyle.getMaxWidth()) {
             // Single line - use exact width needed
             this.wrappedLines = new String[]{text};
-            this.setWidth(Math.max(25, singleLineWidth + 2 * padding));
+            this.setWidth(Math.max(this.tooltipStyle.getMinWidth(), singleLineWidth + 2 * padding));
         } else {
             // Multi-line - wrap text
-            this.wrappedLines = wrapText(text, maxWidth -  2 * padding);
+            this.wrappedLines = wrapText(text, this.tooltipStyle.getMaxWidth() -  2 * padding);
 
             // Calculate actual width needed for wrapped text
             int maxLineWidth = 0;
@@ -70,12 +67,12 @@ public final class Tooltip extends Widget {
                 int lineWidth = (int)(minecraft.font.width(line) * fontScale);
                 maxLineWidth = Math.max(maxLineWidth, lineWidth);
             }
-            this.setWidth(Math.max(25, maxLineWidth + 2 * padding));
+            this.setWidth(Math.max(this.tooltipStyle.getMinWidth(), maxLineWidth + 2 * padding));
         }
 
         // Calculate height
-        int lineHeight = (int)(7 * fontScale);
-        int lineSpacing = 5;
+        int lineHeight = (int)(GuiPresets.LETTER_HEIGHT * fontScale);
+        int lineSpacing = this.tooltipStyle.getLineSpacing();
 
         int totalHeight;
         if (wrappedLines.length == 1) {
@@ -93,7 +90,7 @@ public final class Tooltip extends Widget {
 
     private String[] wrapText(String text, int maxWidth) {
         Minecraft minecraft = Minecraft.getInstance();
-        float fontScale = GuiUtils.getFontScale(this.fontSize);
+        float fontScale = GuiUtils.getFontScale(this.tooltipStyle.getFontSize());
 
         String[] words = text.split(" ");
         List<String> lines = new ArrayList<>();
@@ -160,14 +157,14 @@ public final class Tooltip extends Widget {
         if (wrappedLines == null || wrappedLines.length == 0) return;
 
         Minecraft minecraft = Minecraft.getInstance();
-        float fontScale = GuiUtils.getFontScale(this.fontSize);
+        float fontScale = GuiUtils.getFontScale(this.tooltipStyle.getFontSize());
 
-        int padding = 3;
+        int padding = this.tooltipStyle.getPadding();
         int x = this.getLeftPos() + padding;
         int y = this.getTopPos() + padding;
 
-        int lineHeight = (int)(7 * fontScale);
-        int lineSpacing = 5;
+        int lineHeight = (int)(GuiPresets.LETTER_HEIGHT * fontScale);
+        int lineSpacing = this.tooltipStyle.getLineSpacing();
 
         for (int i = 0; i < wrappedLines.length; i++) {
             String line = wrappedLines[i];
@@ -179,7 +176,7 @@ public final class Tooltip extends Widget {
             int scaledX = (int)(x / fontScale);
             int scaledY = (int)(lineY / fontScale);
 
-            minecraft.font.draw(poseStack, line, scaledX, scaledY, GuiPresets.TOOLTIP_TEXT);
+            minecraft.font.draw(poseStack, line, scaledX, scaledY, this.tooltipStyle.getTextColor().getRGB());
             poseStack.popPose();
         }
     }

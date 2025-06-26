@@ -53,7 +53,7 @@ public final class ProgressBar extends Widget {
 
         int barEndX = getLeftPos() + (int) (isBarLagging ? progressPixelStop : progressPixels);
         AbstractContainerScreen.fill(poseStack, getLeftPos(), getTopPos(), barEndX, getTopPos() + getHeight(),
-                this.progressBarStyle.getBarColor());
+                this.progressBarStyle.getBarColor().getRGB());
     }
 
     @Override

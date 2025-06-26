@@ -3,7 +3,6 @@ package de.j3ramy.edomui.components.button;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.enums.ButtonType;
-import de.j3ramy.edomui.enums.FontSize;
 import de.j3ramy.edomui.interfaces.IAction;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;

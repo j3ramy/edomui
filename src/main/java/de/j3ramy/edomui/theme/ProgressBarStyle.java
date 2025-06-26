@@ -1,16 +1,17 @@
 package de.j3ramy.edomui.theme;
 
-import de.j3ramy.edomui.util.style.Color;
 import de.j3ramy.edomui.util.style.WidgetStyle;
 
-public class ProgressBarStyle extends WidgetStyle {
-    private int barColor = Color.BLUE;
+import java.awt.*;
 
-    public int getBarColor() {
+public class ProgressBarStyle extends WidgetStyle {
+    private Color barColor = Color.BLUE;
+
+    public Color getBarColor() {
         return barColor;
     }
 
-    public void setBarColor(int barColor) {
+    public void setBarColor(Color barColor) {
         this.barColor = barColor;
     }
 

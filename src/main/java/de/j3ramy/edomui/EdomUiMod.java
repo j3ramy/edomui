@@ -1,9 +1,6 @@
 package de.j3ramy.edomui;
 
 import com.mojang.logging.LogUtils;
-import de.j3ramy.edomui.theme.ThemeManager;
-import de.j3ramy.edomui.util.style.Color;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -30,7 +27,5 @@ public class EdomUiMod
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-        ThemeManager.getDefaultButtonStyle().setBackgroundColor(Color.RED);
-        ThemeManager.getDefaultButtonStyle().setTextColor(Color.GREEN);
     }
 }

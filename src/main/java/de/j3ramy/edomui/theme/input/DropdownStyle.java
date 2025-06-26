@@ -2,7 +2,7 @@ package de.j3ramy.edomui.theme.input;
 
 import de.j3ramy.edomui.util.style.WidgetStyle;
 
-public class DropdownStyle extends InputStyle {
+public class DropdownStyle extends TextFieldStyle {
     private int maxVisibleElements = 4;
     private int optionHeight = 13;
 

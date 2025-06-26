@@ -9,15 +9,14 @@ import java.awt.*;
 
 public final class Line extends Widget {
     private final Point startPoint;
-    private final int color, lineWidth;
     private final float lineLength, rotationAngleInDeg;
 
-    public Line(Point start, Point end, int lineWidth, int color) {
+    public Line(Point start, Point end, int lineWidth, Color color) {
         super(0, 0, 0, 0);
 
         this.startPoint = start;
-        this.lineWidth = Math.abs(lineWidth);
-        this.color = color;
+        this.getStyle().setBorderWidth(lineWidth);
+        this.getStyle().setBackgroundColor(color);
 
         int deltaX = end.x - start.x;
         int deltaY = start.y - end.y;
@@ -26,7 +25,7 @@ public final class Line extends Widget {
         this.rotationAngleInDeg = - (float) Math.toDegrees(Math.atan2(deltaY, deltaX));
     }
 
-    public Line(int x1, int y1, int x2, int y2, int lineWidth, int color) {
+    public Line(int x1, int y1, int x2, int y2, int lineWidth, Color color) {
         this(new Point(x1, y1), new Point(x2, y2), lineWidth, color);
     }
 
@@ -38,8 +37,9 @@ public final class Line extends Widget {
         poseStack.translate(startPoint.x, startPoint.y, 0);
         poseStack.mulPose(Vector3f.ZP.rotationDegrees(rotationAngleInDeg));
 
-        int yOffset = -(lineWidth / 2);
-        AbstractContainerScreen.fill(poseStack, 0, yOffset, (int) lineLength, yOffset + lineWidth, color);
+        int yOffset = -(this.getStyle().getBorderWidth() / 2);
+        AbstractContainerScreen.fill(poseStack, 0, yOffset, (int) lineLength, yOffset + this.getStyle().getBorderWidth(),
+                this.getStyle().getBackgroundColor().getRGB());
 
         poseStack.popPose();
     }

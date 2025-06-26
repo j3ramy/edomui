@@ -193,7 +193,7 @@ public class TextArea extends Widget {
                 int y1 = getTopPos() + this.textAreaStyle.getPadding() + (row - scrollOffset) * lineHeight;
                 int y2 = y1 + (int)(7 * fontScale); // Only cover the actual text height
 
-                AbstractContainerScreen.fill(poseStack, x1, y1, x2, y2, this.textAreaStyle.getSelectionColor());
+                AbstractContainerScreen.fill(poseStack, x1, y1, x2, y2, this.textAreaStyle.getSelectionColor().getRGB());
             }
         }
     }
@@ -214,7 +214,7 @@ public class TextArea extends Widget {
         // Scale cursor width with font size
         int cursorWidth = Math.max(1, (int)(fontScale));
 
-        AbstractContainerScreen.fill(poseStack, x, y1, x + cursorWidth, y2, this.textAreaStyle.getTextColor());
+        AbstractContainerScreen.fill(poseStack, x, y1, x + cursorWidth, y2, this.textAreaStyle.getTextColor().getRGB());
     }
 
     // ================================
@@ -351,9 +351,6 @@ public class TextArea extends Widget {
 
     @Override
     public void onScroll(double delta) {
-        System.out.println(isMouseOver());
-        System.out.println(needsScrolling());
-        System.out.println("----------");
         if (!isMouseOver() || !needsScrolling()) return;
 
         isManuallyScrolling = true;
@@ -720,7 +717,8 @@ public class TextArea extends Widget {
         float fontScale = GuiUtils.getFontScale(this.textAreaStyle.getFontSize());
         float scaledPixelX = pixelX / fontScale;
 
-        Text tempText = new Text(0, 0, line, this.textAreaStyle.getFontSize());
+        Text tempText = new Text(0, 0, line, this.textAreaStyle.getFontSize(), this.textAreaStyle.getTextColor(),
+                this.textAreaStyle.getTextHoverColor(), this.textAreaStyle.getTextDisabledColor());
         return tempText.getCharIndexFromPixel((int)scaledPixelX);
     }
 

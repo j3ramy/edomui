@@ -100,24 +100,20 @@ public abstract class Widget implements IWidget {
 
     protected void renderBorder(PoseStack poseStack) {
         WidgetState state = getCurrentState();
-        int color = style.getBorderColorForState(state);
+        Color color = style.getBorderColorForState(state);
         int bw = style.getBorderWidth();
         this.fill(poseStack,
                 leftPos - bw, topPos - bw,
-                leftPos + width + bw, topPos + height + bw,
-                color);
+                leftPos + width + bw, topPos + height + bw, color);
     }
 
     public void renderBackground(PoseStack poseStack) {
         WidgetState state = getCurrentState();
-        int color = style.getBackgroundColorForState(state);
-        this.fill(poseStack,
-                leftPos, topPos,
-                leftPos + width, topPos + height,
-                color);
+        Color color = style.getBackgroundColorForState(state);
+        this.fill(poseStack, leftPos, topPos, leftPos + width, topPos + height, color);
     }
 
-    private void fill(PoseStack stack, int left, int top, int right, int bottom, int color) {
-        AbstractContainerScreen.fill(stack, left, top, right, bottom, color);
+    private void fill(PoseStack stack, int left, int top, int right, int bottom, Color color) {
+        AbstractContainerScreen.fill(stack, left, top, right, bottom, color.getRGB());
     }
 }

@@ -88,7 +88,7 @@ public class TextField extends Button {
 
         this.title = this.createTitle(ButtonType.TEXT_FIELD, placeholder, this.textFieldStyle.getPadding());
 
-        this.getTitle().setTextColor(this.textFieldStyle.getPlaceholderColor());
+        this.getTitle().getStyle().setTextColor(this.textFieldStyle.getPlaceholderColor());
         this.getTitle().setHidden(false);
         this.getTitle().setLeftPos(x + this.textFieldStyle.getPadding());
     }
@@ -131,7 +131,7 @@ public class TextField extends Button {
 
             AbstractContainerScreen.fill(poseStack, left, getTopPos() + padding,
                     right, getTopPos() + getHeight() - padding,
-                    this.textFieldStyle.getSelectionColor());
+                    this.textFieldStyle.getSelectionColor().getRGB());
         }
 
         visibleText.render(poseStack);
@@ -139,7 +139,7 @@ public class TextField extends Button {
         if (focused && caretVisible) {
             int caretX = getCaretRenderX();
             AbstractContainerScreen.fill(poseStack, caretX, getTopPos() + padding,
-                    caretX + 1, getTopPos() + getHeight() - padding, this.textFieldStyle.getTextColor());
+                    caretX + 1, getTopPos() + getHeight() - padding, this.textFieldStyle.getTextColor().getRGB());
         }
     }
 
@@ -338,7 +338,7 @@ public class TextField extends Button {
 
         boolean isEmpty = text.isEmpty();
         getTitle().setHidden(!isEmpty);
-        getTitle().setTextColor(isEmpty ? this.textFieldStyle.getPlaceholderColor() : visibleText.getTextColor());
+        getTitle().getStyle().setTextColor(isEmpty ? this.textFieldStyle.getPlaceholderColor() : this.textFieldStyle.getTextColor());
     }
 
     private void moveCaret(int delta, boolean shift) {

@@ -1,18 +1,19 @@
 package de.j3ramy.edomui.theme.chart;
 
-import de.j3ramy.edomui.util.style.Color;
 import de.j3ramy.edomui.util.style.WidgetStyle;
+
+import java.awt.*;
 
 public class LineChartStyle extends ChartStyle {
     private int dataPointRadius = 2;
     private int lineThickness = 1;
-    private int lineColor = Color.BLACK;
+    private Color lineColor = Color.BLACK;
 
     public int getDataPointRadius() {
         return dataPointRadius;
     }
 
-    public int getLineColor() {
+    public Color getLineColor() {
         return lineColor;
     }
 
@@ -24,7 +25,7 @@ public class LineChartStyle extends ChartStyle {
         this.dataPointRadius = dataPointRadius;
     }
 
-    public void setLineColor(int lineColor) {
+    public void setLineColor(Color lineColor) {
         this.lineColor = lineColor;
     }
 

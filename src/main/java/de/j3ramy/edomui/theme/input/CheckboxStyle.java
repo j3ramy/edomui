@@ -1,19 +1,20 @@
 package de.j3ramy.edomui.theme.input;
 
 import de.j3ramy.edomui.theme.ButtonStyle;
-import de.j3ramy.edomui.util.style.Color;
 import de.j3ramy.edomui.util.style.WidgetStyle;
+
+import java.awt.*;
 
 public class CheckboxStyle extends ButtonStyle {
    private int checkMargin = 2;
    private int labelLeftMargin = 5;
-   private int checkColor = Color.WHITE;
+   private Color checkColor = Color.WHITE;
 
     public int getCheckMargin() {
         return checkMargin;
     }
 
-    public int getCheckColor() {
+    public Color getCheckColor() {
         return checkColor;
     }
 
@@ -25,7 +26,7 @@ public class CheckboxStyle extends ButtonStyle {
         this.checkMargin = checkMargin;
     }
 
-    public void setCheckColor(int checkColor) {
+    public void setCheckColor(Color checkColor) {
         this.checkColor = checkColor;
     }
 

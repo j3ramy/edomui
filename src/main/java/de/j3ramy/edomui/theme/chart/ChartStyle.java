@@ -1,13 +1,14 @@
 package de.j3ramy.edomui.theme.chart;
 
 import de.j3ramy.edomui.enums.FontSize;
-import de.j3ramy.edomui.util.style.Color;
 import de.j3ramy.edomui.util.style.WidgetStyle;
+
+import java.awt.*;
 
 public abstract class ChartStyle extends WidgetStyle {
     private int xAxisLabelOffset = 5;
     private int yAxisLabelOffset = -15;
-    private int labelColor = Color.BLACK;
+    private Color labelColor = Color.BLACK;
     private FontSize fontSize = FontSize.XS;
 
     public int getXAxisLabelOffset() {
@@ -18,7 +19,7 @@ public abstract class ChartStyle extends WidgetStyle {
         return yAxisLabelOffset;
     }
 
-    public int getLabelColor() {
+    public Color getLabelColor() {
         return labelColor;
     }
 
@@ -34,7 +35,7 @@ public abstract class ChartStyle extends WidgetStyle {
         this.yAxisLabelOffset = yAxisLabelOffset;
     }
 
-    public void setLabelColor(int labelColor) {
+    public void setLabelColor(Color labelColor) {
         this.labelColor = labelColor;
     }
 

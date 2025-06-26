@@ -6,13 +6,15 @@ import de.j3ramy.edomui.components.presentation.contextmenu.DynamicContextMenuBu
 import de.j3ramy.edomui.enums.ButtonType;
 import de.j3ramy.edomui.interfaces.ContextMenuProvider;
 import de.j3ramy.edomui.interfaces.IAction;
-import de.j3ramy.edomui.util.style.Color;
-import de.j3ramy.edomui.util.style.GuiPresets;
 import de.j3ramy.edomui.components.basic.VerticalScrollbar;
 import de.j3ramy.edomui.components.Widget;
 import de.j3ramy.edomui.components.button.Button;
+import de.j3ramy.edomui.theme.ScrollableListStyle;
+import de.j3ramy.edomui.theme.ThemeManager;
+import de.j3ramy.edomui.util.style.GuiUtils;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.function.Function;
@@ -21,7 +23,7 @@ import java.util.function.Predicate;
 public class ScrollableList extends Widget {
     private final int maxVisibleListElements;
 
-    protected final int selectedColor;
+    protected final ScrollableListStyle listStyle;
     protected final VerticalScrollbar scrollbar;
     protected final ArrayList<Button> content = new ArrayList<>();
 
@@ -29,7 +31,6 @@ public class ScrollableList extends Widget {
     protected ContextMenuProvider contextMenuProvider;
     protected int selectedIndex = -1;
     protected int scrollIndex = 0;
-    protected int elementHeight;
 
     private DynamicContextMenuBuilder menuBuilder;
     private boolean dynamicMenuEnabled = false;
@@ -42,18 +43,27 @@ public class ScrollableList extends Widget {
         return scrollbar;
     }
 
-    public ScrollableList(int x, int y, int width, int height, int elementHeight, int selectedColor) {
-        super(x, y, width, height);
-        this.elementHeight = elementHeight;
-        this.selectedColor = selectedColor == -1 ? this.getStyle().getBackgroundColor() : selectedColor;
-        this.maxVisibleListElements = elementHeight > 0 ? height / elementHeight : 0;
-
-        this.scrollbar = new VerticalScrollbar(this, 0, maxVisibleListElements);
-        this.getStyle().setBorderColor(Color.BLACK);
+    @Override
+    public ScrollableListStyle getStyle() {
+        return this.listStyle;
     }
 
-    public ScrollableList(int x, int y, int width, int height, int elementHeight) {
-        this(x, y, width, height, elementHeight, -1);
+    public ScrollableList(int x, int y, int width, int height, Color selectionColor) {
+        super(x, y, width, height);
+
+        this.listStyle = new ScrollableListStyle(ThemeManager.getDefaultScrollableListStyle());
+        this.setStyle(this.listStyle);
+
+        if(selectionColor != null){
+            this.listStyle.setSelectionColor(selectionColor);
+        }
+
+        this.maxVisibleListElements = this.listStyle.getElementHeight() > 0 ? height / this.listStyle.getElementHeight() : 0;
+        this.scrollbar = new VerticalScrollbar(this, 0, maxVisibleListElements);
+    }
+
+    public ScrollableList(int x, int y, int width, int height) {
+        this(x, y, width, height, null);
     }
 
     @Override
@@ -63,9 +73,11 @@ public class ScrollableList extends Widget {
 
         if (needsScrolling()) scrollbar.render(stack);
 
-        for (Button b : getVisibleButtons()) b.render(stack);
+        for (Button b : getVisibleButtons()) {
+            b.render(stack);
+        }
 
-        if (contextMenu != null && contextMenu.isVisible()) {
+        if (contextMenu != null && !contextMenu.isHidden()) {
             contextMenu.render(stack);
         }
     }
@@ -75,13 +87,16 @@ public class ScrollableList extends Widget {
         if (isHidden()) return;
         super.update(x, y);
 
-        if (contextMenu != null && contextMenu.isVisible()) {
+        if (contextMenu != null && !contextMenu.isHidden()) {
             if (needsScrolling()) scrollbar.update(x, y);
             contextMenu.update(x, y);
             return;
         }
 
-        for (Button b : getVisibleButtons()) b.update(x, y);
+        for (Button b : getVisibleButtons()) {
+            b.update(x, y);
+        }
+
         if (needsScrolling()) scrollbar.update(x, y);
     }
 
@@ -89,7 +104,7 @@ public class ScrollableList extends Widget {
     public void onClick(int mouseButton) {
         if (isHidden() || !isMouseOver()) return;
 
-        if (contextMenu != null && contextMenu.isVisible()) {
+        if (contextMenu != null && !contextMenu.isHidden()) {
             if (contextMenu.isMouseOver()) {
                 contextMenu.onClick(mouseButton);
                 return;
@@ -114,6 +129,7 @@ public class ScrollableList extends Widget {
         boolean clicked = false;
         for (int i = 0; i < getVisibleButtons().size(); i++) {
             Button b = getVisibleButtons().get(i);
+
             if (b.isMouseOver()) {
                 int elementIndex = scrollIndex + i;
 
@@ -137,7 +153,7 @@ public class ScrollableList extends Widget {
     }
 
     public ScrollableList enableDynamicContextMenu() {
-        this.contextMenu = new ContextMenu(this.elementHeight, this.selectedColor);
+        this.contextMenu = new ContextMenu(this.listStyle.getSelectionColor());
         this.menuBuilder = DynamicContextMenuBuilder.create();
         this.dynamicMenuEnabled = true;
         return this;
@@ -192,7 +208,7 @@ public class ScrollableList extends Widget {
 
     public void setContextMenuProvider(ContextMenuProvider provider) {
         if (contextMenu == null) {
-            this.contextMenu = new ContextMenu(this.elementHeight, this.selectedColor);
+            this.contextMenu = new ContextMenu(this.listStyle.getSelectionColor());
         }
         this.contextMenuProvider = provider;
         this.dynamicMenuEnabled = false;
@@ -227,14 +243,15 @@ public class ScrollableList extends Widget {
     }
 
     public void addElement(String title, @Nullable IAction clickAction) {
-        Button button = new Button(getLeftPos(), getTopPos() + content.size() * elementHeight,
-                getWidth() - GuiPresets.SCROLLBAR_TRACK_WIDTH - 2 * GuiPresets.INPUT_LABEL_LEFT_MARGIN, elementHeight, title,
-                clickAction, null, ButtonType.TEXT_FIELD);
+        Button button = new Button(getLeftPos(), getTopPos() + content.size() * this.listStyle.getElementHeight(),
+            getWidth() - this.scrollbar.getStyle().getScrollbarTrackWidth() - 2 * this.listStyle.getPadding(), this.listStyle.getElementHeight(), title,
+            clickAction, ButtonType.TEXT_FIELD, this.listStyle.getPadding());
 
         button.noBorder();
-        button.getStyle().setBackgroundColor(this.getStyle().getBackgroundColor());
-        button.getStyle().setHoverBackgroundColor(selectedColor);
-        button.getTitle().setTextColor(Color.DARK_GRAY);
+        button.getStyle().setBackgroundColor(this.listStyle.getBackgroundColor());
+        button.getStyle().setHoverBackgroundColor(this.listStyle.getSelectionColor());
+        button.getTitle().getStyle().setTextColor(this.listStyle.getTextColor());
+        button.getTitle().getStyle().setTextHoverColor(GuiUtils.getContrastColor(button.getStyle().getHoverBackgroundColor()));
 
         if (button.getTitle().isTruncated()) {
             button.enableTooltip();
@@ -346,8 +363,7 @@ public class ScrollableList extends Widget {
         selectedIndex = index;
 
         Button b = content.get(index);
-        b.getStyle().setBackgroundColor(selectedColor);
-        b.getTitle().setTextColor(Color.WHITE);
+        b.getStyle().setBackgroundColor(this.listStyle.getSelectionColor());
 
         ensureVisible(index);
     }
@@ -365,10 +381,11 @@ public class ScrollableList extends Widget {
     protected void layoutButtons() {
         for (int i = 0; i < content.size(); i++) {
             Button b = content.get(i);
+
             b.setLeftPos(getLeftPos());
-            b.setWidth(getWidth() - GuiPresets.SCROLLBAR_TRACK_WIDTH);
-            b.setTopPos(getTopPos() + (i - scrollIndex) * elementHeight);
-            b.setHeight(elementHeight);
+            b.setWidth(getWidth() - this.scrollbar.getStyle().getScrollbarTrackWidth());
+            b.setTopPos(getTopPos() + (i - scrollIndex) * this.listStyle.getElementHeight());
+            b.setHeight(this.listStyle.getElementHeight());
         }
     }
 
