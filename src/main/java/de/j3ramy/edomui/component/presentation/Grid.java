@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.component.Widget;
 import de.j3ramy.edomui.component.basic.VerticalScrollbar;
 import de.j3ramy.edomui.component.button.Button;
-import de.j3ramy.edomui.component.button.SpriteImageButton;
 import de.j3ramy.edomui.component.presentation.contextmenu.ContextMenu;
 import de.j3ramy.edomui.component.presentation.contextmenu.DynamicContextMenuBuilder;
 import de.j3ramy.edomui.enums.ButtonType;
@@ -12,7 +11,6 @@ import de.j3ramy.edomui.interfaces.IContextMenuProvider;
 import de.j3ramy.edomui.interfaces.IAction;
 import de.j3ramy.edomui.theme.presentation.GridStyle;
 import de.j3ramy.edomui.theme.ThemeManager;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -411,35 +409,6 @@ public final class Grid extends Widget {
         this.add(label, backgroundColor, backgroundColor, leftClickAction);
     }
 
-    public void add(ResourceLocation resourceLocation, int textureX, int textureY, int textureWidth, int textureHeight,
-                    IAction leftClickAction, Color backgroundColor) {
-
-        SpriteImageButton imageButton = new SpriteImageButton(0, 0, config.cellWidth, config.cellHeight, textureX, textureY, textureWidth, textureHeight,
-                resourceLocation, leftClickAction
-        );
-
-        imageButton.getStyle().setBackgroundColor(backgroundColor);
-        imageButton.getStyle().setHoverBackgroundColor(this.gridStyle.getHoverBackgroundColor());
-        imageButton.noBorder();
-
-        addButton(imageButton);
-    }
-
-    @Nullable
-    public Cell getHoveredCellInfo() {
-        Button hoveredButton = getHoveredCell();
-        if (hoveredButton == null) return null;
-
-        String label;
-        if (hoveredButton instanceof SpriteImageButton) {
-            label = hoveredButton.getTooltip() != null ? hoveredButton.getTooltip().getText() : "";
-        } else {
-            label = hoveredButton.getTitle().getString().toString();
-        }
-
-        return new Cell(label, hoveredButton);
-    }
-
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
@@ -616,24 +585,6 @@ public final class Grid extends Widget {
         void reset() {
             start = 0;
             end = maxVisibleRows - 1;
-        }
-    }
-
-    public static class Cell {
-        private final String label;
-        private final Button button;
-
-        public Cell(String label, Button button) {
-            this.label = label;
-            this.button = button;
-        }
-
-        public String getLabel() {
-            return label;
-        }
-
-        public Button getButton() {
-            return button;
         }
     }
 }
