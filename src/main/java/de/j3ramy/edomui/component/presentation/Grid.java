@@ -619,5 +619,21 @@ public final class Grid extends Widget {
         }
     }
 
-    public record Cell(String label, Button button) { }
+    public static class Cell {
+        private final String label;
+        private final Button button;
+
+        public Cell(String label, Button button) {
+            this.label = label;
+            this.button = button;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public Button getButton() {
+            return button;
+        }
+    }
 }
