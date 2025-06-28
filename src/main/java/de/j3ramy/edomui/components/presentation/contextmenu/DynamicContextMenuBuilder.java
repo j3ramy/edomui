@@ -1,6 +1,6 @@
 package de.j3ramy.edomui.components.presentation.contextmenu;
 
-import de.j3ramy.edomui.interfaces.ContextMenuProvider;
+import de.j3ramy.edomui.interfaces.IContextMenuProvider;
 import de.j3ramy.edomui.interfaces.IAction;
 
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public class DynamicContextMenuBuilder {
                 .addActionIf("Down", () -> moveDownFunction.apply(-1).execute(), index -> true);
     }
 
-    public ContextMenuProvider build() {
+    public IContextMenuProvider build() {
         return (menu, elementIndex, elementTitle) -> {
             for (ContextActionProvider provider : actionProviders) {
                 List<ContextAction> actions = provider.getActions(elementIndex, elementTitle, null);

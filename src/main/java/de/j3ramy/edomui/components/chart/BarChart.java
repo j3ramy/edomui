@@ -32,6 +32,62 @@ public final class BarChart extends Widget {
         this.setStyle(barChartStyle);
     }
 
+    @Override
+    public BarChartStyle getStyle() {
+        return this.barChartStyle;
+    }
+
+
+    @Override
+    public void render(PoseStack poseStack) {
+        if (isHidden()) return;
+        super.render(poseStack);
+        view.render(poseStack);
+    }
+
+    @Override
+    public void update(int x, int y) {
+        if (isHidden()) return;
+        super.update(x, y);
+        view.update(x, y);
+    }
+
+    private float getYAxisScale() {
+        return (float) getHeight() / (yAxisMax - yAxisMin);
+    }
+
+    private void addYAxisLabels() {
+        float yScale = getYAxisScale();
+        float tickSpacing = (yAxisMax - yAxisMin) / (float) numberOfTicks;
+
+        for (int i = 0; i <= numberOfTicks; i++) {
+            int yValue = yAxisMin + Math.round(tickSpacing * i);
+            int y = getTopPos() + getHeight() - Math.round((yValue - yAxisMin) * yScale);
+
+            view.addWidget(new Text(getLeftPos() + this.barChartStyle.getYAxisLabelOffset(), y - 1, String.valueOf(yValue),
+                    this.barChartStyle.getFontSize(), this.barChartStyle.getLabelColor()));
+
+            if (i > 0 && i < numberOfTicks) {
+                view.addWidget(new HorizontalLine(getLeftPos(), y, getWidth(), 1, this.barChartStyle.getBorderColor()));
+            }
+        }
+    }
+
+    private void addXAxisLabels(int barWidth) {
+        int xSpacing = barWidth + this.barChartStyle.getBarSpacing();
+
+        for (int i = 0; i < dataPoints.size(); i++) {
+            DataPoint point = dataPoints.get(i);
+            int x = getLeftPos() + i * xSpacing;
+            Text tempText = new Text(0, 0, point.getXLabel(), this.barChartStyle.getFontSize(), this.barChartStyle.getLabelColor());
+            int textWidth = tempText.getWidth();
+            int textX = x + (barWidth - textWidth) / 2;
+            int y = getTopPos() + getHeight() + this.barChartStyle.getXAxisLabelOffset();
+
+            view.addWidget(new Text(textX, y, point.getXLabel(), this.barChartStyle.getFontSize(), this.barChartStyle.getLabelColor()));
+        }
+    }
+
     public void clear() {
         this.dataPoints.clear();
         this.view.clear();
@@ -40,11 +96,6 @@ public final class BarChart extends Widget {
     public void addDataPoints(List<DataPoint> dataPoints) {
         this.dataPoints = new ArrayList<>(dataPoints);
         refresh();
-    }
-
-    @Override
-    public BarChartStyle getStyle() {
-        return this.barChartStyle;
     }
 
     public void refresh() {
@@ -93,55 +144,5 @@ public final class BarChart extends Widget {
 
     public void setTooltipSuffix(String tooltipSuffix) {
         this.tooltipSuffix = tooltipSuffix;
-    }
-
-    private float getYAxisScale() {
-        return (float) getHeight() / (yAxisMax - yAxisMin);
-    }
-
-    @Override
-    public void render(PoseStack poseStack) {
-        if (isHidden()) return;
-        super.render(poseStack);
-        view.render(poseStack);
-    }
-
-    @Override
-    public void update(int x, int y) {
-        if (isHidden()) return;
-        super.update(x, y);
-        view.update(x, y);
-    }
-
-    private void addYAxisLabels() {
-        float yScale = getYAxisScale();
-        float tickSpacing = (yAxisMax - yAxisMin) / (float) numberOfTicks;
-
-        for (int i = 0; i <= numberOfTicks; i++) {
-            int yValue = yAxisMin + Math.round(tickSpacing * i);
-            int y = getTopPos() + getHeight() - Math.round((yValue - yAxisMin) * yScale);
-
-            view.addWidget(new Text(getLeftPos() + this.barChartStyle.getYAxisLabelOffset(), y - 1, String.valueOf(yValue),
-                    this.barChartStyle.getFontSize(), this.barChartStyle.getLabelColor()));
-
-            if (i > 0 && i < numberOfTicks) {
-                view.addWidget(new HorizontalLine(getLeftPos(), y, getWidth(), 1, this.barChartStyle.getBorderColor()));
-            }
-        }
-    }
-
-    private void addXAxisLabels(int barWidth) {
-        int xSpacing = barWidth + this.barChartStyle.getBarSpacing();
-
-        for (int i = 0; i < dataPoints.size(); i++) {
-            DataPoint point = dataPoints.get(i);
-            int x = getLeftPos() + i * xSpacing;
-            Text tempText = new Text(0, 0, point.getXLabel(), this.barChartStyle.getFontSize(), this.barChartStyle.getLabelColor());
-            int textWidth = tempText.getWidth();
-            int textX = x + (barWidth - textWidth) / 2;
-            int y = getTopPos() + getHeight() + this.barChartStyle.getXAxisLabelOffset();
-
-            view.addWidget(new Text(textX, y, point.getXLabel(), this.barChartStyle.getFontSize(), this.barChartStyle.getLabelColor()));
-        }
     }
 }

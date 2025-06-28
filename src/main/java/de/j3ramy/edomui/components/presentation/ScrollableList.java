@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.components.presentation.contextmenu.ContextMenu;
 import de.j3ramy.edomui.components.presentation.contextmenu.DynamicContextMenuBuilder;
 import de.j3ramy.edomui.enums.ButtonType;
-import de.j3ramy.edomui.interfaces.ContextMenuProvider;
+import de.j3ramy.edomui.interfaces.IContextMenuProvider;
 import de.j3ramy.edomui.interfaces.IAction;
 import de.j3ramy.edomui.components.basic.VerticalScrollbar;
 import de.j3ramy.edomui.components.Widget;
@@ -27,26 +27,13 @@ public class ScrollableList extends Widget {
     protected final VerticalScrollbar scrollbar;
     protected final ArrayList<Button> content = new ArrayList<>();
 
-    protected ContextMenu contextMenu;
-    protected ContextMenuProvider contextMenuProvider;
-    protected int selectedIndex = -1;
-    protected int scrollIndex = 0;
-
     private DynamicContextMenuBuilder menuBuilder;
     private boolean dynamicMenuEnabled = false;
 
-    public ContextMenu getContextMenu() {
-        return contextMenu;
-    }
-
-    public VerticalScrollbar getScrollbar() {
-        return scrollbar;
-    }
-
-    @Override
-    public ScrollableListStyle getStyle() {
-        return this.listStyle;
-    }
+    protected ContextMenu contextMenu;
+    protected IContextMenuProvider IContextMenuProvider;
+    protected int selectedIndex = -1;
+    protected int scrollIndex = 0;
 
     public ScrollableList(int x, int y, int width, int height, Color selectionColor) {
         super(x, y, width, height);
@@ -152,6 +139,81 @@ public class ScrollableList extends Widget {
         }
     }
 
+    @Override
+    public void onScroll(double delta) {
+        if (!isMouseOver() || !needsScrolling()) return;
+
+        int maxScroll = Math.max(0, content.size() - maxVisibleListElements);
+        scrollIndex += delta < 0 ? 1 : -1;
+        scrollIndex = Math.max(0, Math.min(scrollIndex, maxScroll));
+        scrollbar.updateScrollIndex(scrollIndex);
+        layoutButtons();
+    }
+
+    @Override
+    public ScrollableListStyle getStyle() {
+        return this.listStyle;
+    }
+
+    private void updateContextMenuProvider() {
+        if (menuBuilder != null && dynamicMenuEnabled) {
+            this.IContextMenuProvider = menuBuilder.build();
+        }
+    }
+
+    private void showContextMenu(int elementIndex) {
+        if(this.contextMenu == null)
+            return;
+
+        contextMenu.clear();
+        IContextMenuProvider.populateContextMenu(contextMenu, elementIndex,
+                content.get(elementIndex).getTitle().getString().toString());
+
+        contextMenu.show(this.getMousePosition().x, this.getMousePosition().y);
+    }
+
+    private void selectIndex(int index) {
+        if (index < 0 || index >= content.size()) return;
+
+        unselect();
+        selectedIndex = index;
+
+        Button b = content.get(index);
+        b.getStyle().setBackgroundColor(this.listStyle.getSelectionColor());
+
+        ensureVisible(index);
+    }
+
+    private void ensureVisible(int index) {
+        if (index < scrollIndex) scrollIndex = index;
+        else if (index >= scrollIndex + maxVisibleListElements)
+            scrollIndex = index - maxVisibleListElements + 1;
+
+        scrollIndex = Math.max(0, Math.min(scrollIndex, content.size() - maxVisibleListElements));
+        scrollbar.updateScrollIndex(scrollIndex);
+        layoutButtons();
+    }
+
+    private boolean needsScrolling() {
+        return content.size() > maxVisibleListElements;
+    }
+
+    protected void layoutButtons() {
+        for (int i = 0; i < content.size(); i++) {
+            Button b = content.get(i);
+
+            b.setLeftPos(getLeftPos());
+            b.setWidth(getWidth() - this.scrollbar.getStyle().getScrollbarTrackWidth());
+            b.setTopPos(getTopPos() + (i - scrollIndex) * this.listStyle.getElementHeight());
+            b.setHeight(this.listStyle.getElementHeight());
+        }
+    }
+
+    protected ArrayList<Button> getVisibleButtons() {
+        int end = Math.min(content.size(), scrollIndex + maxVisibleListElements);
+        return new ArrayList<>(content.subList(scrollIndex, end));
+    }
+
     public ScrollableList enableDynamicContextMenu() {
         this.contextMenu = new ContextMenu(this.listStyle.getSelectionColor());
         this.menuBuilder = DynamicContextMenuBuilder.create();
@@ -206,40 +268,12 @@ public class ScrollableList extends Widget {
         return menuBuilder;
     }
 
-    public void setContextMenuProvider(ContextMenuProvider provider) {
+    public void setContextMenuProvider(IContextMenuProvider provider) {
         if (contextMenu == null) {
             this.contextMenu = new ContextMenu(this.listStyle.getSelectionColor());
         }
-        this.contextMenuProvider = provider;
+        this.IContextMenuProvider = provider;
         this.dynamicMenuEnabled = false;
-    }
-
-    private void updateContextMenuProvider() {
-        if (menuBuilder != null && dynamicMenuEnabled) {
-            this.contextMenuProvider = menuBuilder.build();
-        }
-    }
-
-    private void showContextMenu(int elementIndex) {
-        if(this.contextMenu == null)
-            return;
-
-        contextMenu.clear();
-        contextMenuProvider.populateContextMenu(contextMenu, elementIndex,
-                content.get(elementIndex).getTitle().getString().toString());
-
-        contextMenu.show(this.getMousePosition().x, this.getMousePosition().y);
-    }
-
-    @Override
-    public void onScroll(double delta) {
-        if (!isMouseOver() || !needsScrolling()) return;
-
-        int maxScroll = Math.max(0, content.size() - maxVisibleListElements);
-        scrollIndex += delta < 0 ? 1 : -1;
-        scrollIndex = Math.max(0, Math.min(scrollIndex, maxScroll));
-        scrollbar.updateScrollIndex(scrollIndex);
-        layoutButtons();
     }
 
     public void addElement(String title, @Nullable IAction clickAction) {
@@ -356,45 +390,11 @@ public class ScrollableList extends Widget {
         return content;
     }
 
-    private void selectIndex(int index) {
-        if (index < 0 || index >= content.size()) return;
-
-        unselect();
-        selectedIndex = index;
-
-        Button b = content.get(index);
-        b.getStyle().setBackgroundColor(this.listStyle.getSelectionColor());
-
-        ensureVisible(index);
+    public ContextMenu getContextMenu() {
+        return contextMenu;
     }
 
-    private void ensureVisible(int index) {
-        if (index < scrollIndex) scrollIndex = index;
-        else if (index >= scrollIndex + maxVisibleListElements)
-            scrollIndex = index - maxVisibleListElements + 1;
-
-        scrollIndex = Math.max(0, Math.min(scrollIndex, content.size() - maxVisibleListElements));
-        scrollbar.updateScrollIndex(scrollIndex);
-        layoutButtons();
-    }
-
-    protected void layoutButtons() {
-        for (int i = 0; i < content.size(); i++) {
-            Button b = content.get(i);
-
-            b.setLeftPos(getLeftPos());
-            b.setWidth(getWidth() - this.scrollbar.getStyle().getScrollbarTrackWidth());
-            b.setTopPos(getTopPos() + (i - scrollIndex) * this.listStyle.getElementHeight());
-            b.setHeight(this.listStyle.getElementHeight());
-        }
-    }
-
-    protected ArrayList<Button> getVisibleButtons() {
-        int end = Math.min(content.size(), scrollIndex + maxVisibleListElements);
-        return new ArrayList<>(content.subList(scrollIndex, end));
-    }
-
-    private boolean needsScrolling() {
-        return content.size() > maxVisibleListElements;
+    public VerticalScrollbar getScrollbar() {
+        return scrollbar;
     }
 }

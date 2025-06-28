@@ -9,7 +9,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import javax.annotation.Nullable;
 
 public final class PasswordField extends TextField {
-
     public PasswordField(int x, int y, int width, int height, String placeholderText, @Nullable IValueAction onTextChangeAction,
                          @Nullable IValueAction onPressEnterAction) {
         super(x, y, width, height, placeholderText, onTextChangeAction, onPressEnterAction);

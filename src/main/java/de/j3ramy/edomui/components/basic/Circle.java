@@ -24,10 +24,7 @@ public final class Circle extends Widget {
             return;
         }
 
-        AbstractContainerScreen.fill(poseStack, this.getLeftPos(),
-                this.getTopPos(),
-                this.getLeftPos() + this.getWidth(),
-                this.getTopPos() + this.getHeight(),
-                this.getStyle().getBackgroundColor().getRGB());
+        AbstractContainerScreen.fill(poseStack, this.getLeftPos(), this.getTopPos(), this.getLeftPos() + this.getWidth(),
+                this.getTopPos() + this.getHeight(), this.getStyle().getBackgroundColor().getRGB());
     }
 }

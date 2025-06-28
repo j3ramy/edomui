@@ -12,18 +12,6 @@ public final class InputPopUp extends PopUp {
     private final Button cancelButton;
     private final TextField inputField;
 
-    public Button getConfirmButton() {
-        return confirmButton;
-    }
-
-    public Button getCancelButton() {
-        return cancelButton;
-    }
-
-    public TextField getInputField() {
-        return inputField;
-    }
-
     public InputPopUp(View hostView, int xPos, int yPos, String title, String confirmButtonTitle, String cancelButtonTitle,
                       String inputValue, String inputPlaceholder, PopUpType popUpType, IValueAction confirmAction, boolean isPassword) {
         super(0, 0, title, popUpType);
@@ -53,25 +41,16 @@ public final class InputPopUp extends PopUp {
 
         int buttonY = this.getTopPos() + this.getHeight() - this.popUpStyle.getWidgetHeight() - this.popUpStyle.getMargin();
 
-        this.confirmButton = new Button(
-                this.getLeftPos() + this.popUpStyle.getMargin(),
-                buttonY,
-                this.popUpStyle.getButtonWidth(),
-                this.popUpStyle.getWidgetHeight(),
-                confirmButtonTitle,
-                () -> {
+        this.confirmButton = new Button(this.getLeftPos() + this.popUpStyle.getMargin(), buttonY, this.popUpStyle.getButtonWidth(),
+                this.popUpStyle.getWidgetHeight(), confirmButtonTitle, () -> {
                     confirmAction.execute(this.inputField.getText());
                     hostView.getWidgets().remove(this);
                 }
         );
 
         this.cancelButton = new Button(
-                this.getLeftPos() + this.getWidth() - this.popUpStyle.getButtonWidth() - this.popUpStyle.getMargin(),
-                buttonY,
-                this.popUpStyle.getButtonWidth(),
-                this.popUpStyle.getWidgetHeight(),
-                cancelButtonTitle,
-                () -> hostView.getWidgets().remove(this)
+                this.getLeftPos() + this.getWidth() - this.popUpStyle.getButtonWidth() - this.popUpStyle.getMargin(), buttonY, this.popUpStyle.getButtonWidth(),
+                this.popUpStyle.getWidgetHeight(), cancelButtonTitle, () -> hostView.getWidgets().remove(this)
         );
 
         this.view.addWidget(this.confirmButton);
@@ -120,5 +99,17 @@ public final class InputPopUp extends PopUp {
     public void keyPressed(int keyCode) {
         super.keyPressed(keyCode);
         this.view.keyPressed(keyCode);
+    }
+
+    public Button getConfirmButton() {
+        return confirmButton;
+    }
+
+    public Button getCancelButton() {
+        return cancelButton;
+    }
+
+    public TextField getInputField() {
+        return inputField;
     }
 }

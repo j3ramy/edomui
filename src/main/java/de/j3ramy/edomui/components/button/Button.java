@@ -17,23 +17,11 @@ public class Button extends Widget {
     private final IAction rightClickAction;
     private final ButtonStyle buttonStyle;
 
-    private IAction leftClickAction;
-    public Tooltip tooltip;
+    private Tooltip tooltip;
     private boolean tooltipEnabled = false;
 
     protected Text title;
-
-    public Text getTitle() {
-        return title;
-    }
-
-    protected void setLeftClickAction(IAction leftClickAction) {
-        this.leftClickAction = leftClickAction;
-    }
-
-    public boolean isTooltipEnabled() {
-        return tooltipEnabled;
-    }
+    protected IAction leftClickAction;
 
     public Button(int x, int y, int width, int height, String text, IAction leftClickAction, IAction rightClickAction, ButtonType type) {
         super(x, y, width, height);
@@ -66,14 +54,8 @@ public class Button extends Widget {
         int width = this.getWidth();
 
         Text title = switch (type) {
-            case DROPDOWN -> new VerticalCenteredText(
-                    this.toRect(),
-                    left + padding,
-                    text,
-                    this.buttonStyle.getFontSize(),
-                    width - 2 * padding - 20,
-                    this.buttonStyle.getTextColor(),
-                    this.buttonStyle.getTextHoverColor(),
+            case DROPDOWN -> new VerticalCenteredText(this.toRect(), left + padding, text, this.buttonStyle.getFontSize(),
+                    width - 2 * padding - 20, this.buttonStyle.getTextColor(), this.buttonStyle.getTextHoverColor(),
                     this.buttonStyle.getTextDisabledColor()
             ){
                 @Override
@@ -81,14 +63,8 @@ public class Button extends Widget {
                     return Button.this.isMouseOver();
                 }
             };
-            case TEXT_FIELD -> new VerticalCenteredText(
-                    this.toRect(),
-                    left + padding,
-                    text,
-                    this.buttonStyle.getFontSize(),
-                    width - 2 * padding,
-                    this.buttonStyle.getTextColor(),
-                    this.buttonStyle.getTextHoverColor(),
+            case TEXT_FIELD -> new VerticalCenteredText(this.toRect(), left + padding, text, this.buttonStyle.getFontSize(),
+                    width - 2 * padding, this.buttonStyle.getTextColor(), this.buttonStyle.getTextHoverColor(),
                     this.buttonStyle.getTextDisabledColor()
             ){
                 @Override
@@ -102,11 +78,7 @@ public class Button extends Widget {
                 rect.width -= 2 * padding;
                 rect.x += padding;
 
-                yield new CenteredText(rect,
-                        text,
-                        this.buttonStyle.getFontSize(),
-                        this.buttonStyle.getTextColor(),
-                        this.buttonStyle.getTextHoverColor(),
+                yield new CenteredText(rect, text, this.buttonStyle.getFontSize(), this.buttonStyle.getTextColor(), this.buttonStyle.getTextHoverColor(),
                         this.buttonStyle.getTextDisabledColor()
                 ){
                     @Override
@@ -163,14 +135,6 @@ public class Button extends Widget {
         }
     }
 
-    private boolean titleColorsNeedUpdate() {
-        if (this.title == null) return false;
-
-        return !this.title.getStyle().getTextColor().equals(this.buttonStyle.getTextColor()) ||
-                !this.title.getStyle().getTextHoverColor().equals(this.buttonStyle.getTextHoverColor()) ||
-                !this.title.getStyle().getTextDisabledColor().equals(this.buttonStyle.getTextDisabledColor());
-    }
-
     @Override
     public void onClick(int mouseButton) {
         if (!isMouseOver() || !isEnabled()) return;
@@ -210,6 +174,14 @@ public class Button extends Widget {
         super.setTopPos(newTopPos);
     }
 
+    private boolean titleColorsNeedUpdate() {
+        if (this.title == null) return false;
+
+        return !this.title.getStyle().getTextColor().equals(this.buttonStyle.getTextColor()) ||
+                !this.title.getStyle().getTextHoverColor().equals(this.buttonStyle.getTextHoverColor()) ||
+                !this.title.getStyle().getTextDisabledColor().equals(this.buttonStyle.getTextDisabledColor());
+    }
+
     public void setTitle(String text) {
         if(title != null){
             title.setText(text);
@@ -221,5 +193,17 @@ public class Button extends Widget {
             tooltip = new Tooltip(title.getString().toString(), this);
         }
         tooltipEnabled = true;
+    }
+
+    public Text getTitle() {
+        return title;
+    }
+
+    public boolean isTooltipEnabled() {
+        return tooltipEnabled;
+    }
+
+    public Tooltip getTooltip() {
+        return tooltip;
     }
 }

@@ -37,9 +37,81 @@ public final class LineChart extends Widget {
         return this.lineChartStyle;
     }
 
+    @Override
+    public void render(PoseStack poseStack) {
+        if(this.isHidden()){
+            return;
+        }
+
+        super.render(poseStack);
+
+        if (!this.dataPoints.isEmpty()) {
+            this.view.render(poseStack);
+        }
+    }
+
+    @Override
+    public void update(int x, int y) {
+        if(this.isHidden()){
+            return;
+        }
+
+        super.update(x, y);
+
+        if (!this.dataPoints.isEmpty()) {
+            this.view.update(x, y);
+        }
+    }
+
     public void clear(){
         this.dataPoints.clear();
         this.view.clear();
+    }
+
+    private float getYAxisScale() {
+        return (float) getHeight() / (yAxisMax - yAxisMin);
+    }
+
+    private void addYAxisLabels() {
+        float yScale = getYAxisScale();
+        float tickSpacing = (yAxisMax - yAxisMin) / (float) numberOfTicks;
+
+        for (int i = 0; i <= numberOfTicks; i++) {
+            int yValue = yAxisMin + Math.round(tickSpacing * i);
+            int yPosition = getTopPos() + getHeight() - Math.round((yValue - yAxisMin) * yScale);
+
+            this.view.addWidget(new Text(getLeftPos() + this.lineChartStyle.getYAxisLabelOffset(), yPosition - 1, String.valueOf(yValue),
+                   this.lineChartStyle.getFontSize(), this.lineChartStyle.getLabelColor()));
+        }
+    }
+
+    private void addXAxisLabels() {
+        int xSpacing = getWidth() / (this.dataPoints.size() - 1);
+
+        for (int i = 0; i < dataPoints.size(); i++) {
+            DataPoint point = dataPoints.get(i);
+            int xPosition = getLeftPos() + i * xSpacing;
+            int yPosition = getTopPos() + getHeight() + this.lineChartStyle.getXAxisLabelOffset();
+
+            this.view.addWidget(new Text(xPosition - 5, yPosition, point.getXLabel(),
+                    this.lineChartStyle.getFontSize(), this.lineChartStyle.getLabelColor()));
+
+            if(i > 0 && i < this.dataPoints.size() -1){
+                this.view .addWidget(new VerticalLine(xPosition, this.getTopPos(), 1, this.getHeight(),
+                        this.lineChartStyle.getBorderColor()));
+            }
+        }
+    }
+
+    private int getXForIndex(int i) {
+        if (dataPoints.size() < 2) return getLeftPos();
+        int xSpacing = getWidth() / (dataPoints.size() - 1);
+        return getLeftPos() + i * xSpacing;
+    }
+
+    private int getYForValue(int yValue) {
+        float yScale = getYAxisScale();
+        return getTopPos() + getHeight() - Math.round((yValue - yAxisMin) * yScale);
     }
 
     public void addDataPoints(List<DataPoint> dataPoints) {
@@ -97,78 +169,5 @@ public final class LineChart extends Widget {
     public void setNumberOfTicks(int numberOfTicks) {
         this.numberOfTicks = numberOfTicks;
     }
-
-    private float getYAxisScale() {
-        return (float) getHeight() / (yAxisMax - yAxisMin);
-    }
-
-    @Override
-    public void render(PoseStack poseStack) {
-        if(this.isHidden()){
-            return;
-        }
-
-        super.render(poseStack);
-
-        if (!this.dataPoints.isEmpty()) {
-            this.view.render(poseStack);
-        }
-    }
-
-    @Override
-    public void update(int x, int y) {
-        if(this.isHidden()){
-            return;
-        }
-
-        super.update(x, y);
-
-        if (!this.dataPoints.isEmpty()) {
-            this.view.update(x, y);
-        }
-    }
-
-    private void addYAxisLabels() {
-        float yScale = getYAxisScale();
-        float tickSpacing = (yAxisMax - yAxisMin) / (float) numberOfTicks;
-
-        for (int i = 0; i <= numberOfTicks; i++) {
-            int yValue = yAxisMin + Math.round(tickSpacing * i);
-            int yPosition = getTopPos() + getHeight() - Math.round((yValue - yAxisMin) * yScale);
-
-            this.view.addWidget(new Text(getLeftPos() + this.lineChartStyle.getYAxisLabelOffset(), yPosition - 1, String.valueOf(yValue),
-                   this.lineChartStyle.getFontSize(), this.lineChartStyle.getLabelColor()));
-        }
-    }
-
-    private void addXAxisLabels() {
-        int xSpacing = getWidth() / (this.dataPoints.size() - 1);
-
-        for (int i = 0; i < dataPoints.size(); i++) {
-            DataPoint point = dataPoints.get(i);
-            int xPosition = getLeftPos() + i * xSpacing;
-            int yPosition = getTopPos() + getHeight() + this.lineChartStyle.getXAxisLabelOffset();
-
-            this.view.addWidget(new Text(xPosition - 5, yPosition, point.getXLabel(),
-                    this.lineChartStyle.getFontSize(), this.lineChartStyle.getLabelColor()));
-
-            if(i > 0 && i < this.dataPoints.size() -1){
-                this.view .addWidget(new VerticalLine(xPosition, this.getTopPos(), 1, this.getHeight(),
-                        this.lineChartStyle.getBorderColor()));
-            }
-        }
-    }
-
-    private int getXForIndex(int i) {
-        if (dataPoints.size() < 2) return getLeftPos();
-        int xSpacing = getWidth() / (dataPoints.size() - 1);
-        return getLeftPos() + i * xSpacing;
-    }
-
-    private int getYForValue(int yValue) {
-        float yScale = getYAxisScale();
-        return getTopPos() + getHeight() - Math.round((yValue - yAxisMin) * yScale);
-    }
-
 }
 

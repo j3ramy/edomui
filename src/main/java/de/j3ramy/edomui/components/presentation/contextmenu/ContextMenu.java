@@ -14,11 +14,6 @@ public class ContextMenu extends ScrollableList {
 
     private int targetX, targetY;
 
-    @Override
-    public ContextMenuStyle getStyle() {
-        return this.contextMenuStyle;
-    }
-
     public ContextMenu(Color selectedColor) {
         super(0, 0, 0, 0, selectedColor);
 
@@ -63,6 +58,35 @@ public class ContextMenu extends ScrollableList {
         hide();
     }
 
+    @Override
+    public ContextMenuStyle getStyle() {
+        return this.contextMenuStyle;
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+        updateSize();
+    }
+
+    private void updatePosition() {
+        setLeftPos(targetX);
+        setTopPos(targetY);
+        updateSize();
+        layoutButtons();
+    }
+
+    private void updateSize() {
+        int menuHeight = content.size() * this.listStyle.getElementHeight();
+        setHeight(menuHeight);
+
+        int maxWidth = content.stream()
+                .mapToInt(b -> b.getTitle().getWidth())
+                .max()
+                .orElse(this.contextMenuStyle.getMinWidth());
+        setWidth(Math.max(this.contextMenuStyle.getMinWidth(), maxWidth + 40));
+    }
+
     public void show(int x, int y) {
         this.targetX = x;
         this.targetY = y;
@@ -92,29 +116,5 @@ public class ContextMenu extends ScrollableList {
 
     public void addMenuItem(String title, IAction action) {
         addMenuItem(title, action, true);
-    }
-
-    private void updatePosition() {
-        setLeftPos(targetX);
-        setTopPos(targetY);
-        updateSize();
-        layoutButtons();
-    }
-
-    private void updateSize() {
-        int menuHeight = content.size() * this.listStyle.getElementHeight();
-        setHeight(menuHeight);
-
-        int maxWidth = content.stream()
-                .mapToInt(b -> b.getTitle().getWidth())
-                .max()
-                .orElse(this.contextMenuStyle.getMinWidth());
-        setWidth(Math.max(this.contextMenuStyle.getMinWidth(), maxWidth + 40));
-    }
-
-    @Override
-    public void clear() {
-        super.clear();
-        updateSize();
     }
 }

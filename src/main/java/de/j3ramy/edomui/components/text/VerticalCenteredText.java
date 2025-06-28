@@ -5,7 +5,6 @@ import de.j3ramy.edomui.enums.FontSize;
 import java.awt.*;
 
 public class VerticalCenteredText extends Text {
-
     public VerticalCenteredText(java.awt.Rectangle area, int xPos, String text, FontSize fontSize, int maxTextLength, Color color, Color hoverColor, Color disabledColor){
         super(xPos, 0, text, fontSize, maxTextLength, color, hoverColor, disabledColor);
         this.centerVertically(area);

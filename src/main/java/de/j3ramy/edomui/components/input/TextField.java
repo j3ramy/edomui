@@ -18,58 +18,23 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class TextField extends Button {
-    protected final VerticalCenteredText visibleText;
-    protected final TextFieldStyle textFieldStyle;
-
-    protected final StringBuilder text = new StringBuilder();
     private final Set<Character> forbiddenCharacters = new HashSet<>();
     private final IValueAction onTextChangeAction, onPressEnterAction;
     private final String placeholder;
+
+    protected final VerticalCenteredText visibleText;
+    protected final TextFieldStyle textFieldStyle;
+    protected final StringBuilder text = new StringBuilder();
 
     protected boolean focused = false;
     protected int caretTickCounter = 0;
     protected long lastClickTime = 0;
     protected int lastClickCaretChar = -1;
     protected int clickCount = 0;
-
     protected int selectionStart = -1;
     protected boolean caretVisible = true, touched;
     protected int caretCharPos = 0;
     protected int scrollOffset = 0;
-
-    public void setForbiddenCharacters(Set<Character> characters) {
-        this.forbiddenCharacters.clear();
-        this.forbiddenCharacters.addAll(characters);
-    }
-
-    public String getText() {
-        return text.toString();
-    }
-
-    public void setText(String newText) {
-        text.setLength(0);
-        text.append(newText);
-        caretCharPos = newText.length();
-        selectionStart = -1;
-
-        if (newText.isEmpty()) {
-            getTitle().setText(placeholder);
-        }
-
-        updateVisibleText();
-    }
-
-    public boolean isFocused() {
-        return focused;
-    }
-
-    public boolean isTouched() {
-        return touched;
-    }
-
-    public void setFocused() {
-        this.focused = true;
-    }
 
     public TextField(int x, int y, int width, int height, String placeholder, @Nullable IValueAction onTextChange,
                      @Nullable IValueAction onEnter) {
@@ -237,25 +202,6 @@ public class TextField extends Button {
         }
     }
 
-    public boolean isEmpty(){
-        return this.text.isEmpty();
-    }
-
-    public void addForbiddenCharacter(char c) {
-        this.forbiddenCharacters.add(c);
-    }
-
-    public void addForbiddenCharacters(char[] chars) {
-        for (char c : chars) {
-            this.forbiddenCharacters.add(c);
-        }
-    }
-
-    public void clear() {
-        setText("");
-        this.getTitle().setText(this.placeholder);
-    }
-
     protected int getCaretRenderX() {
         String textBeforeCaret = text.substring(scrollOffset, caretCharPos);
         float scale = GuiUtils.getFontScale(this.textFieldStyle.getFontSize());
@@ -341,25 +287,6 @@ public class TextField extends Button {
         getTitle().getStyle().setTextColor(isEmpty ? this.textFieldStyle.getPlaceholderColor() : this.textFieldStyle.getTextColor());
     }
 
-    private void moveCaret(int delta, boolean shift) {
-        if (shift && selectionStart == -1) selectionStart = caretCharPos;
-        if (!shift) selectionStart = -1;
-
-        caretCharPos = Math.max(0, Math.min(text.length(), caretCharPos + delta));
-    }
-
-    private void moveCaretToStart(boolean shift) {
-        if (shift) selectionStart = caretCharPos;
-        else selectionStart = -1;
-        caretCharPos = 0;
-    }
-
-    private void moveCaretToEnd(boolean shift) {
-        if (shift) selectionStart = caretCharPos;
-        else selectionStart = -1;
-        caretCharPos = text.length();
-    }
-
     protected void deleteSelectionIfNeeded() {
         if (selectionStart != -1 && caretCharPos != selectionStart) {
             int from = Math.min(caretCharPos, selectionStart);
@@ -373,20 +300,6 @@ public class TextField extends Button {
     protected void selectAll() {
         caretCharPos = text.length();
         selectionStart = 0;
-    }
-
-    private void copy() {
-        if (selectionStart != -1 && caretCharPos != selectionStart) {
-            int from = Math.min(caretCharPos, selectionStart);
-            int to = Math.max(caretCharPos, selectionStart);
-            Minecraft.getInstance().keyboardHandler.setClipboard(text.substring(from, to));
-        }
-    }
-
-    private void cut() {
-        copy();
-        deleteSelectionIfNeeded();
-        triggerTextChanged();
     }
 
     protected void triggerTextChanged() {
@@ -413,5 +326,91 @@ public class TextField extends Button {
 
         caretCharPos = end;
         selectionStart = start;
+    }
+
+    private void moveCaret(int delta, boolean shift) {
+        if (shift && selectionStart == -1) selectionStart = caretCharPos;
+        if (!shift) selectionStart = -1;
+
+        caretCharPos = Math.max(0, Math.min(text.length(), caretCharPos + delta));
+    }
+
+    private void moveCaretToStart(boolean shift) {
+        if (shift) selectionStart = caretCharPos;
+        else selectionStart = -1;
+        caretCharPos = 0;
+    }
+
+    private void moveCaretToEnd(boolean shift) {
+        if (shift) selectionStart = caretCharPos;
+        else selectionStart = -1;
+        caretCharPos = text.length();
+    }
+
+    private void copy() {
+        if (selectionStart != -1 && caretCharPos != selectionStart) {
+            int from = Math.min(caretCharPos, selectionStart);
+            int to = Math.max(caretCharPos, selectionStart);
+            Minecraft.getInstance().keyboardHandler.setClipboard(text.substring(from, to));
+        }
+    }
+
+    private void cut() {
+        copy();
+        deleteSelectionIfNeeded();
+        triggerTextChanged();
+    }
+
+    public boolean isEmpty(){
+        return this.text.isEmpty();
+    }
+
+    public void addForbiddenCharacter(char c) {
+        this.forbiddenCharacters.add(c);
+    }
+
+    public void addForbiddenCharacters(char[] chars) {
+        for (char c : chars) {
+            this.forbiddenCharacters.add(c);
+        }
+    }
+
+    public void clear() {
+        setText("");
+        this.getTitle().setText(this.placeholder);
+    }
+
+    public void setForbiddenCharacters(Set<Character> characters) {
+        this.forbiddenCharacters.clear();
+        this.forbiddenCharacters.addAll(characters);
+    }
+
+    public String getText() {
+        return text.toString();
+    }
+
+    public void setText(String newText) {
+        text.setLength(0);
+        text.append(newText);
+        caretCharPos = newText.length();
+        selectionStart = -1;
+
+        if (newText.isEmpty()) {
+            getTitle().setText(placeholder);
+        }
+
+        updateVisibleText();
+    }
+
+    public boolean isFocused() {
+        return focused;
+    }
+
+    public boolean isTouched() {
+        return touched;
+    }
+
+    public void setFocused() {
+        this.focused = true;
     }
 }

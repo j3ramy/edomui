@@ -12,6 +12,7 @@ public final class Rectangle extends Widget {
 
     public Rectangle(int x, int y, int width, int height, Color color, boolean showBorder) {
         super(x, y, width, height);
+
         this.getStyle().setBackgroundColor(color);
         if (!showBorder) {
             this.noBorder();

@@ -17,30 +17,6 @@ public class View implements IWidget {
     private boolean isHidden, isUpdating = true;
     private String playerId;
 
-    public CopyOnWriteArrayList<Widget> getWidgets() {
-        return widgets;
-    }
-
-    public boolean isHidden() {
-        return isHidden;
-    }
-
-    public void setHidden(boolean hidden) {
-        isHidden = hidden;
-    }
-
-    public void shouldUpdate(boolean updating) {
-        isUpdating = updating;
-    }
-
-    public void setPlayerId(String playerId) {
-        this.playerId = playerId;
-    }
-
-    public String getPlayerId() {
-        return playerId;
-    }
-
     @Override
     public void update(int mouseX, int mouseY) {
         if (isHidden || !isUpdating) return;
@@ -134,29 +110,6 @@ public class View implements IWidget {
         }
     }
 
-    public void addWidget(Widget widget) {
-        widgets.add(widget);
-    }
-
-    public void removeWidget(Widget widget) {
-        widgets.remove(widget);
-    }
-
-    public void clear() {
-        widgets.clear();
-    }
-
-    public void removeLastWidget() {
-        if (!widgets.isEmpty()) {
-            widgets.remove(widgets.size() - 1);
-        }
-    }
-
-    protected boolean shouldUpdateWidget(Widget widget) {
-        return (widget instanceof Tooltip)
-                || (!widget.isHidden() && widget.isEnabled());
-    }
-
     private void renderNormalWidgets(PoseStack poseStack) {
         for (Widget widget : widgets) {
             if (!widget.isHidden() &&
@@ -198,15 +151,15 @@ public class View implements IWidget {
             if (widget.isHidden()) continue;
 
             if (widget instanceof Button button) {
-                if (button.isTooltipEnabled() && button.tooltip != null && !button.tooltip.isHidden()) {
-                    button.tooltip.render(poseStack);
+                if (button.isTooltipEnabled() && button.getTooltip() != null && !button.getTooltip().isHidden()) {
+                    button.getTooltip().render(poseStack);
                 }
             }
 
             if (widget instanceof ScrollableList list) {
                 for (Button button : list.getContent()) {
-                    if (button.isTooltipEnabled() && button.tooltip != null && !button.tooltip.isHidden()) {
-                        button.tooltip.render(poseStack);
+                    if (button.isTooltipEnabled() && button.getTooltip() != null && !button.getTooltip().isHidden()) {
+                        button.getTooltip().render(poseStack);
                     }
                 }
             }
@@ -221,5 +174,52 @@ public class View implements IWidget {
         if (widgets.remove(widget)) {
             widgets.add(widget);
         }
+    }
+
+    protected boolean shouldUpdateWidget(Widget widget) {
+        return (widget instanceof Tooltip)
+                || (!widget.isHidden() && widget.isEnabled());
+    }
+
+    public void addWidget(Widget widget) {
+        widgets.add(widget);
+    }
+
+    public void removeWidget(Widget widget) {
+        widgets.remove(widget);
+    }
+
+    public void clear() {
+        widgets.clear();
+    }
+
+    public void removeLastWidget() {
+        if (!widgets.isEmpty()) {
+            widgets.remove(widgets.size() - 1);
+        }
+    }
+
+    public CopyOnWriteArrayList<Widget> getWidgets() {
+        return widgets;
+    }
+
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        isHidden = hidden;
+    }
+
+    public void shouldUpdate(boolean updating) {
+        isUpdating = updating;
+    }
+
+    public void setPlayerId(String playerId) {
+        this.playerId = playerId;
+    }
+
+    public String getPlayerId() {
+        return playerId;
     }
 }

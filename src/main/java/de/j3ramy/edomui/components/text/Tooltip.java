@@ -45,6 +45,15 @@ public final class Tooltip extends Widget {
         }
     }
 
+    @Override
+    public void render(PoseStack poseStack) {
+        if (!isHidden()) {
+            super.render(poseStack);
+
+            renderText(poseStack);
+        }
+    }
+
     private void calculateSize() {
         Minecraft minecraft = Minecraft.getInstance();
         float fontScale = GuiUtils.getFontScale(this.tooltipStyle.getFontSize());
@@ -142,15 +151,6 @@ public final class Tooltip extends Widget {
 
         this.setLeftPos(posX);
         this.setTopPos(posY);
-    }
-
-    @Override
-    public void render(PoseStack poseStack) {
-        if (!isHidden()) {
-            super.render(poseStack);
-
-            renderText(poseStack);
-        }
     }
 
     private void renderText(PoseStack poseStack) {

@@ -4,6 +4,7 @@ import de.j3ramy.edomui.enums.CompareOperation;
 import de.j3ramy.edomui.enums.DateFormat;
 import de.j3ramy.edomui.enums.FontSize;
 import de.j3ramy.edomui.enums.TimeFormat;
+import de.j3ramy.edomui.util.style.enums.MinecraftFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -391,8 +392,8 @@ public class GuiUtils {
         return luminance > 0.65 ? Color.BLACK : Color.WHITE;
     }
 
-    public static String getFormatting(Formatting formatting){
-        switch (formatting){
+    public static String getFormatting(MinecraftFormatting minecraftFormatting){
+        switch (minecraftFormatting){
             case BOLD -> {return "§l";}
             case STRIKETHROUGH -> {return "§m";}
             case UNDERLINE -> {return "§n";}
@@ -418,31 +419,5 @@ public class GuiUtils {
             case PREFIX -> {return "§";}
             default -> {return "§r";}
         }
-    }
-
-    public enum Formatting{
-        BOLD,
-        STRIKETHROUGH,
-        UNDERLINE,
-        ITALIC,
-        RESET,
-        BLACK,
-        DARK_BLUE,
-        DARK_GREEN,
-        DARK_AQUA,
-        DARK_RED,
-        DARK_PURPLE,
-        GOLD,
-        GRAY,
-        DARK_GRAY,
-        BLUE,
-        GREEN,
-        AQUA,
-        RED,
-        LIGHT_PURPLE,
-        YELLOW,
-        WHITE,
-
-        PREFIX
     }
 }

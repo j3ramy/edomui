@@ -23,10 +23,6 @@ public final class Dropdown extends Button {
     private ScrollableList menu;
     private String lastSelectedElement = "";
 
-    public ScrollableList getMenu() {
-        return menu;
-    }
-
     public Dropdown(ArrayList<String> options, int x, int y, int width, int height, String placeholder, Color selectedColor, IValueAction onChangeAction) {
         super(x, y, width, height, placeholder, null, ButtonType.DROPDOWN);
 
@@ -150,6 +146,21 @@ public final class Dropdown extends Button {
         super.setLeftPos(leftPos);
     }
 
+    private void renderArrow(PoseStack poseStack, int x, int y, boolean inverted) {
+        Color arrowColor = GuiUtils.getContrastColor(this.dropdownStyle.getBackgroundColor());
+        if (inverted) {
+            AbstractContainerScreen.fill(poseStack, x + 3, y, x + 5, y + 1, arrowColor.getRGB());
+            AbstractContainerScreen.fill(poseStack, x + 2, y + 1, x + 6, y + 2, arrowColor.getRGB());
+            AbstractContainerScreen.fill(poseStack, x + 1, y + 2, x + 7, y + 3, arrowColor.getRGB());
+            AbstractContainerScreen.fill(poseStack, x, y + 3, x + 8, y + 4, arrowColor.getRGB());
+        } else {
+            AbstractContainerScreen.fill(poseStack, x, y, x + 8, y + 1, arrowColor.getRGB());
+            AbstractContainerScreen.fill(poseStack, x + 1, y + 1, x + 7, y + 2, arrowColor.getRGB());
+            AbstractContainerScreen.fill(poseStack, x + 2, y + 2, x + 6, y + 3, arrowColor.getRGB());
+            AbstractContainerScreen.fill(poseStack, x + 3, y + 3, x + 5, y + 4, arrowColor.getRGB());
+        }
+    }
+
     public void setOptions(List<String> options, Color selectedColor) {
         final int elementHeight = this.dropdownStyle.getOptionHeight();
         int listHeight = Math.min(this.dropdownStyle.getMaxVisibleElements(), options.size()) * elementHeight;
@@ -220,18 +231,7 @@ public final class Dropdown extends Button {
         return isUnfolded;
     }
 
-    private void renderArrow(PoseStack poseStack, int x, int y, boolean inverted) {
-        Color arrowColor = GuiUtils.getContrastColor(this.dropdownStyle.getBackgroundColor());
-        if (inverted) {
-            AbstractContainerScreen.fill(poseStack, x + 3, y, x + 5, y + 1, arrowColor.getRGB());
-            AbstractContainerScreen.fill(poseStack, x + 2, y + 1, x + 6, y + 2, arrowColor.getRGB());
-            AbstractContainerScreen.fill(poseStack, x + 1, y + 2, x + 7, y + 3, arrowColor.getRGB());
-            AbstractContainerScreen.fill(poseStack, x, y + 3, x + 8, y + 4, arrowColor.getRGB());
-        } else {
-            AbstractContainerScreen.fill(poseStack, x, y, x + 8, y + 1, arrowColor.getRGB());
-            AbstractContainerScreen.fill(poseStack, x + 1, y + 1, x + 7, y + 2, arrowColor.getRGB());
-            AbstractContainerScreen.fill(poseStack, x + 2, y + 2, x + 6, y + 3, arrowColor.getRGB());
-            AbstractContainerScreen.fill(poseStack, x + 3, y + 3, x + 5, y + 4, arrowColor.getRGB());
-        }
+    public ScrollableList getMenu() {
+        return menu;
     }
 }

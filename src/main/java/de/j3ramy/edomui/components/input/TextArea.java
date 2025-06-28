@@ -25,6 +25,7 @@ public class TextArea extends Widget {
     private final int lineHeight;
     private final int maxVisibleLines;
     private final TextAreaStyle textAreaStyle;
+    private final Set<Character> forbiddenCharacters = new HashSet<>();
 
     // Cursor & Selection
     private int caretRow = 0;
@@ -47,13 +48,8 @@ public class TextArea extends Widget {
 
     // Configuration
     private String placeholder;
-    private final Set<Character> forbiddenCharacters = new HashSet<>();
     private boolean wordWrap = true;
     private boolean touched = false;
-
-    public Text getPlaceholderRenderer() {
-        return placeholderRenderer;
-    }
 
     public TextArea(int x, int y, int width, int height) {
         this(x, y, width, height,"", null);
@@ -247,6 +243,22 @@ public class TextArea extends Widget {
     }
 
     @Override
+    public void onScroll(double delta) {
+        if (!isMouseOver() || !needsScrolling()) return;
+
+        isManuallyScrolling = true;
+
+        int maxScrollOffset = Math.max(0, lines.size() - maxVisibleLines);
+        int newScrollOffset = scrollOffset + (delta < 0 ? 1 : -1);
+        newScrollOffset = Math.max(0, Math.min(newScrollOffset, maxScrollOffset));
+
+        if (newScrollOffset != scrollOffset) {
+            scrollOffset = newScrollOffset;
+            scrollbar.updateScrollIndex(scrollOffset);
+        }
+    }
+
+    @Override
     public void onClick(int mouseButton) {
         if (mouseButton != 0 || !this.isEnabled()) return;
 
@@ -348,22 +360,6 @@ public class TextArea extends Widget {
         }
 
         return new int[]{start, end};
-    }
-
-    @Override
-    public void onScroll(double delta) {
-        if (!isMouseOver() || !needsScrolling()) return;
-
-        isManuallyScrolling = true;
-
-        int maxScrollOffset = Math.max(0, lines.size() - maxVisibleLines);
-        int newScrollOffset = scrollOffset + (delta < 0 ? 1 : -1);
-        newScrollOffset = Math.max(0, Math.min(newScrollOffset, maxScrollOffset));
-
-        if (newScrollOffset != scrollOffset) {
-            scrollOffset = newScrollOffset;
-            scrollbar.updateScrollIndex(scrollOffset);
-        }
     }
 
     // ================================
@@ -744,6 +740,15 @@ public class TextArea extends Widget {
         }
     }
 
+    private boolean needsAutoWrap(String text) {
+        if (!wordWrap) return false;
+
+        int textWidth = getTextWidth(text);
+        int availableWidth = getContentWidth();
+
+        return textWidth > availableWidth;
+    }
+
     // ================================
     // PUBLIC API
     // ================================
@@ -778,15 +783,6 @@ public class TextArea extends Widget {
         scrollOffset = 0;
         updateScrollbarData();
         triggerTextChanged();
-    }
-
-    private boolean needsAutoWrap(String text) {
-        if (!wordWrap) return false;
-
-        int textWidth = getTextWidth(text);
-        int availableWidth = getContentWidth();
-
-        return textWidth > availableWidth;
     }
 
     public void clear() {
@@ -842,5 +838,9 @@ public class TextArea extends Widget {
     @Override
     public TextFieldStyle getStyle() {
         return this.textAreaStyle;
+    }
+
+    public Text getPlaceholderRenderer() {
+        return placeholderRenderer;
     }
 }

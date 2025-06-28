@@ -15,18 +15,6 @@ public final class Checkbox extends Button {
 
     private boolean checked;
 
-    public boolean isChecked() {
-        return checked;
-    }
-
-    public void setChecked(boolean checked) {
-        this.checked = checked;
-    }
-
-    public Text getLabel() {
-        return label;
-    }
-
     public Checkbox(int x, int y, int width, int height, String title, boolean isChecked) {
         super(x, y, width, height, "", null);
 
@@ -34,7 +22,7 @@ public final class Checkbox extends Button {
         this.setStyle(this.checkboxStyle);
 
         this.checked = isChecked;
-        this. setLeftClickAction(() -> this.checked = !this.checked);
+        this.leftClickAction = () -> this.checked = !this.checked;
 
         int labelX = x + this.getWidth() + this.checkboxStyle.getLabelLeftMargin();
         java.awt.Rectangle labelArea = new java.awt.Rectangle(labelX, y, GuiPresets.MAX_TEXT_LENGTH, height);
@@ -65,12 +53,8 @@ public final class Checkbox extends Button {
 
         if (checked) {
             int checkMargin = this.checkboxStyle.getCheckMargin();
-            AbstractContainerScreen.fill(
-                    poseStack,
-                    boxX + checkMargin, boxY + checkMargin,
-                    boxX + boxSize - checkMargin, boxY + boxSize - checkMargin,
-                   this.checkboxStyle.getCheckColor().getRGB()
-            );
+            AbstractContainerScreen.fill(poseStack, boxX + checkMargin, boxY + checkMargin, boxX + boxSize - checkMargin,
+                    boxY + boxSize - checkMargin, this.checkboxStyle.getCheckColor().getRGB());
         }
 
         label.render(poseStack);
@@ -99,5 +83,17 @@ public final class Checkbox extends Button {
     @Override
     public CheckboxStyle getStyle() {
         return this.checkboxStyle;
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
+
+    public Text getLabel() {
+        return label;
     }
 }

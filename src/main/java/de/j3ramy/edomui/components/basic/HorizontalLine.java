@@ -17,12 +17,7 @@ public final class HorizontalLine extends Widget {
     public void render(PoseStack poseStack) {
         if (this.isHidden()) return;
 
-        AbstractContainerScreen.fill(
-                poseStack,
-                getLeftPos(),
-                getTopPos(),
-                getLeftPos() + getWidth(),
-                getTopPos() + getHeight(),
+        AbstractContainerScreen.fill(poseStack, getLeftPos(), getTopPos(), getLeftPos() + getWidth(), getTopPos() + getHeight(),
                 this.getStyle().getBackgroundColor().getRGB()
         );
     }

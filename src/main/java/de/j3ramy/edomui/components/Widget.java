@@ -20,6 +20,65 @@ public abstract class Widget implements IWidget {
     private boolean isHidden;
     private boolean showBackground = true;
 
+    public Widget(int x, int y, int width, int height) {
+        this.leftPos = x;
+        this.topPos = y;
+        this.width = width;
+        this.height = height;
+    }
+
+    @Override
+    public void render(PoseStack poseStack) {
+        if (isHidden || !showBackground) return;
+        renderBorder(poseStack);
+        renderBackground(poseStack);
+    }
+
+    @Override public void update(int x, int y) {
+        if (!isHidden) mousePosition.setLocation(x, y);
+    }
+
+    @Override public void tick() {}
+    @Override public void onClick(int mouseButton) {}
+    @Override public void onMouseDrag(int mouseButton, double newX, double newY, int mouseX, int mouseY) {}
+    @Override public void keyPressed(int keyCode) {}
+    @Override public void charTyped(char codePoint) {}
+    @Override public void onScroll(double delta) {}
+
+    private void fill(PoseStack stack, int left, int top, int right, int bottom, Color color) {
+        AbstractContainerScreen.fill(stack, left, top, right, bottom, color.getRGB());
+    }
+
+    protected void renderBorder(PoseStack poseStack) {
+        WidgetState state = getCurrentState();
+        Color color = style.getBorderColorForState(state);
+        int bw = style.getBorderWidth();
+        this.fill(poseStack, leftPos - bw, topPos - bw, leftPos + width + bw, topPos + height + bw, color);
+    }
+
+    public boolean isMouseOver() {
+        return mousePosition.x >= leftPos && mousePosition.x < leftPos + width &&
+                mousePosition.y >= topPos && mousePosition.y < topPos + height;
+    }
+
+    public Rectangle toRect() {
+        return new Rectangle(leftPos, topPos, width, height);
+    }
+
+    public void noBorder() { style.setBorderWidth(0); }
+
+    public WidgetState getCurrentState() {
+        if (!isEnabled) return WidgetState.DISABLED;
+        if (isHoverable && isMouseOver()) return WidgetState.HOVERED;
+        return WidgetState.NORMAL;
+    }
+
+    public void renderBackground(PoseStack poseStack) {
+        WidgetState state = getCurrentState();
+        Color color = style.getBackgroundColorForState(state);
+        this.fill(poseStack, leftPos, topPos, leftPos + width, topPos + height, color);
+    }
+
     public int getWidth() { return width; }
     public void setWidth(int width) { this.width = width; }
 
@@ -54,66 +113,5 @@ public abstract class Widget implements IWidget {
 
     public void setStyle(WidgetStyle style) {
         this.style = style;
-    }
-
-    public Widget(int x, int y, int width, int height) {
-        this.leftPos = x;
-        this.topPos = y;
-        this.width = width;
-        this.height = height;
-    }
-
-    @Override
-    public void render(PoseStack poseStack) {
-        if (isHidden || !showBackground) return;
-        renderBorder(poseStack);
-        renderBackground(poseStack);
-    }
-
-    @Override public void update(int x, int y) {
-        if (!isHidden) mousePosition.setLocation(x, y);
-    }
-
-    @Override public void tick() {}
-    @Override public void onClick(int mouseButton) {}
-    @Override public void onMouseDrag(int mouseButton, double newX, double newY, int mouseX, int mouseY) {}
-    @Override public void keyPressed(int keyCode) {}
-    @Override public void charTyped(char codePoint) {}
-    @Override public void onScroll(double delta) {}
-
-    public boolean isMouseOver() {
-        return mousePosition.x >= leftPos && mousePosition.x < leftPos + width &&
-                mousePosition.y >= topPos && mousePosition.y < topPos + height;
-    }
-
-    public Rectangle toRect() {
-        return new Rectangle(leftPos, topPos, width, height);
-    }
-
-    public void noBorder() { style.setBorderWidth(0); }
-
-    public WidgetState getCurrentState() {
-        if (!isEnabled) return WidgetState.DISABLED;
-        if (isHoverable && isMouseOver()) return WidgetState.HOVERED;
-        return WidgetState.NORMAL;
-    }
-
-    protected void renderBorder(PoseStack poseStack) {
-        WidgetState state = getCurrentState();
-        Color color = style.getBorderColorForState(state);
-        int bw = style.getBorderWidth();
-        this.fill(poseStack,
-                leftPos - bw, topPos - bw,
-                leftPos + width + bw, topPos + height + bw, color);
-    }
-
-    public void renderBackground(PoseStack poseStack) {
-        WidgetState state = getCurrentState();
-        Color color = style.getBackgroundColorForState(state);
-        this.fill(poseStack, leftPos, topPos, leftPos + width, topPos + height, color);
-    }
-
-    private void fill(PoseStack stack, int left, int top, int right, int bottom, Color color) {
-        AbstractContainerScreen.fill(stack, left, top, right, bottom, color.getRGB());
     }
 }

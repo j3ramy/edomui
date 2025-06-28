@@ -9,22 +9,6 @@ import javax.annotation.Nullable;
 public final class NumberField extends TextField {
     private boolean isFloatInputEnabled, allowNegative;
 
-    public boolean isFloatInput() {
-        return isFloatInputEnabled;
-    }
-
-    public void setFloatInput() {
-        isFloatInputEnabled = true;
-    }
-
-    public boolean isAllowNegative() {
-        return allowNegative;
-    }
-
-    public void allowNegative() {
-        this.allowNegative = true;
-    }
-
     public NumberField(int x, int y, int width, int height, String placeholderText, @Nullable IValueAction onTextChangeAction,
                        @Nullable IValueAction onPressEnterAction){
         super(x, y, width, height, placeholderText, onTextChangeAction, onPressEnterAction);
@@ -78,5 +62,21 @@ public final class NumberField extends TextField {
         if (c.matches("[0-9]")) return true;
         if (c.equals(".") && isFloatInputEnabled) return true;
         return c.equals("-") && allowNegative && this.getText().isEmpty();
+    }
+
+    public boolean isFloatInput() {
+        return isFloatInputEnabled;
+    }
+
+    public void setFloatInput() {
+        isFloatInputEnabled = true;
+    }
+
+    public boolean isAllowNegative() {
+        return allowNegative;
+    }
+
+    public void allowNegative() {
+        this.allowNegative = true;
     }
 }

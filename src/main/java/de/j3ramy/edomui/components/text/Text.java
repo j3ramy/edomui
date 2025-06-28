@@ -20,27 +20,6 @@ public class Text extends Widget {
     private StringBuilder text;
     private boolean truncateLabel = true;
 
-    public void setText(String text) {
-        this.text = new StringBuilder(text != null ? text : "");
-        autoWidth();
-        autoHeight();
-    }
-
-    public StringBuilder getString() {
-        return text;
-    }
-
-    public void setFontSize(FontSize fontSize) {
-        this.textStyle.setFontSize(fontSize);
-        autoWidth();
-        autoHeight();
-    }
-
-    @Override
-    public TextStyle getStyle() {
-        return this.textStyle;
-    }
-
     public Text(int x, int y, String text, FontSize fontSize, int maxTextWidth, Color color, Color hoverColor, Color disabledColor) {
         super(x, y, 0, 0);
         this.textStyle = new TextStyle(ThemeManager.getDefaultTextStyle());
@@ -93,6 +72,26 @@ public class Text extends Widget {
         }
 
         poseStack.popPose();
+    }
+
+    @Override
+    public TextStyle getStyle() {
+        return this.textStyle;
+    }
+
+    private void autoHeight() {
+        int lines = Math.max(1, text.toString().split("\n").length);
+        setHeight((int) (GuiPresets.LETTER_HEIGHT * GuiUtils.getFontScale(this.textStyle.getFontSize()) * lines));
+    }
+
+    protected void autoWidth() {
+        int maxLineWidth = 0;
+        String[] lines = text.toString().split("\n");
+        for (String line : lines) {
+            int width = (int) getSubstringTextWidth(0, line.length());
+            if (width > maxLineWidth) maxLineWidth = width;
+        }
+        setWidth(maxLineWidth);
     }
 
     public void disableTruncate() {
@@ -160,18 +159,19 @@ public class Text extends Widget {
         setTopPos(rect.y + rect.height / 2 - getHeight() / 2);
     }
 
-    protected void autoWidth() {
-        int maxLineWidth = 0;
-        String[] lines = text.toString().split("\n");
-        for (String line : lines) {
-            int width = (int) getSubstringTextWidth(0, line.length());
-            if (width > maxLineWidth) maxLineWidth = width;
-        }
-        setWidth(maxLineWidth);
+    public void setText(String text) {
+        this.text = new StringBuilder(text != null ? text : "");
+        autoWidth();
+        autoHeight();
     }
 
-    private void autoHeight() {
-        int lines = Math.max(1, text.toString().split("\n").length);
-        setHeight((int) (GuiPresets.LETTER_HEIGHT * GuiUtils.getFontScale(this.textStyle.getFontSize()) * lines));
+    public StringBuilder getString() {
+        return text;
+    }
+
+    public void setFontSize(FontSize fontSize) {
+        this.textStyle.setFontSize(fontSize);
+        autoWidth();
+        autoHeight();
     }
 }

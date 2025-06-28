@@ -18,14 +18,6 @@ public abstract class PopUp extends Widget {
     protected final PopUpStyle popUpStyle;
     protected final View view = new View();
 
-    public CenteredText getTitle() {
-        return title;
-    }
-
-    public TextArea getContent() {
-        return content;
-    }
-
     public PopUp(int xPos, int yPos, String titleText, PopUpType type) {
         super(xPos, yPos, 0, 0);
 
@@ -130,5 +122,13 @@ public abstract class PopUp extends Widget {
             widget.setLeftPos(widget.getLeftPos() - delta);
         }
         super.setLeftPos(leftPos);
+    }
+
+    public CenteredText getTitle() {
+        return title;
+    }
+
+    public TextArea getContent() {
+        return content;
     }
 }

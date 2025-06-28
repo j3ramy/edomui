@@ -7,10 +7,6 @@ import de.j3ramy.edomui.components.button.Button;
 public final class AlertPopUp extends PopUp {
     private final Button closeButton;
 
-    public Button getCloseButton() {
-        return closeButton;
-    }
-
     public AlertPopUp(View hostView, int xPos, int yPos, String title, String content, String buttonTitle, PopUpType type) {
         super(0, 0, title, type);
 
@@ -22,11 +18,7 @@ public final class AlertPopUp extends PopUp {
         int buttonX = this.getLeftPos() + (this.getWidth() - this.popUpStyle.getButtonWidth()) / 2;
         int buttonY = this.getTopPos() + this.getHeight() - this.popUpStyle.getWidgetHeight() - this.popUpStyle.getMargin();
 
-        this.closeButton = new Button(
-                buttonX, buttonY,
-                this.popUpStyle.getButtonWidth(),
-                this.popUpStyle.getWidgetHeight(),
-                buttonTitle,
+        this.closeButton = new Button(buttonX, buttonY, this.popUpStyle.getButtonWidth(), this.popUpStyle.getWidgetHeight(), buttonTitle,
                 () -> hostView.getWidgets().removeIf(w -> w == this)
         );
 
@@ -37,6 +29,10 @@ public final class AlertPopUp extends PopUp {
 
     public AlertPopUp(View hostView, int xPos, int yPos, String title, String content, String buttonTitle) {
         this(hostView, xPos, yPos, title, content, buttonTitle, PopUpType.DEFAULT);
+    }
+
+    public Button getCloseButton() {
+        return closeButton;
     }
 }
 
