@@ -78,8 +78,9 @@ public final class TimeField extends TextField {
         return getText().replaceAll("[^0-9APM]", "");
     }
 
-    private int getMaxLength() {
-        return isAmPm ? 6 : 4; // 4 digits + AM/PM if needed
+    @Override
+    public int getMaxLength() {
+        return isAmPm ? 6 : 4;
     }
 
     private String formatRawInput(String raw) {
