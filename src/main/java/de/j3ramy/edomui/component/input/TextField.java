@@ -26,6 +26,8 @@ public class TextField extends Button {
     protected final TextFieldStyle textFieldStyle;
     protected final StringBuilder text = new StringBuilder();
 
+    protected int maxLength = GuiPresets.TEXT_FIELD_CHAR_LIMIT;
+
     protected boolean focused = false;
     protected int caretTickCounter = 0;
     protected long lastClickTime = 0;
@@ -165,7 +167,7 @@ public class TextField extends Button {
 
     @Override
     public void charTyped(char c) {
-        if (!focused || !isCharAllowed(c) || text.length() >= GuiPresets.TEXT_FIELD_CHAR_LIMIT) return;
+        if (!focused || !isCharAllowed(c) || text.length() >= this.maxLength) return;
 
         deleteSelectionIfNeeded();
         text.insert(caretCharPos, c);
@@ -235,7 +237,7 @@ public class TextField extends Button {
         deleteSelectionIfNeeded();
 
         for (char c : clip.toCharArray()) {
-            if (isCharAllowed(c) && text.length() <  GuiPresets.TEXT_FIELD_CHAR_LIMIT) {
+            if (isCharAllowed(c) && text.length() < this.maxLength) {
                 text.insert(caretCharPos++, c);
             }
         }
@@ -412,5 +414,13 @@ public class TextField extends Button {
 
     public void setFocused() {
         this.focused = true;
+    }
+
+    public void setMaxLength(int maxLength) {
+        this.maxLength = maxLength;
+    }
+
+    public int getMaxLength() {
+        return maxLength;
     }
 }

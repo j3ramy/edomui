@@ -457,4 +457,17 @@ public class ScrollableList extends Widget {
         }
         return false;
     }
+
+    public boolean hasEntry(String title) {
+        if (title == null || title.isEmpty()) {
+            return false;
+        }
+
+        for (Button button : content) {
+            if (button.getTitle().getString().toString().equals(title)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

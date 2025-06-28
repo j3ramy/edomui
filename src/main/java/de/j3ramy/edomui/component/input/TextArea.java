@@ -847,4 +847,26 @@ public class TextArea extends Widget {
     public VerticalScrollbar getScrollbar() {
         return scrollbar;
     }
+
+    public int getWordCount() {
+        if (isEmpty()) {
+            return 0;
+        }
+
+        String text = getText();
+        if (text.trim().isEmpty()) {
+            return 0;
+        }
+
+        String[] words = text.trim().split("\\s+");
+        return words.length;
+    }
+
+    public int getCharacterCount() {
+        if (isEmpty()) {
+            return 0;
+        }
+
+        return getText().length();
+    }
 }

@@ -21,8 +21,9 @@ public class View implements IWidget {
     public void update(int mouseX, int mouseY) {
         if (isHidden || !isUpdating) return;
 
+        boolean hasActivePopUp = hasActivePopUp();
         for (Widget widget : widgets) {
-            if (shouldUpdateWidget(widget)) {
+            if (shouldUpdateWidget(widget, hasActivePopUp)) {
                 widget.update(mouseX, mouseY);
             }
         }
@@ -176,9 +177,29 @@ public class View implements IWidget {
         }
     }
 
+    private boolean hasActivePopUp() {
+        for (Widget widget : widgets) {
+            if (widget instanceof PopUp && !widget.isHidden()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected boolean shouldUpdateWidget(Widget widget, boolean hasActivePopUp) {
+        if (widget instanceof Tooltip) {
+            return true;
+        }
+
+        if (hasActivePopUp) {
+            return widget instanceof PopUp && !widget.isHidden() && widget.isEnabled();
+        }
+
+        return !widget.isHidden() && widget.isEnabled();
+    }
+
     protected boolean shouldUpdateWidget(Widget widget) {
-        return (widget instanceof Tooltip)
-                || (!widget.isHidden() && widget.isEnabled());
+        return shouldUpdateWidget(widget, hasActivePopUp());
     }
 
     public void addWidget(Widget widget) {

@@ -180,4 +180,10 @@ public final class Tooltip extends Widget {
             poseStack.popPose();
         }
     }
+
+    public String getText() {
+        return text;
+    }
+
+
 }
