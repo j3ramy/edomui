@@ -9,7 +9,7 @@ import de.j3ramy.edomui.components.presentation.contextmenu.DynamicContextMenuBu
 import de.j3ramy.edomui.enums.ButtonType;
 import de.j3ramy.edomui.interfaces.ContextMenuProvider;
 import de.j3ramy.edomui.interfaces.IAction;
-import de.j3ramy.edomui.theme.GridStyle;
+import de.j3ramy.edomui.theme.presentation.GridStyle;
 import de.j3ramy.edomui.theme.ThemeManager;
 import org.jetbrains.annotations.Nullable;
 

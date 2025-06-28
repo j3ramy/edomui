@@ -2,7 +2,7 @@ package de.j3ramy.edomui.components.basic;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.interfaces.IAction;
-import de.j3ramy.edomui.theme.ProgressBarStyle;
+import de.j3ramy.edomui.theme.basic.ProgressBarStyle;
 import de.j3ramy.edomui.theme.ThemeManager;
 import de.j3ramy.edomui.components.Widget;
 import de.j3ramy.edomui.util.style.GuiPresets;

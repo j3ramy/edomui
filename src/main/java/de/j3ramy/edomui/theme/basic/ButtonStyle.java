@@ -1,6 +1,5 @@
-package de.j3ramy.edomui.theme;
+package de.j3ramy.edomui.theme.basic;
 
-import de.j3ramy.edomui.enums.FontSize;
 import de.j3ramy.edomui.theme.text.TextStyle;
 import de.j3ramy.edomui.util.style.GuiUtils;
 import de.j3ramy.edomui.util.style.WidgetStyle;
@@ -24,7 +23,6 @@ public class ButtonStyle extends TextStyle {
     public ButtonStyle(WidgetStyle style) {
         super(style);
 
-        this.setFontSize(FontSize.S);
         this.setTextColor(GuiUtils.getContrastColor(this.getBackgroundColor()));
         this.setTextHoverColor(GuiUtils.getContrastColor(this.getHoverBackgroundColor()));
     }

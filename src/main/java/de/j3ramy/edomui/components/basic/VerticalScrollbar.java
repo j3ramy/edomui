@@ -2,7 +2,7 @@ package de.j3ramy.edomui.components.basic;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.theme.ThemeManager;
-import de.j3ramy.edomui.theme.VerticalScrollbarStyle;
+import de.j3ramy.edomui.theme.basic.VerticalScrollbarStyle;
 import de.j3ramy.edomui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
@@ -36,7 +36,7 @@ public final class VerticalScrollbar extends Widget {
         int trackTop = getTopPos();
         int trackBottom = getTopPos() + getHeight();
 
-        AbstractContainerScreen.fill(poseStack, trackLeft, trackTop, trackRight, trackBottom, this.getStyle().getBorderColor().getRGB());
+        AbstractContainerScreen.fill(poseStack, trackLeft, trackTop, trackRight, trackBottom, this.getStyle().getBackgroundColor().getRGB());
 
         int invisibleElements = contentSize - maxVisibleElements;
         if (invisibleElements <= 0) return;

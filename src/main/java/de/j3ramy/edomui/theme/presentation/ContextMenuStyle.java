@@ -1,4 +1,4 @@
-package de.j3ramy.edomui.theme;
+package de.j3ramy.edomui.theme.presentation;
 
 import de.j3ramy.edomui.util.style.GuiUtils;
 import de.j3ramy.edomui.util.style.WidgetStyle;

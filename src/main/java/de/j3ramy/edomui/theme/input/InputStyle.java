@@ -1,6 +1,6 @@
 package de.j3ramy.edomui.theme.input;
 
-import de.j3ramy.edomui.theme.ButtonStyle;
+import de.j3ramy.edomui.theme.basic.ButtonStyle;
 import de.j3ramy.edomui.util.style.WidgetStyle;
 
 public abstract class InputStyle extends ButtonStyle {

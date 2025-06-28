@@ -3,7 +3,7 @@ package de.j3ramy.edomui.components.button;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.enums.ButtonType;
 import de.j3ramy.edomui.interfaces.IAction;
-import de.j3ramy.edomui.theme.ButtonStyle;
+import de.j3ramy.edomui.theme.basic.ButtonStyle;
 import de.j3ramy.edomui.theme.ThemeManager;
 import de.j3ramy.edomui.components.*;
 import de.j3ramy.edomui.components.text.CenteredText;

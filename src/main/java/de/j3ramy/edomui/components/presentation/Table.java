@@ -7,7 +7,7 @@ import de.j3ramy.edomui.components.text.CenteredText;
 import de.j3ramy.edomui.components.button.Button;
 import de.j3ramy.edomui.components.text.Tooltip;
 import de.j3ramy.edomui.enums.ButtonType;
-import de.j3ramy.edomui.theme.TableStyle;
+import de.j3ramy.edomui.theme.presentation.TableStyle;
 import de.j3ramy.edomui.theme.ThemeManager;
 import de.j3ramy.edomui.view.View;
 

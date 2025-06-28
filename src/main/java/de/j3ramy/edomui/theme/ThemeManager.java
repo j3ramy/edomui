@@ -1,10 +1,18 @@
 package de.j3ramy.edomui.theme;
 
+import de.j3ramy.edomui.theme.basic.ButtonStyle;
+import de.j3ramy.edomui.theme.basic.ProgressBarStyle;
+import de.j3ramy.edomui.theme.basic.VerticalScrollbarStyle;
 import de.j3ramy.edomui.theme.chart.BarChartStyle;
 import de.j3ramy.edomui.theme.chart.LineChartStyle;
 import de.j3ramy.edomui.theme.input.CheckboxStyle;
 import de.j3ramy.edomui.theme.input.DropdownStyle;
+import de.j3ramy.edomui.theme.input.TextAreaStyle;
 import de.j3ramy.edomui.theme.input.TextFieldStyle;
+import de.j3ramy.edomui.theme.presentation.ContextMenuStyle;
+import de.j3ramy.edomui.theme.presentation.GridStyle;
+import de.j3ramy.edomui.theme.presentation.ScrollableListStyle;
+import de.j3ramy.edomui.theme.presentation.TableStyle;
 import de.j3ramy.edomui.theme.text.TextStyle;
 import de.j3ramy.edomui.theme.text.TooltipStyle;
 import de.j3ramy.edomui.util.style.WidgetStyle;
@@ -13,7 +21,7 @@ import java.awt.*;
 
 public class ThemeManager {
     public static final WidgetStyle DEFAULT_STYLE = new WidgetStyle(
-            Color.GRAY, Color.BLACK, Color.GRAY, Color.DARK_GRAY, Color.DARK_GRAY, Color.BLACK, 1
+            Color.WHITE, Color.BLACK, Color.LIGHT_GRAY, Color.DARK_GRAY, Color.DARK_GRAY, Color.BLACK, 1
     );
 
     private static WidgetStyle globalDefaultStyle = DEFAULT_STYLE;
@@ -24,7 +32,6 @@ public class ThemeManager {
     private static TextFieldStyle defaultTextFieldStyle = new TextFieldStyle(globalDefaultStyle);
     private static CheckboxStyle defaultCheckboxStyle = new CheckboxStyle(globalDefaultStyle);
     private static DropdownStyle defaultDropdownStyle = new DropdownStyle(globalDefaultStyle);
-    private static TextFieldStyle defaultTextAreaStyle = new TextFieldStyle(globalDefaultStyle);
     private static ProgressBarStyle defaultProgressBarStyle = new ProgressBarStyle(globalDefaultStyle);
     private static PopUpStyle defaultPopUpStyle = new PopUpStyle(globalDefaultStyle);
     private static TextStyle defaultTextStyle = new TextStyle(globalDefaultStyle);
@@ -33,6 +40,7 @@ public class ThemeManager {
     private static ContextMenuStyle defaultContextMenuStyle = new ContextMenuStyle(globalDefaultStyle);
     private static GridStyle defaultGridStyle = new GridStyle(globalDefaultStyle);
     private static TableStyle defaultTableStyle = new TableStyle(globalDefaultStyle);
+    private static TextAreaStyle defaultTextAreaStyle = new TextAreaStyle(globalDefaultStyle);
 
     public static void setGlobalDefaultStyle(WidgetStyle style) {
         globalDefaultStyle = new WidgetStyle(style);
@@ -70,7 +78,7 @@ public class ThemeManager {
         return defaultDropdownStyle;
     }
 
-    public static TextFieldStyle getDefaultTextAreaStyle() {
+    public static TextAreaStyle getDefaultTextAreaStyle() {
         return defaultTextAreaStyle;
     }
 
@@ -138,7 +146,7 @@ public class ThemeManager {
         ThemeManager.defaultDropdownStyle = defaultDropdownStyle;
     }
 
-    public static void setDefaultTextAreaStyle(TextFieldStyle defaultTextAreaStyle) {
+    public static void setDefaultTextAreaStyle(TextAreaStyle defaultTextAreaStyle) {
         ThemeManager.defaultTextAreaStyle = defaultTextAreaStyle;
     }
 

@@ -6,6 +6,7 @@ import de.j3ramy.edomui.components.basic.VerticalScrollbar;
 import de.j3ramy.edomui.components.text.Text;
 import de.j3ramy.edomui.interfaces.IValueAction;
 import de.j3ramy.edomui.theme.ThemeManager;
+import de.j3ramy.edomui.theme.input.TextAreaStyle;
 import de.j3ramy.edomui.theme.input.TextFieldStyle;
 import de.j3ramy.edomui.util.style.GuiPresets;
 import de.j3ramy.edomui.util.style.GuiUtils;
@@ -23,7 +24,7 @@ public class TextArea extends Widget {
     private final Text placeholderRenderer;
     private final int lineHeight;
     private final int maxVisibleLines;
-    private final TextFieldStyle textAreaStyle;
+    private final TextAreaStyle textAreaStyle;
 
     // Cursor & Selection
     private int caretRow = 0;
@@ -72,7 +73,7 @@ public class TextArea extends Widget {
         this.placeholder = placeholder;
         this.onTextChangeAction = onTextChange;
 
-        this.textAreaStyle = new TextFieldStyle(ThemeManager.getDefaultTextAreaStyle());
+        this.textAreaStyle = new TextAreaStyle(ThemeManager.getDefaultTextAreaStyle());
         super.setStyle(this.textAreaStyle);
 
         // Initialize text renderers first

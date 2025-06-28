@@ -1,4 +1,4 @@
-package de.j3ramy.edomui.theme;
+package de.j3ramy.edomui.theme.basic;
 
 import de.j3ramy.edomui.util.style.WidgetStyle;
 
@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class VerticalScrollbarStyle extends WidgetStyle {
     private int scrollbarTrackWidth = 3;
-    private Color thumbColor = Color.GRAY;
+    private Color thumbColor = Color.LIGHT_GRAY;
 
     public Color getThumbColor() {
         return thumbColor;

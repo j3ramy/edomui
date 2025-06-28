@@ -9,7 +9,7 @@ import de.j3ramy.edomui.interfaces.IAction;
 import de.j3ramy.edomui.components.basic.VerticalScrollbar;
 import de.j3ramy.edomui.components.Widget;
 import de.j3ramy.edomui.components.button.Button;
-import de.j3ramy.edomui.theme.ScrollableListStyle;
+import de.j3ramy.edomui.theme.presentation.ScrollableListStyle;
 import de.j3ramy.edomui.theme.ThemeManager;
 import de.j3ramy.edomui.util.style.GuiUtils;
 
