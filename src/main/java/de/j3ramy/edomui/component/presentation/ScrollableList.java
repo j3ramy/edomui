@@ -100,7 +100,7 @@ public class ScrollableList extends Widget {
             if (mouseButton == 1) {
                 for (int i = 0; i < getVisibleButtons().size(); i++) {
                     Button b = getVisibleButtons().get(i);
-                    if (b.isMouseOver()) {
+                    if (b.isMouseOver() && b.isEnabled()) {
                         int elementIndex = scrollIndex + i;
                         selectIndex(elementIndex);
                         showContextMenu(elementIndex);
@@ -117,7 +117,7 @@ public class ScrollableList extends Widget {
         for (int i = 0; i < getVisibleButtons().size(); i++) {
             Button b = getVisibleButtons().get(i);
 
-            if (b.isMouseOver()) {
+            if (b.isMouseOver() && b.isEnabled()) {
                 int elementIndex = scrollIndex + i;
 
                 if (mouseButton == 1) {
@@ -153,6 +153,15 @@ public class ScrollableList extends Widget {
     @Override
     public ScrollableListStyle getStyle() {
         return this.listStyle;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+
+        for (Button button : content) {
+            button.setEnabled(enabled);
+        }
     }
 
     private void updateContextMenuProvider() {
@@ -196,6 +205,20 @@ public class ScrollableList extends Widget {
 
     private boolean needsScrolling() {
         return content.size() > maxVisibleListElements;
+    }
+
+    private void updateButtonAppearance(Button button, boolean enabled) {
+        if (enabled) {
+            button.getStyle().setBackgroundColor(this.listStyle.getBackgroundColor());
+            button.getStyle().setHoverBackgroundColor(this.listStyle.getSelectionColor());
+            button.getTitle().getStyle().setTextColor(this.listStyle.getTextColor());
+            button.getTitle().getStyle().setTextHoverColor(GuiUtils.getContrastColor(button.getStyle().getHoverBackgroundColor()));
+        } else {
+            button.getStyle().setBackgroundColor(this.listStyle.getDisabledBackgroundColor());
+            button.getStyle().setHoverBackgroundColor(this.listStyle.getDisabledBackgroundColor());
+            button.getTitle().getStyle().setTextColor(this.listStyle.getTextDisabledColor());
+            button.getTitle().getStyle().setTextHoverColor(this.listStyle.getTextDisabledColor());
+        }
     }
 
     protected void layoutButtons() {
@@ -396,5 +419,42 @@ public class ScrollableList extends Widget {
 
     public VerticalScrollbar getScrollbar() {
         return scrollbar;
+    }
+
+    public boolean setElementEnabled(String title, boolean enabled) {
+        for (Button button : content) {
+            if (button.getTitle().getString().toString().equals(title)) {
+                button.setEnabled(enabled);
+                updateButtonAppearance(button, enabled);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean setElementEnabledByIndex(int index, boolean enabled) {
+        if (index >= 0 && index < content.size()) {
+            Button button = content.get(index);
+            button.setEnabled(enabled);
+            updateButtonAppearance(button, enabled);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isElementEnabled(String title) {
+        for (Button button : content) {
+            if (button.getTitle().getString().toString().equals(title)) {
+                return button.isEnabled();
+            }
+        }
+        return false;
+    }
+
+    public boolean isElementEnabledByIndex(int index) {
+        if (index >= 0 && index < content.size()) {
+            return content.get(index).isEnabled();
+        }
+        return false;
     }
 }

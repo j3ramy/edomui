@@ -8,8 +8,10 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 
 public final class Image extends Widget {
-    private final int uOffset, vOffset, textureWidth, textureHeight;
-    private final ResourceLocation textureLoc;
+    private final int textureWidth, textureHeight;
+
+    private ResourceLocation textureLoc;
+    private int uOffset, vOffset;
 
     public Image(int x, int y, int width, int height, int uOffset, int vOffset, int textureWidth, int textureHeight, ResourceLocation textureLoc){
         super(x, y, width, height);
@@ -42,6 +44,18 @@ public final class Image extends Widget {
             AbstractContainerScreen.blit(matrixStack, this.getLeftPos(), this.getTopPos(), this.uOffset, this.vOffset,
                     this.getWidth(), this.getHeight(), this.textureWidth, this.textureHeight);
         }
+    }
+
+    public void setTextureLoc(ResourceLocation textureLoc) {
+        this.textureLoc = textureLoc;
+    }
+
+    public void setUOffset(int uOffset) {
+        this.uOffset = uOffset;
+    }
+
+    public void setVOffset(int vOffset) {
+        this.vOffset = vOffset;
     }
 }
 
