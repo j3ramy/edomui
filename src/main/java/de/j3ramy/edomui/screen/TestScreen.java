@@ -3,7 +3,7 @@ package de.j3ramy.edomui.screen;
 import de.j3ramy.edomui.view.View;
 import de.j3ramy.edomui.view.ViewRegistry;
 import de.j3ramy.edomui.enums.FontSize;
-import de.j3ramy.edomui.components.text.Text;
+import de.j3ramy.edomui.component.text.Text;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TextComponent;
 
