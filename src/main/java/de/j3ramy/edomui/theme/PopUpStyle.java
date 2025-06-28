@@ -20,7 +20,7 @@ public class PopUpStyle extends WidgetStyle {
     private int titleHeight = 20;
 
     private int widgetHeight = 13;
-    private int buttonWidth = 60;;
+    private int buttonWidth = 60;
     private int inputWidth = 100;
     private int progressBarWidth = 100;
 

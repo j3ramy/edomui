@@ -1,7 +1,6 @@
 package de.j3ramy.edomui.components.input;
 
 import de.j3ramy.edomui.enums.DateFormat;
-import de.j3ramy.edomui.enums.FontSize;
 import de.j3ramy.edomui.interfaces.IValueAction;
 import de.j3ramy.edomui.util.style.GuiUtils;
 
