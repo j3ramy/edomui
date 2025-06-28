@@ -843,4 +843,8 @@ public class TextArea extends Widget {
     public Text getPlaceholderRenderer() {
         return placeholderRenderer;
     }
+
+    public VerticalScrollbar getScrollbar() {
+        return scrollbar;
+    }
 }
