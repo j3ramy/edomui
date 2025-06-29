@@ -21,7 +21,7 @@ import java.awt.*;
 
 public class ThemeManager {
     public static final WidgetStyle DEFAULT_STYLE = new WidgetStyle(
-            Color.LIGHT_GRAY, Color.BLACK, Color.GRAY, Color.DARK_GRAY, Color.DARK_GRAY, Color.BLACK, 1
+            Color.WHITE, Color.BLACK, Color.LIGHT_GRAY, Color.DARK_GRAY, Color.DARK_GRAY, Color.BLACK, 1
     );
 
     private static WidgetStyle globalDefaultStyle = DEFAULT_STYLE;

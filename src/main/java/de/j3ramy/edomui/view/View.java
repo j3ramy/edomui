@@ -3,11 +3,14 @@ package de.j3ramy.edomui.view;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.component.button.Button;
 import de.j3ramy.edomui.component.input.Dropdown;
+import de.j3ramy.edomui.component.input.TextArea;
+import de.j3ramy.edomui.component.input.TextField;
 import de.j3ramy.edomui.component.popup.PopUp;
 import de.j3ramy.edomui.interfaces.IWidget;
 import de.j3ramy.edomui.component.*;
 import de.j3ramy.edomui.component.text.Tooltip;
 import de.j3ramy.edomui.component.presentation.ScrollableList;
+import net.minecraft.client.gui.screens.Screen;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -16,9 +19,14 @@ public class View implements IWidget {
 
     private boolean isHidden, isUpdating = true;
     private String playerId;
+    private int currentMouseX = 0;
+    private int currentMouseY = 0;
 
     @Override
     public void update(int mouseX, int mouseY) {
+        this.currentMouseX = mouseX;
+        this.currentMouseY = mouseY;
+
         if (isHidden || !isUpdating) return;
 
         boolean hasActivePopUp = hasActivePopUp();
@@ -57,11 +65,22 @@ public class View implements IWidget {
         for (int i = widgets.size() - 1; i >= 0; i--) {
             Widget widget = widgets.get(i);
             if (!widget.isHidden()) {
-                widget.onClick(mouseButton);
 
-                if (widget.isMouseOver() && shouldMoveToForeground(widget)) {
-                    moveWidgetToForeground(widget);
-                    break;
+                if ((widget instanceof TextArea || widget instanceof TextField) && !widget.isEnabled()) {
+                    widget.update(currentMouseX, currentMouseY);
+                    widget.onClick(mouseButton);
+
+                    if (widget.isMouseOver()) {
+                        break;
+                    }
+                }
+                else {
+                    widget.onClick(mouseButton);
+
+                    if (widget.isMouseOver() && shouldMoveToForeground(widget)) {
+                        moveWidgetToForeground(widget);
+                        break;
+                    }
                 }
             }
         }
@@ -73,6 +92,9 @@ public class View implements IWidget {
 
         for (Widget widget : widgets) {
             if (!widget.isHidden()) {
+                if (!widget.isEnabled()) {
+                    widget.update(currentMouseX, currentMouseY);
+                }
                 widget.onScroll(delta);
             }
         }
@@ -84,7 +106,17 @@ public class View implements IWidget {
 
         for (Widget widget : widgets) {
             if (!widget.isHidden()) {
-                widget.keyPressed(keyCode);
+                if ((widget instanceof TextArea || widget instanceof TextField) && !widget.isEnabled()) {
+                    boolean isCtrlC = keyCode == 67 && Screen.hasControlDown();
+                    boolean isCtrlA = keyCode == 65 && Screen.hasControlDown();
+
+                    if (isCtrlC || isCtrlA) {
+                        widget.keyPressed(keyCode);
+                    }
+                }
+                else if (widget.isEnabled()) {
+                    widget.keyPressed(keyCode);
+                }
             }
         }
     }

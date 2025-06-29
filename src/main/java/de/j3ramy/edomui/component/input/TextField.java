@@ -131,10 +131,12 @@ public class TextField extends Button {
         if (mouseButton != 0) return;
 
         if (isMouseOver()) {
-            touched = true;
-            focused = true;
-            caretVisible = true;
-            caretTickCounter = 0;
+            if (this.isEnabled()) {
+                touched = true;
+                focused = true;
+                caretVisible = true;
+                caretTickCounter = 0;
+            }
 
             int clickX = getMousePosition().x - getLeftPos() - this.textFieldStyle.getPadding();
             float scale = GuiUtils.getFontScale(this.textFieldStyle.getFontSize());
@@ -161,7 +163,9 @@ public class TextField extends Button {
             }
 
         } else {
-            focused = false;
+            if (this.isEnabled()) {
+                focused = false;
+            }
         }
     }
 
@@ -175,13 +179,22 @@ public class TextField extends Button {
 
         triggerTextChanged();
     }
-
     @Override
     public void keyPressed(int keyCode) {
-        if (!focused) return;
+        if (!focused && selectionStart == -1) return;
 
         boolean ctrl = Screen.hasControlDown();
         boolean shift = Screen.hasShiftDown();
+
+        if (!this.isEnabled()) {
+            if (ctrl) {
+                switch (keyCode) {
+                    case 65 -> selectAll();  // Ctrl+A
+                    case 67 -> copy();       // Ctrl+C
+                }
+            }
+            return;
+        }
 
         switch (keyCode) {
             case 259 -> backspace();
@@ -228,7 +241,7 @@ public class TextField extends Button {
         if (visibleText != null) {
             visibleText.setTopPos(visibleText.getTopPos() + delta);
         }
-        
+
         if (getTitle() != null) {
             getTitle().setTopPos(getTitle().getTopPos() + delta);
         }

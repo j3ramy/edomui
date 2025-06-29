@@ -104,10 +104,6 @@ public class TextArea extends Widget {
         setHoverable(true);
     }
 
-    // ================================
-    // RENDERING
-    // ================================
-
     @Override
     public void render(PoseStack poseStack) {
         if (isHidden()) return;
@@ -214,10 +210,6 @@ public class TextArea extends Widget {
         AbstractContainerScreen.fill(poseStack, x, y1, x + cursorWidth, y2, this.textAreaStyle.getTextColor().getRGB());
     }
 
-    // ================================
-    // UPDATE & INTERACTION
-    // ================================
-
     @Override
     public void update(int x, int y) {
         super.update(x, y);
@@ -260,15 +252,16 @@ public class TextArea extends Widget {
 
     @Override
     public void onClick(int mouseButton) {
-        if (mouseButton != 0 || !this.isEnabled()) return;
+        if (mouseButton != 0) return;
 
         if (isMouseOver()) {
-            touched = true;
-            focused = true;
-            caretVisible = true;
-            caretTickCounter = 0;
+            if (this.isEnabled()) {
+                touched = true;
+                focused = true;
+                caretVisible = true;
+                caretTickCounter = 0;
+            }
 
-            // Calculate clicked position
             int clickX = getMousePosition().x - getLeftPos() - this.textAreaStyle.getPadding();
             int clickY = getMousePosition().y - getTopPos() - this.textAreaStyle.getPadding();
 
@@ -278,7 +271,6 @@ public class TextArea extends Widget {
             String line = lines.get(clickedRow);
             int clickedCol = getCharIndexFromPixel(line, clickX);
 
-            // Multi-click detection
             long currentTime = System.currentTimeMillis();
             boolean samePosition = (clickedRow == lastClickRow && clickedCol == lastClickCol);
             boolean withinTimeWindow = (currentTime - lastClickTime) < GuiPresets.DOUBLE_CLICK_THRESHOLD_NORMAL;
@@ -293,7 +285,6 @@ public class TextArea extends Widget {
             lastClickRow = clickedRow;
             lastClickCol = clickedCol;
 
-            // Handle different click types
             switch (clickCount) {
                 case 1 -> handleSingleClick(clickedRow, clickedCol);
                 case 2 -> handleDoubleClick(clickedRow, clickedCol);
@@ -305,7 +296,9 @@ public class TextArea extends Widget {
             }
 
         } else {
-            focused = false;
+            if (this.isEnabled()) {
+                focused = false;
+            }
         }
     }
 
@@ -362,10 +355,6 @@ public class TextArea extends Widget {
         return new int[]{start, end};
     }
 
-    // ================================
-    // TEXT INPUT
-    // ================================
-
     @Override
     public void charTyped(char c) {
         if (!focused || !isCharAllowed(c) || getTotalCharCount() >= GuiPresets.TEXT_AREA_CHAR_LIMIT) return;
@@ -377,11 +366,20 @@ public class TextArea extends Widget {
 
     @Override
     public void keyPressed(int keyCode) {
-        if (!focused) return;
+        if (!focused && !hasSelection()) return;
 
         boolean ctrl = Screen.hasControlDown();
-        boolean shift = Screen.hasShiftDown();
+        if (!this.isEnabled()) {
+            if (ctrl) {
+                switch (keyCode) {
+                    case 65 -> selectAll();
+                    case 67 -> copy();
+                }
+            }
+            return;
+        }
 
+        boolean shift = Screen.hasShiftDown();
         switch (keyCode) {
             case 259 -> backspace();
             case 261 -> delete();
@@ -400,6 +398,11 @@ public class TextArea extends Widget {
         }
     }
 
+    @Override
+    public TextFieldStyle getStyle() {
+        return this.textAreaStyle;
+    }
+
     private void handleControlKeys(int keyCode) {
         switch (keyCode) {
             case 65 -> selectAll();
@@ -408,10 +411,6 @@ public class TextArea extends Widget {
             case 86 -> paste();
         }
     }
-
-    // ================================
-    // CURSOR MOVEMENT
-    // ================================
 
     private void moveCaret(int colDelta, int rowDelta, boolean extend) {
         if (extend && !hasSelection()) {
@@ -464,10 +463,6 @@ public class TextArea extends Widget {
         caretVisible = true;
         caretTickCounter = 0;
     }
-
-    // ================================
-    // TEXT MODIFICATION
-    // ================================
 
     private void insertNewLine() {
         deleteSelectionIfExists();
@@ -526,10 +521,6 @@ public class TextArea extends Widget {
         triggerTextChanged();
     }
 
-    // ================================
-    // SELECTION
-    // ================================
-
     private void startSelection() {
         selectionStartRow = caretRow;
         selectionStartCol = caretCol;
@@ -581,10 +572,6 @@ public class TextArea extends Widget {
         setCaretPosition(startRow, startCol);
         clearSelection();
     }
-
-    // ================================
-    // CLIPBOARD OPERATIONS
-    // ================================
 
     private void copy() {
         if (!hasSelection()) return;
@@ -663,10 +650,6 @@ public class TextArea extends Widget {
         return result.toString();
     }
 
-    // ================================
-    // UTILITY METHODS
-    // ================================
-
     private void ensureCaretVisible() {
         if (caretRow < scrollOffset) {
             scrollOffset = caretRow;
@@ -721,9 +704,94 @@ public class TextArea extends Widget {
         return textWidth > availableWidth;
     }
 
-    // ================================
-    // PUBLIC API
-    // ================================
+    private int getContentWidth() {
+        int padding = this.textAreaStyle.getPadding();
+        int scrollbarWidth = this.scrollbar.getStyle().getScrollbarTrackWidth();
+
+        return getWidth() - (2 * padding) - scrollbarWidth;
+    }
+
+    private int getTextWidth(String text) {
+        return GuiUtils.getTextWidth(text, GuiUtils.getFontScale(this.getStyle().getFontSize()));
+    }
+
+    private void insertCharAtCaret(char c) {
+        String line = lines.get(caretRow);
+        String newLine = line.substring(0, caretCol) + c + line.substring(caretCol);
+
+        if (wordWrap && getTextWidth(newLine) > getContentWidth()) {
+
+            String beforeCaret = line.substring(0, caretCol);
+            String afterCaret = line.substring(caretCol);
+
+            if (Character.isWhitespace(c)) {
+                lines.set(caretRow, beforeCaret);
+                lines.add(caretRow + 1, afterCaret);
+                setCaretPosition(caretRow + 1, 0);
+            } else {
+                lines.set(caretRow, beforeCaret);
+                lines.add(caretRow + 1, c + afterCaret);
+                setCaretPosition(caretRow + 1, 1);
+            }
+            return;
+        }
+
+        lines.set(caretRow, newLine);
+        caretCol++;
+    }
+
+    private void addTextWithWordWrap(String text) {
+        String[] inputLines = text.split("\n", -1);
+
+        for (String inputLine : inputLines) {
+            if (inputLine.isEmpty()) {
+                lines.add("");
+                continue;
+            }
+
+            String[] words = inputLine.split("\\s+");
+            StringBuilder currentLine = new StringBuilder();
+
+            for (String word : words) {
+                String testLine = !currentLine.isEmpty() ? currentLine + " " + word : word;
+
+                if (getTextWidth(testLine) <= getContentWidth()) {
+                    if (!currentLine.isEmpty()) {
+                        currentLine.append(" ");
+                    }
+                    currentLine.append(word);
+                } else {
+                    if (!currentLine.isEmpty()) {
+                        lines.add(currentLine.toString());
+                    }
+
+                    if (getTextWidth(word) > getContentWidth()) {
+                        StringBuilder wordPart = new StringBuilder();
+                        for (char c : word.toCharArray()) {
+                            String testChar = wordPart + String.valueOf(c);
+                            if (getTextWidth(testChar) <= getContentWidth()) {
+                                wordPart.append(c);
+                            } else {
+                                if (!wordPart.isEmpty()) {
+                                    lines.add(wordPart.toString());
+                                    wordPart = new StringBuilder(String.valueOf(c));
+                                } else {
+                                    lines.add(String.valueOf(c));
+                                }
+                            }
+                        }
+                        currentLine = wordPart;
+                    } else {
+                        currentLine = new StringBuilder(word);
+                    }
+                }
+            }
+
+            if (!currentLine.isEmpty()) {
+                lines.add(currentLine.toString());
+            }
+        }
+    }
 
     public String getText() {
         return String.join(GuiPresets.TEXT_AREA_DELIMITER, lines);
@@ -777,11 +845,6 @@ public class TextArea extends Widget {
 
     public int getCurrentColumn() {
         return caretCol;
-    }
-
-    @Override
-    public TextFieldStyle getStyle() {
-        return this.textAreaStyle;
     }
 
     public Text getPlaceholderRenderer() {
@@ -960,125 +1023,15 @@ public class TextArea extends Widget {
         isManuallyScrolling = true;
     }
 
-    private int getContentWidth() {
-        int padding = this.textAreaStyle.getPadding();
-        int scrollbarWidth = this.scrollbar.getStyle().getScrollbarTrackWidth();
-
-        // Immer Scrollbar-Breite abziehen für konsistente Berechnung
-        int availableWidth = getWidth() - (2 * padding) - scrollbarWidth;
-
-        return Math.max(50, availableWidth); // Mindestbreite für Sicherheit
-    }
-
-    private int getTextWidth(String text) {
-        // Gib die tatsächliche Pixel-Breite zurück (ohne Font-Skalierung)
-        return GuiUtils.getTextWidth(text, GuiUtils.getFontScale(this.getStyle().getFontSize()));
-    }
-
-// Und ersetze die insertCharAtCaret Methode:
-
-    private void insertCharAtCaret(char c) {
-        String line = lines.get(caretRow);
-        String newLine = line.substring(0, caretCol) + c + line.substring(caretCol);
-
-        // Prüfe ob die neue Zeile zu breit wird
-        if (wordWrap && getTextWidth(newLine) > getContentWidth()) {
-
-            // Teile die Zeile am Cursor auf
-            String beforeCaret = line.substring(0, caretCol);
-            String afterCaret = line.substring(caretCol);
-
-            if (Character.isWhitespace(c)) {
-                // Bei Leerzeichen: Leerzeichen wird durch Zeilenumbruch ersetzt
-                lines.set(caretRow, beforeCaret);
-                lines.add(caretRow + 1, afterCaret);
-                setCaretPosition(caretRow + 1, 0);
-            } else {
-                // Bei anderem Zeichen: Zeichen in neue Zeile einfügen
-                lines.set(caretRow, beforeCaret);
-                lines.add(caretRow + 1, c + afterCaret);
-                setCaretPosition(caretRow + 1, 1);
-            }
-            return;
-        }
-
-        // Zeichen passt in die aktuelle Zeile
-        lines.set(caretRow, newLine);
-        caretCol++;
-    }
-
-    // Neue Methode für automatisches Word-Wrapping bei setText()
-    private void addTextWithWordWrap(String text) {
-        String[] inputLines = text.split("\n", -1);
-
-        for (String inputLine : inputLines) {
-            if (inputLine.isEmpty()) {
-                lines.add("");
-                continue;
-            }
-
-            // Wort für Wort verarbeiten
-            String[] words = inputLine.split("\\s+");
-            StringBuilder currentLine = new StringBuilder();
-
-            for (String word : words) {
-                String testLine = currentLine.length() > 0 ? currentLine + " " + word : word;
-
-                // Prüfe ob das Wort in die aktuelle Zeile passt
-                if (getTextWidth(testLine) <= getContentWidth()) {
-                    if (currentLine.length() > 0) {
-                        currentLine.append(" ");
-                    }
-                    currentLine.append(word);
-                } else {
-                    // Aktuelle Zeile abschließen
-                    if (currentLine.length() > 0) {
-                        lines.add(currentLine.toString());
-                    }
-
-                    // Prüfe ob das einzelne Wort zu lang ist
-                    if (getTextWidth(word) > getContentWidth()) {
-                        // Wort zeichenweise aufteilen
-                        StringBuilder wordPart = new StringBuilder();
-                        for (char c : word.toCharArray()) {
-                            String testChar = wordPart + String.valueOf(c);
-                            if (getTextWidth(testChar) <= getContentWidth()) {
-                                wordPart.append(c);
-                            } else {
-                                if (wordPart.length() > 0) {
-                                    lines.add(wordPart.toString());
-                                    wordPart = new StringBuilder(String.valueOf(c));
-                                } else {
-                                    lines.add(String.valueOf(c));
-                                }
-                            }
-                        }
-                        currentLine = wordPart;
-                    } else {
-                        currentLine = new StringBuilder(word);
-                    }
-                }
-            }
-
-            // Letzte Zeile hinzufügen
-            if (currentLine.length() > 0) {
-                lines.add(currentLine.toString());
-            }
-        }
-    }
-
-    // setText() Methode überarbeiten:
     public void setText(String text) {
         lines.clear();
 
         if (text.isEmpty()) {
             lines.add("");
         } else {
-            // Verwende Word-Wrap nur bei setText(), nicht beim manuellen Tippen
             addTextWithWordWrap(text);
         }
 
-        // Sicherstellung: mindestens eine Zeile
         if (lines.isEmpty()) {
             lines.add("");
         }
