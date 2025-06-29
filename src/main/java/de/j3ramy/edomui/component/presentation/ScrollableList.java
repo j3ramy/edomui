@@ -1,6 +1,7 @@
 package de.j3ramy.edomui.component.presentation;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import de.j3ramy.edomui.component.CompositeWidget;
 import de.j3ramy.edomui.component.presentation.contextmenu.ContextMenu;
 import de.j3ramy.edomui.component.presentation.contextmenu.DynamicContextMenuBuilder;
 import de.j3ramy.edomui.enums.ButtonType;
@@ -20,7 +21,7 @@ import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class ScrollableList extends Widget {
+public class ScrollableList extends CompositeWidget {
     private final int maxVisibleListElements;
 
     protected final ScrollableListStyle listStyle;
@@ -72,6 +73,7 @@ public class ScrollableList extends Widget {
     @Override
     public void update(int x, int y) {
         if (isHidden()) return;
+
         super.update(x, y);
 
         if (contextMenu != null && !contextMenu.isHidden()) {
@@ -196,6 +198,27 @@ public class ScrollableList extends Widget {
         }
 
         layoutButtons();
+    }
+
+    @Override
+    protected void syncChildStyles() {
+        for (Button button : content) {
+            boolean isSelected = (selectedIndex != -1 && content.indexOf(button) == selectedIndex);
+
+            if (!isSelected) {
+                if (!button.getStyle().getBackgroundColor().equals(this.listStyle.getBackgroundColor())) {
+                    button.getStyle().setBackgroundColor(this.listStyle.getBackgroundColor());
+                }
+
+                if (!button.getStyle().getHoverBackgroundColor().equals(this.listStyle.getSelectionColor())) {
+                    button.getStyle().setHoverBackgroundColor(this.listStyle.getSelectionColor());
+                }
+
+                if (!button.getStyle().getFontSize().equals(this.listStyle.getFontSize())) {
+                    button.getStyle().setFontSize(this.listStyle.getFontSize());
+                }
+            }
+        }
     }
 
     private void updateContextMenuProvider() {

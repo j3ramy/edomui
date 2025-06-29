@@ -98,6 +98,23 @@ public final class ScrollableTable extends ScrollableList {
         headerRow = null;
     }
 
+    @Override
+    protected void syncChildStyles() {
+        if (headerRow != null) {
+            headerRow.getStyle().setBackgroundColor(this.tableStyle.getBackgroundColor());
+            headerRow.getStyle().setTextColor(this.tableStyle.getTextColor());
+        }
+
+        for (Button button : content) {
+            if (button instanceof TableRow row && button != headerRow) {
+                row.getStyle().setBackgroundColor(this.tableStyle.getBackgroundColor());
+                row.getStyle().setTextColor(this.tableStyle.getTextColor());
+                row.getStyle().setHoverBackgroundColor(this.tableStyle.getSelectionColor());
+                row.getStyle().setTextHoverColor(this.tableStyle.getTextHoverColor());
+            }
+        }
+    }
+
     private void renderAllTooltips(PoseStack stack) {
         // Header tooltips have priority
         if (headerRow != null && headerRow.isMouseOver()) {

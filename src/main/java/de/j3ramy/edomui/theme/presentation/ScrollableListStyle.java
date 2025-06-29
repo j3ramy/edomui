@@ -51,7 +51,6 @@ public class ScrollableListStyle extends InputStyle {
     public ScrollableListStyle(WidgetStyle style) {
         super(style);
 
-        this.setFontSize(FontSize.XS);
         updateTextColors();
     }
 }
