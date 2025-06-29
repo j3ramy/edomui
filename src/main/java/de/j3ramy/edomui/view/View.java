@@ -181,6 +181,10 @@ public class View implements IWidget {
     }
 
     private void renderTooltips(PoseStack poseStack) {
+        if (hasActivePopUp()) {
+            return;
+        }
+
         for (Widget widget : widgets) {
             if (!widget.isHidden() && widget instanceof Tooltip) {
                 widget.render(poseStack);
@@ -189,7 +193,12 @@ public class View implements IWidget {
 
         renderNestedTooltips(poseStack);
     }
+
     private void renderNestedTooltips(PoseStack poseStack) {
+        if (hasActivePopUp()) {
+            return;
+        }
+
         for (Widget widget : this.widgets) {
             if (widget.isHidden()) continue;
 
