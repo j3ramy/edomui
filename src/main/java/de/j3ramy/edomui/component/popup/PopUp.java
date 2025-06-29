@@ -11,7 +11,7 @@ import de.j3ramy.edomui.component.Widget;
 
 import java.awt.Rectangle;
 
-public abstract class PopUp extends Widget {
+public class PopUp extends Widget {
     private final CenteredText title;
     private TextArea content;
 
@@ -26,6 +26,8 @@ public abstract class PopUp extends Widget {
 
         this.setWidth(this.popUpStyle.getWidth());
         this.setHeight(this.popUpStyle.getHeight());
+        this.setLeftPos(this.getLeftPos() - this.popUpStyle.getWidth() / 2);
+        this.setLeftPos(this.getTopPos() - this.popUpStyle.getHeight() / 2);
 
         this.getStyle().setBorderWidth(this.popUpStyle.getBorderWidth());
         this.getStyle().setBackgroundColor(this.popUpStyle.getBackgroundColor());
