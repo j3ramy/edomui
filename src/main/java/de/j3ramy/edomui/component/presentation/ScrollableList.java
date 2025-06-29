@@ -383,8 +383,10 @@ public class ScrollableList extends Widget {
     }
 
     public void clear() {
+        this.unselect();
+
         content.clear();
-        unselect();
+        scrollIndex = 0;
         scrollbar.updateContentSize(0);
         if (contextMenu != null) {
             contextMenu.hide();
@@ -411,12 +413,12 @@ public class ScrollableList extends Widget {
     public void unselect() {
         if (hasSelection()) {
             content.get(selectedIndex).getStyle().setBackgroundColor(this.getStyle().getBackgroundColor());
-            selectedIndex = -1;
         }
+        selectedIndex = -1;
     }
 
     public boolean hasSelection() {
-        return selectedIndex >= 0;
+        return selectedIndex >= 0 && selectedIndex < content.size();
     }
 
     public String getSelectedTitle() {
