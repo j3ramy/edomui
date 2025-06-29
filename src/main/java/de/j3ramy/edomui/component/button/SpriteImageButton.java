@@ -22,7 +22,7 @@ public final class SpriteImageButton extends Button {
         this.textureHeight = texH;
         this.clipSize = clipSize;
 
-        this.setStyle(ThemeManager.getDefaultImageButtonStyle());
+        this.setStyle(new ImageButtonStyle(ThemeManager.getDefaultImageButtonStyle()));
     }
 
     @Override
