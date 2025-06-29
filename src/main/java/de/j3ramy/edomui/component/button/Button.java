@@ -199,6 +199,10 @@ public class Button extends Widget {
         return title;
     }
 
+    public String getText(){
+        return this.getTitle().getString().toString();
+    }
+
     public boolean isTooltipEnabled() {
         return tooltipEnabled;
     }

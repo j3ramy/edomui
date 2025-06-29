@@ -470,4 +470,12 @@ public class ScrollableList extends Widget {
         }
         return false;
     }
+
+    public boolean isEmpty() {
+        return this.content.isEmpty();
+    }
+
+    public int getCount(){
+        return this.content.size();
+    }
 }

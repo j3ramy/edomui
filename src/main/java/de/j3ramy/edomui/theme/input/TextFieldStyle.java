@@ -5,7 +5,7 @@ import de.j3ramy.edomui.util.style.WidgetStyle;
 import java.awt.*;
 
 public class TextFieldStyle extends InputStyle {
-    private Color placeholderColor = Color.DARK_GRAY;
+    private Color placeholderColor = Color.GRAY;
     private Color selectionColor = Color.YELLOW;
     private int lineSpacing = 5;
 

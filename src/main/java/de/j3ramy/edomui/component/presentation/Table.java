@@ -228,6 +228,10 @@ public final class Table extends ScrollableList {
         layoutButtons();
     }
 
+    public int getTableRowCount() {
+        return hasHeader() ? super.getContent().size() - 1 : super.getContent().size();
+    }
+
     // ================================
     // INNER CLASS: TableRow
     // ================================
