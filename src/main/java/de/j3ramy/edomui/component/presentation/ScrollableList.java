@@ -478,4 +478,12 @@ public class ScrollableList extends Widget {
     public int getCount(){
         return this.content.size();
     }
+
+    public boolean isFirstElementSelectedSafe() {
+        return !content.isEmpty() && hasSelection() && selectedIndex == 0;
+    }
+
+    public boolean isLastElementSelectedSafe() {
+        return !content.isEmpty() && hasSelection() && selectedIndex == content.size() - 1;
+    }
 }

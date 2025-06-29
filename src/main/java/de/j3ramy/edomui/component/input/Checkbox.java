@@ -30,10 +30,14 @@ public final class Checkbox extends Button {
                 this.checkboxStyle.getTextColor(), this.checkboxStyle.getTextHoverColor(), this.checkboxStyle.getTextDisabledColor());
     }
 
-    public Checkbox(int x, int y, int width, int height, String title) {
-        this(x, y, width, height, title, false, null);
+    public Checkbox(int x, int y, int width, int height, String title, boolean isChecked) {
+        this(x, y, width, height, title, isChecked, null);
 
         this.leftClickAction = () -> this.checked = !this.checked;
+    }
+
+    public Checkbox(int x, int y, int width, int height, String title) {
+        this(x, y, width, height, title, false);
     }
 
     @Override

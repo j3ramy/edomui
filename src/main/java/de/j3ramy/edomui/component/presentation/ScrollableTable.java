@@ -16,12 +16,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public final class Table extends ScrollableList {
+public final class ScrollableTable extends ScrollableList {
     private final TableStyle tableStyle;
 
     private TableRow headerRow;
 
-    public Table(int x, int y, int width, int height, Color selectionColor) {
+    public ScrollableTable(int x, int y, int width, int height, Color selectionColor) {
         super(x, y, width, height, selectionColor);
 
         this.tableStyle = new TableStyle(ThemeManager.getDefaultTableStyle());
