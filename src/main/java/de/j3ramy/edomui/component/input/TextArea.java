@@ -201,8 +201,8 @@ public class TextArea extends Widget {
         float fontScale = GuiUtils.getFontScale(this.textAreaStyle.getFontSize());
 
         int x = getLeftPos() + this.textAreaStyle.getPadding() + (int)(Minecraft.getInstance().font.width(beforeCaret) * fontScale);
-        int y1 = getTopPos() + this.textAreaStyle.getPadding() + (caretRow - scrollOffset) * lineHeight;
-        int y2 = y1 + (int)(7 * fontScale); // Match text height exactly
+        int y1 = getTopPos() + this.textAreaStyle.getPadding() + (caretRow - scrollOffset) * lineHeight - 1;
+        int y2 = y1 + (int)(7 * fontScale) + 1; // Match text height exactly
 
         // Scale cursor width with font size
         int cursorWidth = Math.max(1, (int)(fontScale));
