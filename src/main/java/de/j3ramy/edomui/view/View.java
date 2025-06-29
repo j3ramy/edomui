@@ -64,7 +64,17 @@ public class View implements IWidget {
 
         for (int i = widgets.size() - 1; i >= 0; i--) {
             Widget widget = widgets.get(i);
-            if (!widget.isHidden()) {
+            if (!widget.isHidden() && widget instanceof PopUp) {
+                if (widget.isMouseOver()) {
+                    widget.onClick(mouseButton);
+                    return;
+                }
+            }
+        }
+
+        for (int i = widgets.size() - 1; i >= 0; i--) {
+            Widget widget = widgets.get(i);
+            if (!widget.isHidden() && !(widget instanceof PopUp)) {
 
                 if ((widget instanceof TextArea || widget instanceof TextField) && !widget.isEnabled()) {
                     widget.update(currentMouseX, currentMouseY);
