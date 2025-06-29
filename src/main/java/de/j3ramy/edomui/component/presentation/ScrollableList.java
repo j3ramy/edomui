@@ -343,6 +343,7 @@ public class ScrollableList extends Widget {
         button.getStyle().setHoverBackgroundColor(this.listStyle.getSelectionColor());
         button.getTitle().getStyle().setTextColor(this.listStyle.getTextColor());
         button.getTitle().getStyle().setTextHoverColor(GuiUtils.getContrastColor(button.getStyle().getHoverBackgroundColor()));
+        button.getStyle().setFontSize(this.listStyle.getFontSize());
 
         if (button.getTitle().isTruncated()) {
             button.enableTooltip();
