@@ -7,5 +7,8 @@ public class TextAreaStyle extends TextFieldStyle {
         super(style);
 
         this.setHoverBackgroundColor(this.getBackgroundColor());
+        this.setDisabledBackgroundColor(this.getBackgroundColor());
+        this.setTextHoverColor(this.getTextColor());
+        this.setTextDisabledColor(this.getTextColor());
     }
 }

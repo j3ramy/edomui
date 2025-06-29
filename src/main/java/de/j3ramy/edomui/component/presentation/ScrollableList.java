@@ -164,6 +164,40 @@ public class ScrollableList extends Widget {
         }
     }
 
+    @Override
+    public void setLeftPos(int newLeftPos) {
+        int delta = newLeftPos - this.getLeftPos();
+
+        super.setLeftPos(newLeftPos);
+
+        if (scrollbar != null) {
+            scrollbar.setLeftPos(scrollbar.getLeftPos() + delta);
+        }
+
+        if (contextMenu != null) {
+            contextMenu.setLeftPos(contextMenu.getLeftPos() + delta);
+        }
+
+        layoutButtons();
+    }
+
+    @Override
+    public void setTopPos(int newTopPos) {
+        int delta = newTopPos - this.getTopPos();
+
+        super.setTopPos(newTopPos);
+
+        if (scrollbar != null) {
+            scrollbar.setTopPos(scrollbar.getTopPos() + delta);
+        }
+
+        if (contextMenu != null) {
+            contextMenu.setTopPos(contextMenu.getTopPos() + delta);
+        }
+
+        layoutButtons();
+    }
+
     private void updateContextMenuProvider() {
         if (menuBuilder != null && dynamicMenuEnabled) {
             this.IContextMenuProvider = menuBuilder.build();

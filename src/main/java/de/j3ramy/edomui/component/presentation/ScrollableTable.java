@@ -286,15 +286,15 @@ public final class ScrollableTable extends ScrollableList {
 
         @Override
         public void setTopPos(int topPos) {
-            int delta = getTopPos() - topPos;
-            updateWidgetPositions(0, -delta);
+            int delta = topPos - getTopPos();
+            updateWidgetPositions(0, delta);
             super.setTopPos(topPos);
         }
 
         @Override
         public void setLeftPos(int leftPos) {
-            int delta = getLeftPos() - leftPos;
-            updateWidgetPositions(-delta, 0);
+            int delta = leftPos - getLeftPos();
+            updateWidgetPositions(delta, 0);
             super.setLeftPos(leftPos);
         }
 

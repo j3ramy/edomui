@@ -204,6 +204,36 @@ public class TextField extends Button {
         }
     }
 
+    @Override
+    public void setLeftPos(int newLeftPos) {
+        int delta = newLeftPos - this.getLeftPos();
+
+        super.setLeftPos(newLeftPos);
+
+        if (visibleText != null) {
+            visibleText.setLeftPos(visibleText.getLeftPos() + delta);
+        }
+
+        if (getTitle() != null) {
+            getTitle().setLeftPos(getTitle().getLeftPos() + delta);
+        }
+    }
+
+    @Override
+    public void setTopPos(int newTopPos) {
+        int delta = newTopPos - this.getTopPos();
+
+        super.setTopPos(newTopPos);
+
+        if (visibleText != null) {
+            visibleText.setTopPos(visibleText.getTopPos() + delta);
+        }
+        
+        if (getTitle() != null) {
+            getTitle().setTopPos(getTitle().getTopPos() + delta);
+        }
+    }
+
     protected int getCaretRenderX() {
         String textBeforeCaret = text.substring(scrollOffset, caretCharPos);
         float scale = GuiUtils.getFontScale(this.textFieldStyle.getFontSize());
