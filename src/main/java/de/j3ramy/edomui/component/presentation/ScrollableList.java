@@ -486,4 +486,66 @@ public class ScrollableList extends Widget {
     public boolean isLastElementSelectedSafe() {
         return !content.isEmpty() && hasSelection() && selectedIndex == content.size() - 1;
     }
+
+    public void scrollToTop() {
+        scrollIndex = 0;
+        scrollbar.updateScrollIndex(scrollIndex);
+        layoutButtons();
+    }
+
+    public void scrollToBottom() {
+        if (content.isEmpty()) return;
+
+        scrollIndex = Math.max(0, content.size() - maxVisibleListElements);
+        scrollbar.updateScrollIndex(scrollIndex);
+        layoutButtons();
+    }
+
+    public void scrollToElement(int index) {
+        if (index < 0 || index >= content.size()) return;
+
+        ensureVisible(index);
+    }
+
+    public void scrollToElement(String title) {
+        for (int i = 0; i < content.size(); i++) {
+            Button button = content.get(i);
+            if (button.getTitle().getString().toString().equals(title)) {
+                scrollToElement(i);
+                return;
+            }
+        }
+    }
+
+    public boolean isScrolledToTop() {
+        return scrollIndex == 0;
+    }
+
+    public boolean isScrolledToBottom() {
+        if (content.isEmpty() || !needsScrolling()) return true;
+
+        int maxScroll = Math.max(0, content.size() - maxVisibleListElements);
+        return scrollIndex >= maxScroll;
+    }
+
+    public double getScrollPercentage() {
+        if (content.isEmpty() || !needsScrolling()) return 0.0;
+
+        int maxScroll = Math.max(0, content.size() - maxVisibleListElements);
+        return maxScroll > 0 ? (double) scrollIndex / maxScroll : 0.0;
+    }
+
+    public void setScrollPercentage(double percentage) {
+        if (content.isEmpty() || !needsScrolling()) return;
+
+        percentage = Math.max(0.0, Math.min(1.0, percentage));
+        int maxScroll = Math.max(0, content.size() - maxVisibleListElements);
+        scrollIndex = (int) (maxScroll * percentage);
+        scrollbar.updateScrollIndex(scrollIndex);
+        layoutButtons();
+    }
+
+    public boolean isElementVisible(int index) {
+        return index >= scrollIndex && index < scrollIndex + maxVisibleListElements;
+    }
 }
