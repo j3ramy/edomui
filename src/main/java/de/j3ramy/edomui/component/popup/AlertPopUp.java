@@ -8,7 +8,7 @@ public final class AlertPopUp extends PopUp {
     private final Button closeButton;
 
     public AlertPopUp(View hostView, int xPos, int yPos, String title, String content, String buttonTitle, PopUpType type) {
-        super(0, 0, title, type);
+        super(0, 0, title, content, type);
 
         int centeredX = xPos - this.getWidth() / 2;
         int centeredY = yPos - this.getHeight() / 2;
@@ -23,8 +23,6 @@ public final class AlertPopUp extends PopUp {
         );
 
         this.view.addWidget(this.closeButton);
-
-        this.addContent(content);
     }
 
     public AlertPopUp(View hostView, int xPos, int yPos, String title, String content, String buttonTitle) {

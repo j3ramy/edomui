@@ -10,7 +10,7 @@ public final class ProgressPopUp extends PopUp {
     private final ProgressBar progressBar;
 
     public ProgressPopUp(View hostView, int xPos, int yPos, String title, String content, PopUpType type, int duration, IAction finishAction) {
-        super(0, 0, title, type);
+        super(0, 0, title, "", type);
 
         this.finishAction = finishAction;
 
@@ -30,8 +30,6 @@ public final class ProgressPopUp extends PopUp {
         );
 
         this.view.addWidget(this.progressBar);
-
-        this.addContent(content);
     }
 
     public ProgressPopUp(View hostView, int xPos, int yPos, String title, String content, int duration, IAction finishAction) {

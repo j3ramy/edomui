@@ -14,7 +14,7 @@ public final class InputPopUp extends PopUp {
 
     public InputPopUp(View hostView, int xPos, int yPos, String title, String confirmButtonTitle, String cancelButtonTitle,
                       String inputValue, String inputPlaceholder, PopUpType popUpType, IValueAction confirmAction, boolean isPassword) {
-        super(0, 0, title, popUpType);
+        super(0, 0, title, "", popUpType);
 
         int centeredX = xPos - this.getWidth() / 2;
         int centeredY = yPos - this.getHeight() / 2;

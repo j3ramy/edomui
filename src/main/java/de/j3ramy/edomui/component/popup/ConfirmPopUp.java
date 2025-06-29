@@ -10,7 +10,7 @@ public final class ConfirmPopUp extends PopUp {
 
     public ConfirmPopUp(View hostView, int xPos, int yPos, String title, String content, String confirmButtonTitle, String cancelButtonTitle,
                         PopUpType type, IAction confirmAction){
-        super(0, 0, title, type);
+        super(0, 0, title, content, type);
 
         int centeredX = xPos - this.getWidth() / 2;
         int centeredY = yPos - this.getHeight() / 2;
@@ -33,8 +33,6 @@ public final class ConfirmPopUp extends PopUp {
 
         this.view.addWidget(this.confirmButton);
         this.view.addWidget(this.cancelButton);
-
-        this.addContent(content);
     }
 
     public Button getConfirmButton() {

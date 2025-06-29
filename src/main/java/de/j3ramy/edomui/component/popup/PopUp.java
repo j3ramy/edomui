@@ -13,12 +13,12 @@ import java.awt.Rectangle;
 
 public class PopUp extends Widget {
     private final CenteredText title;
-    private TextArea content;
+    private final TextArea content;
 
     protected final PopUpStyle popUpStyle;
     protected final View view = new View();
 
-    public PopUp(int xPos, int yPos, String titleText, PopUpType type) {
+    public PopUp(int xPos, int yPos, String titleText, String content, PopUpType type) {
         super(xPos, yPos, 0, 0);
 
         this.popUpStyle = new PopUpStyle(ThemeManager.getDefaultPopUpStyle());
@@ -43,9 +43,7 @@ public class PopUp extends Widget {
                 this.popUpStyle.getTitleFontSize(),
                 this.popUpStyle.getTextColor());
         this.view.addWidget(this.title);
-    }
 
-    protected void addContent(String contentText) {
         int contentY = this.getTopPos() + this.popUpStyle.getTitleHeight();
         int contentHeight = this.getHeight() - this.popUpStyle.getTitleHeight() - this.popUpStyle.getWidgetHeight()
                 - this.popUpStyle.getMargin();
@@ -58,7 +56,7 @@ public class PopUp extends Widget {
         );
 
         this.content.getStyle().setPadding(0);
-        this.content.setText(contentText);
+        this.content.setText(content);
         this.content.getStyle().setTextColor(this.popUpStyle.getTextColor());
         this.content.getStyle().setFontSize(this.popUpStyle.getContentFontSize());
         this.content.setEnabled(false);
