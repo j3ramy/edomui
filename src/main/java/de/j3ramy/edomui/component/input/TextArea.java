@@ -869,4 +869,150 @@ public class TextArea extends Widget {
 
         return getText().length();
     }
+
+    public void scrollToTop() {
+        scrollOffset = 0;
+        scrollbar.updateScrollIndex(scrollOffset);
+        isManuallyScrolling = false;
+    }
+
+    public void scrollToBottom() {
+        if (lines.isEmpty()) return;
+
+        scrollOffset = Math.max(0, lines.size() - maxVisibleLines);
+        scrollbar.updateScrollIndex(scrollOffset);
+        isManuallyScrolling = true;
+    }
+
+    public void scrollToLine(int lineNumber) {
+        if (lineNumber < 0 || lineNumber >= lines.size()) return;
+
+        // Zentriere die gewünschte Zeile wenn möglich
+        int targetScrollOffset = Math.max(0, lineNumber - maxVisibleLines / 2);
+        int maxScrollOffset = Math.max(0, lines.size() - maxVisibleLines);
+
+        scrollOffset = Math.min(targetScrollOffset, maxScrollOffset);
+        scrollbar.updateScrollIndex(scrollOffset);
+        isManuallyScrolling = true;
+    }
+
+    public void scrollToCaret() {
+        ensureCaretVisible();
+        isManuallyScrolling = false;
+    }
+
+    public void scrollUp(int lines) {
+        if (lines <= 0) return;
+
+        scrollOffset = Math.max(0, scrollOffset - lines);
+        scrollbar.updateScrollIndex(scrollOffset);
+        isManuallyScrolling = true;
+    }
+
+    public void scrollDown(int lines) {
+        if (lines <= 0 || this.lines.isEmpty()) return;
+
+        int maxScrollOffset = Math.max(0, this.lines.size() - maxVisibleLines);
+        scrollOffset = Math.min(maxScrollOffset, scrollOffset + lines);
+        scrollbar.updateScrollIndex(scrollOffset);
+        isManuallyScrolling = true;
+    }
+
+    public void scrollLineUp() {
+        scrollUp(1);
+    }
+
+    public void scrollLineDown() {
+        scrollDown(1);
+    }
+
+    public boolean isScrolledToTop() {
+        return scrollOffset == 0;
+    }
+
+    public boolean isScrolledToBottom() {
+        if (lines.isEmpty() || !needsScrolling()) return true;
+
+        int maxScrollOffset = Math.max(0, lines.size() - maxVisibleLines);
+        return scrollOffset >= maxScrollOffset;
+    }
+
+    public double getScrollPercentage() {
+        if (lines.isEmpty() || !needsScrolling()) return 0.0;
+
+        int maxScrollOffset = Math.max(0, lines.size() - maxVisibleLines);
+        return maxScrollOffset > 0 ? (double) scrollOffset / maxScrollOffset : 0.0;
+    }
+
+    public void setScrollPercentage(double percentage) {
+        if (lines.isEmpty() || !needsScrolling()) return;
+
+        percentage = Math.max(0.0, Math.min(1.0, percentage));
+        int maxScrollOffset = Math.max(0, lines.size() - maxVisibleLines);
+        scrollOffset = (int) (maxScrollOffset * percentage);
+        scrollbar.updateScrollIndex(scrollOffset);
+        isManuallyScrolling = true;
+    }
+
+    public int getFirstVisibleLine() {
+        return scrollOffset;
+    }
+
+    public int getLastVisibleLine() {
+        return Math.min(lines.size() - 1, scrollOffset + maxVisibleLines - 1);
+    }
+
+    public boolean isLineVisible(int lineNumber) {
+        return lineNumber >= scrollOffset && lineNumber < scrollOffset + maxVisibleLines;
+    }
+
+    public boolean isCaretVisible() {
+        return isLineVisible(caretRow);
+    }
+
+    public boolean scrollToText(String searchText, boolean caseSensitive) {
+        if (searchText == null || searchText.isEmpty()) return false;
+
+        String search = caseSensitive ? searchText : searchText.toLowerCase();
+
+        for (int i = 0; i < lines.size(); i++) {
+            String line = caseSensitive ? lines.get(i) : lines.get(i).toLowerCase();
+            if (line.contains(search)) {
+                scrollToLine(i);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void setAutoScrollToCaret(boolean enabled) {
+        if (enabled) {
+            isManuallyScrolling = false;
+            ensureCaretVisible();
+        } else {
+            isManuallyScrolling = true;
+        }
+    }
+
+    public boolean isAutoScrollToCaretEnabled() {
+        return !isManuallyScrolling;
+    }
+
+    public int getVisibleLineCount() {
+        return maxVisibleLines;
+    }
+
+    public int getScrollOffset() {
+        return scrollOffset;
+    }
+
+    public void setScrollOffset(int offset) {
+        if (lines.isEmpty()) return;
+
+        int maxScrollOffset = Math.max(0, lines.size() - maxVisibleLines);
+        scrollOffset = Math.max(0, Math.min(offset, maxScrollOffset));
+        scrollbar.updateScrollIndex(scrollOffset);
+        isManuallyScrolling = true;
+    }
 }
