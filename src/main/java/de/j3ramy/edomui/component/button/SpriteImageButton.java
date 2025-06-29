@@ -4,6 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.enums.ButtonType;
 import de.j3ramy.edomui.interfaces.IAction;
+import de.j3ramy.edomui.theme.ThemeManager;
+import de.j3ramy.edomui.theme.basic.ImageButtonStyle;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 
@@ -19,6 +21,8 @@ public final class SpriteImageButton extends Button {
         this.textureWidth = texW;
         this.textureHeight = texH;
         this.clipSize = clipSize;
+
+        this.setStyle(ThemeManager.getDefaultImageButtonStyle());
     }
 
     @Override

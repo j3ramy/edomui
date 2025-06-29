@@ -1,6 +1,7 @@
 package de.j3ramy.edomui.theme;
 
 import de.j3ramy.edomui.theme.basic.ButtonStyle;
+import de.j3ramy.edomui.theme.basic.ImageButtonStyle;
 import de.j3ramy.edomui.theme.basic.ProgressBarStyle;
 import de.j3ramy.edomui.theme.basic.VerticalScrollbarStyle;
 import de.j3ramy.edomui.theme.chart.BarChartStyle;
@@ -41,6 +42,7 @@ public class ThemeManager {
     private static GridStyle defaultGridStyle = new GridStyle(globalDefaultStyle);
     private static TableStyle defaultTableStyle = new TableStyle(globalDefaultStyle);
     private static TextAreaStyle defaultTextAreaStyle = new TextAreaStyle(globalDefaultStyle);
+    private static ImageButtonStyle defaultImageButtonStyle = new ImageButtonStyle(globalDefaultStyle);
 
     public static void setGlobalDefaultStyle(WidgetStyle style) {
         globalDefaultStyle = new WidgetStyle(style);
@@ -104,6 +106,10 @@ public class ThemeManager {
 
     public static GridStyle getDefaultGridStyle() {
         return defaultGridStyle;
+    }
+
+    public static ImageButtonStyle getDefaultImageButtonStyle() {
+        return defaultImageButtonStyle;
     }
 
     public static void setVerticalScrollbarStyle(VerticalScrollbarStyle verticalScrollbarStyle) {
@@ -176,5 +182,9 @@ public class ThemeManager {
 
     public static void setDefaultTableStyle(TableStyle defaultTableStyle) {
         ThemeManager.defaultTableStyle = defaultTableStyle;
+    }
+
+    public static void setDefaultImageButtonStyle(ImageButtonStyle defaultImageButtonStyle) {
+        ThemeManager.defaultImageButtonStyle = defaultImageButtonStyle;
     }
 }

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.enums.ButtonType;
 import de.j3ramy.edomui.interfaces.IAction;
+import de.j3ramy.edomui.theme.ThemeManager;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 
@@ -13,6 +14,8 @@ public final class StaticImageButton extends Button {
     public StaticImageButton(int x, int y, int width, int height, ResourceLocation texture, IAction onClick) {
         super(x, y, width, height, "", onClick, ButtonType.IMAGE);
         this.texture = texture;
+
+        this.setStyle(ThemeManager.getDefaultImageButtonStyle());
     }
 
     public StaticImageButton(int x, int y, int size, ResourceLocation texture, IAction onClick) {
