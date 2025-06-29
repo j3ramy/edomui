@@ -206,16 +206,15 @@ public class ScrollableList extends CompositeWidget {
             boolean isSelected = (selectedIndex != -1 && content.indexOf(button) == selectedIndex);
 
             if (!isSelected) {
-                if (!button.getStyle().getBackgroundColor().equals(this.listStyle.getBackgroundColor())) {
-                    button.getStyle().setBackgroundColor(this.listStyle.getBackgroundColor());
-                }
+                button.getStyle().setBackgroundColor(this.listStyle.getBackgroundColor());
+                button.getStyle().setHoverBackgroundColor(this.listStyle.getSelectionColor());
+                button.getStyle().setFontSize(this.listStyle.getFontSize());
 
-                if (!button.getStyle().getHoverBackgroundColor().equals(this.listStyle.getSelectionColor())) {
-                    button.getStyle().setHoverBackgroundColor(this.listStyle.getSelectionColor());
-                }
-
-                if (!button.getStyle().getFontSize().equals(this.listStyle.getFontSize())) {
-                    button.getStyle().setFontSize(this.listStyle.getFontSize());
+                if (button.getTitle() != null) {
+                    button.getTitle().getStyle().setTextColor(this.listStyle.getTextColor());
+                    button.getTitle().getStyle().setTextHoverColor(this.listStyle.getTextHoverColor());
+                    button.getTitle().getStyle().setTextDisabledColor(this.listStyle.getTextDisabledColor());
+                    button.getTitle().getStyle().setFontSize(this.listStyle.getFontSize());
                 }
             }
         }
