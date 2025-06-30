@@ -50,8 +50,11 @@ public class TextField extends Button {
         this.textFieldStyle = new TextFieldStyle(ThemeManager.getDefaultTextFieldStyle());
         this.setStyle(this.textFieldStyle);
 
+        System.out.println(this.textFieldStyle.getTextColor());
+        System.out.println(this.textFieldStyle.getTextHoverColor());
+        System.out.println(this.textFieldStyle.getTextDisabledColor());
         this.visibleText = new VerticalCenteredText(this.toRect(), x + this.textFieldStyle.getPadding(), "",
-                this.textFieldStyle.getFontSize(), this.textFieldStyle.getTextColor());
+                this.textFieldStyle.getFontSize(), this.textFieldStyle.getTextColor(), this.textFieldStyle.getTextHoverColor(), textFieldStyle.getTextDisabledColor());
         this.visibleText.disableTruncate();
 
         this.title = this.createTitle(ButtonType.TEXT_FIELD, placeholder, this.textFieldStyle.getPadding());
@@ -124,6 +127,13 @@ public class TextField extends Button {
     public void update(int mouseX, int mouseY) {
         super.update(mouseX, mouseY);
         updateVisibleText();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+
+        this.visibleText.setEnabled(enabled);
     }
 
     @Override

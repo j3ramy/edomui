@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class TextFieldStyle extends InputStyle {
     private Color placeholderColor = Color.GRAY;
-    private Color selectionColor = Color.YELLOW;
+    private Color selectionColor = Color.ORANGE;
     private int lineSpacing = 5;
 
     public Color getPlaceholderColor() {

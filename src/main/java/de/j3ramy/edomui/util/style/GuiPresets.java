@@ -11,7 +11,7 @@ public class GuiPresets {
     public static int TEXT_AREA_CHAR_LIMIT = 131072;
     public static String TEXT_AREA_DELIMITER = "\n";
     public static float MAX_PROGRESS_BAR_VALUE = 1;
-    public static int MAX_TEXT_LENGTH = 256;
+    public static int MAX_TEXT_LENGTH = 1024;
 
     public static void setCursorBlinkTickTime(int cursorBlinkTickTime) {
         CURSOR_BLINK_TICK_TIME = cursorBlinkTickTime;
