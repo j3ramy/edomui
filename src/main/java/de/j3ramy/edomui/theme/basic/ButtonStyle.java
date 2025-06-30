@@ -20,6 +20,12 @@ public class ButtonStyle extends TextStyle {
         this.setTextHoverColor(GuiUtils.getContrastColor(this.getHoverBackgroundColor()));
     }
 
+    @Override
+    public void setDisabledBackgroundColor(Color c) {
+        super.setDisabledBackgroundColor(c);
+        this.setTextDisabledColor(GuiUtils.getContrastColor(this.getDisabledBackgroundColor()));
+    }
+
     public ButtonStyle(WidgetStyle style) {
         super(style);
 

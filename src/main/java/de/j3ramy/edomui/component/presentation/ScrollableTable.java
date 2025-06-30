@@ -101,16 +101,14 @@ public final class ScrollableTable extends ScrollableList {
     @Override
     protected void syncChildStyles() {
         if (headerRow != null) {
-            headerRow.getStyle().setBackgroundColor(this.tableStyle.getBackgroundColor());
-            headerRow.getStyle().setTextColor(this.tableStyle.getTextColor());
+            headerRow.getStyle().setBackgroundColor(this.tableStyle.getSelectionColor());
         }
 
         for (Button button : content) {
             if (button instanceof TableRow row && button != headerRow) {
                 row.getStyle().setBackgroundColor(this.tableStyle.getBackgroundColor());
-                row.getStyle().setTextColor(this.tableStyle.getTextColor());
                 row.getStyle().setHoverBackgroundColor(this.tableStyle.getSelectionColor());
-                row.getStyle().setTextHoverColor(this.tableStyle.getTextHoverColor());
+                row.getStyle().setDisabledBackgroundColor(this.tableStyle.getDisabledBackgroundColor());
             }
         }
     }
@@ -198,6 +196,8 @@ public final class ScrollableTable extends ScrollableList {
         content.add(0, headerRow);
         scrollbar.updateContentSize(content.size());
         layoutButtons();
+
+        markStylesDirty();
     }
 
     public void addRow(List<String> rowData, boolean renderTooltip) {
@@ -206,11 +206,11 @@ public final class ScrollableTable extends ScrollableList {
                 new ArrayList<>(rowData), renderTooltip, false
         );
 
-        row.getStyle().setHoverBackgroundColor(this.listStyle.getSelectionColor());
-
         content.add(row);
         scrollbar.updateContentSize(content.size());
         layoutButtons();
+
+        markStylesDirty();
     }
 
     public void addRow(List<String> rowData) {

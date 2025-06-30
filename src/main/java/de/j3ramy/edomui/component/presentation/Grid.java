@@ -1,7 +1,6 @@
 package de.j3ramy.edomui.component.presentation;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.j3ramy.edomui.component.CompositeWidget;
 import de.j3ramy.edomui.component.Widget;
 import de.j3ramy.edomui.component.basic.VerticalScrollbar;
 import de.j3ramy.edomui.component.button.Button;
@@ -21,7 +20,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public final class Grid extends CompositeWidget {
+public final class Grid extends Widget {
     private final List<List<Button>> grid;
     private final GridConfig config;
     private final VisibleRange visibleRange;
@@ -169,6 +168,15 @@ public final class Grid extends CompositeWidget {
                 .forEach(cell -> cell.setLeftPos(cell.getLeftPos() - deltaPos));
 
         super.setLeftPos(leftPos);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+
+        this.grid.stream()
+                .flatMap(List::stream)
+                .forEach(button -> button.setEnabled(enabled));
     }
 
     private void showContextMenu(Button cell) {
@@ -408,27 +416,6 @@ public final class Grid extends CompositeWidget {
 
     public void add(String label, Color backgroundColor, IAction leftClickAction) {
         this.add(label, backgroundColor, backgroundColor, leftClickAction);
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
-
-        this.grid.stream()
-                .flatMap(List::stream)
-                .forEach(button -> button.setEnabled(enabled));
-    }
-
-    @Override
-    protected void syncChildStyles() {
-        for (List<Button> row : grid) {
-            for (Button cell : row) {
-                if (cell != null) {
-                    cell.getStyle().setTextColor(this.gridStyle.getTextColor());
-                    cell.getStyle().setTextHoverColor(this.gridStyle.getTextHoverColor());
-                }
-            }
-        }
     }
 
     public boolean removeCell(int rowIndex, int columnIndex) {

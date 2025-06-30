@@ -1,7 +1,6 @@
 package de.j3ramy.edomui.component.popup;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.j3ramy.edomui.component.CompositeWidget;
 import de.j3ramy.edomui.component.input.TextArea;
 import de.j3ramy.edomui.component.text.CenteredText;
 import de.j3ramy.edomui.theme.ThemeManager;
@@ -12,7 +11,7 @@ import de.j3ramy.edomui.component.Widget;
 
 import java.awt.Rectangle;
 
-public class PopUp extends CompositeWidget {
+public class PopUp extends Widget {
     private final CenteredText title;
     private final TextArea content;
 
@@ -77,21 +76,6 @@ public class PopUp extends CompositeWidget {
         if (this.isHidden()) return;
         super.render(poseStack);
         this.view.render(poseStack);
-    }
-
-    @Override
-    protected void syncChildStyles() {
-        if (content != null) {
-            if (!content.getStyle().getTextColor().equals(this.popUpStyle.getTextColor())) {
-                content.getStyle().setTextColor(this.popUpStyle.getTextColor());
-            }
-        }
-
-        if (title != null) {
-            if (!title.getStyle().getTextColor().equals(this.popUpStyle.getTextColor())) {
-                title.getStyle().setTextColor(this.popUpStyle.getTextColor());
-            }
-        }
     }
 
     @Override

@@ -8,7 +8,6 @@ import de.j3ramy.edomui.enums.ButtonType;
 import de.j3ramy.edomui.interfaces.IContextMenuProvider;
 import de.j3ramy.edomui.interfaces.IAction;
 import de.j3ramy.edomui.component.basic.VerticalScrollbar;
-import de.j3ramy.edomui.component.Widget;
 import de.j3ramy.edomui.component.button.Button;
 import de.j3ramy.edomui.theme.presentation.ScrollableListStyle;
 import de.j3ramy.edomui.theme.ThemeManager;
@@ -203,20 +202,9 @@ public class ScrollableList extends CompositeWidget {
     @Override
     protected void syncChildStyles() {
         for (Button button : content) {
-            boolean isSelected = (selectedIndex != -1 && content.indexOf(button) == selectedIndex);
-
-            if (!isSelected) {
-                button.getStyle().setBackgroundColor(this.listStyle.getBackgroundColor());
-                button.getStyle().setHoverBackgroundColor(this.listStyle.getSelectionColor());
-                button.getStyle().setFontSize(this.listStyle.getFontSize());
-
-                if (button.getTitle() != null) {
-                    button.getTitle().getStyle().setTextColor(this.listStyle.getTextColor());
-                    button.getTitle().getStyle().setTextHoverColor(this.listStyle.getTextHoverColor());
-                    button.getTitle().getStyle().setTextDisabledColor(this.listStyle.getTextDisabledColor());
-                    button.getTitle().getStyle().setFontSize(this.listStyle.getFontSize());
-                }
-            }
+            button.getStyle().setBackgroundColor(this.listStyle.getBackgroundColor());
+            button.getStyle().setHoverBackgroundColor(this.listStyle.getSelectionColor());
+            button.getStyle().setDisabledBackgroundColor(this.listStyle.getDisabledBackgroundColor());
         }
     }
 
@@ -369,6 +357,8 @@ public class ScrollableList extends CompositeWidget {
         content.add(button);
         scrollbar.updateContentSize(content.size());
         layoutButtons();
+
+        this.markStylesDirty();
     }
 
     public void addElement(String title) {
