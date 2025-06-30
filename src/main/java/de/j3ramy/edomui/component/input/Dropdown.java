@@ -166,6 +166,13 @@ public final class Dropdown extends Button {
         int listHeight = Math.min(this.dropdownStyle.getMaxVisibleElements(), options.size()) * elementHeight;
 
         menu = new ScrollableList(getLeftPos(), getTopPos() + getHeight() + 2, getWidth(), listHeight, selectedColor);
+        menu.getStyle().setBackgroundColor(this.dropdownStyle.getBackgroundColor());
+        menu.getStyle().setHoverBackgroundColor(this.dropdownStyle.getHoverBackgroundColor());
+        menu.getStyle().setDisabledBackgroundColor(this.dropdownStyle.getDisabledBackgroundColor());
+        menu.getStyle().setFontSize(this.dropdownStyle.getFontSize());
+        menu.getStyle().setBorderColor(this.dropdownStyle.getBorderColor());
+        menu.getStyle().setBorderWidth(this.dropdownStyle.getBorderWidth());
+
         menu.clear();
 
         for (String option : options) {

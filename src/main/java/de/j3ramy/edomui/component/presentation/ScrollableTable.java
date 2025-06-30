@@ -102,6 +102,11 @@ public final class ScrollableTable extends ScrollableList {
     protected void syncChildStyles() {
         if (headerRow != null) {
             headerRow.getStyle().setBackgroundColor(this.tableStyle.getSelectionColor());
+            headerRow.getStyle().setFontSize(this.tableStyle.getFontSize());
+
+            if (headerRow.getTitle() != null) {
+                headerRow.getTitle().getStyle().setFontSize(this.tableStyle.getFontSize());
+            }
         }
 
         for (Button button : content) {
@@ -109,6 +114,11 @@ public final class ScrollableTable extends ScrollableList {
                 row.getStyle().setBackgroundColor(this.tableStyle.getBackgroundColor());
                 row.getStyle().setHoverBackgroundColor(this.tableStyle.getSelectionColor());
                 row.getStyle().setDisabledBackgroundColor(this.tableStyle.getDisabledBackgroundColor());
+                row.getStyle().setFontSize(this.tableStyle.getFontSize());
+
+                if (row.getTitle() != null) {
+                    row.getTitle().getStyle().setFontSize(this.tableStyle.getFontSize());
+                }
             }
         }
     }
