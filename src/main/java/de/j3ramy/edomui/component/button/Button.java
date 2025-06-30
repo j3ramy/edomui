@@ -13,7 +13,7 @@ import de.j3ramy.edomui.component.text.VerticalCenteredText;
 
 import java.awt.*;
 
-public class Button extends Widget {
+public class Button extends CompositeWidget {
     private final IAction rightClickAction;
     private final ButtonStyle buttonStyle;
 
@@ -126,12 +126,16 @@ public class Button extends Widget {
 
         if (this.title != null) {
             this.title.update(x, y);
+        }
+    }
 
-            if(this.titleColorsNeedUpdate()){
-                this.title.getStyle().setTextColor(this.buttonStyle.getTextColor());
-                this.title.getStyle().setTextHoverColor(this.buttonStyle.getTextHoverColor());
-                this.title.getStyle().setTextDisabledColor(this.buttonStyle.getTextDisabledColor());
-            }
+    @Override
+    protected void syncChildStyles() {
+        if (this.title != null) {
+            this.title.getStyle().setTextColor(this.buttonStyle.getTextColor());
+            this.title.getStyle().setTextHoverColor(this.buttonStyle.getTextHoverColor());
+            this.title.getStyle().setTextDisabledColor(this.buttonStyle.getTextDisabledColor());
+            this.title.getStyle().setFontSize(this.buttonStyle.getFontSize());
         }
     }
 
@@ -172,14 +176,6 @@ public class Button extends Widget {
 
         if (tooltip != null) tooltip.setTopPos(tooltip.getTopPos() - delta);
         super.setTopPos(newTopPos);
-    }
-
-    private boolean titleColorsNeedUpdate() {
-        if (this.title == null) return false;
-
-        return !this.title.getStyle().getTextColor().equals(this.buttonStyle.getTextColor()) ||
-                !this.title.getStyle().getTextHoverColor().equals(this.buttonStyle.getTextHoverColor()) ||
-                !this.title.getStyle().getTextDisabledColor().equals(this.buttonStyle.getTextDisabledColor());
     }
 
     public void setTitle(String text) {

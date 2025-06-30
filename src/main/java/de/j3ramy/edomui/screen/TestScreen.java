@@ -1,5 +1,6 @@
 package de.j3ramy.edomui.screen;
 
+import de.j3ramy.edomui.component.input.TextField;
 import de.j3ramy.edomui.view.View;
 import de.j3ramy.edomui.view.ViewRegistry;
 import de.j3ramy.edomui.enums.FontSize;
@@ -23,6 +24,10 @@ public class TestScreen extends Screen {
         ViewRegistry.registerView(this.view = new View());
 
         this.view.addWidget(new Text(5, 5, "Hey there! Greetings from EdomUI", FontSize.BASE, Color.BLUE));
+
+        TextField textField = new TextField(5, 15, 90, 13, "Placeholder");
+        this.view.addWidget(textField);
+        //textField.setEnabled(false);
     }
 
     @Override

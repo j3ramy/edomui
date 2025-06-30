@@ -14,6 +14,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,10 +55,9 @@ public class TextField extends Button {
         this.visibleText.disableTruncate();
 
         this.title = this.createTitle(ButtonType.TEXT_FIELD, placeholder, this.textFieldStyle.getPadding());
-
-        this.getTitle().getStyle().setTextColor(this.textFieldStyle.getPlaceholderColor());
         this.getTitle().setHidden(false);
         this.getTitle().setLeftPos(x + this.textFieldStyle.getPadding());
+        updateVisibleText();
     }
 
     public TextField(int x, int y, int width, int height, String placeholder, @Nullable IValueAction onTextChange) {
@@ -219,35 +219,23 @@ public class TextField extends Button {
 
     @Override
     public void setLeftPos(int newLeftPos) {
-        int oldLeftPos = this.getLeftPos();
+        int delta = newLeftPos - this.getLeftPos();
 
         super.setLeftPos(newLeftPos);
 
-        int delta = newLeftPos - oldLeftPos;
-
         if (visibleText != null) {
             visibleText.setLeftPos(visibleText.getLeftPos() + delta);
-        }
-
-        if (getTitle() != null) {
-            getTitle().setLeftPos(getTitle().getLeftPos() + delta);
         }
     }
 
     @Override
     public void setTopPos(int newTopPos) {
-        int oldTopPos = this.getTopPos();
+        int delta = newTopPos - this.getTopPos();
 
         super.setTopPos(newTopPos);
 
-        int delta = newTopPos - oldTopPos;
-
         if (visibleText != null) {
             visibleText.setTopPos(visibleText.getTopPos() + delta);
-        }
-
-        if (getTitle() != null) {
-            getTitle().setTopPos(getTitle().getTopPos() + delta);
         }
     }
 
@@ -333,7 +321,13 @@ public class TextField extends Button {
 
         boolean isEmpty = text.isEmpty();
         getTitle().setHidden(!isEmpty);
-        getTitle().getStyle().setTextColor(isEmpty ? this.textFieldStyle.getPlaceholderColor() : this.textFieldStyle.getTextColor());
+
+        if (isEmpty) {
+            Color placeholder = this.textFieldStyle.getPlaceholderColor();
+            getTitle().getStyle().setTextColor(placeholder);
+            getTitle().getStyle().setTextHoverColor(placeholder);
+            getTitle().getStyle().setTextDisabledColor(placeholder);
+        }
     }
 
     protected void deleteSelectionIfNeeded() {
