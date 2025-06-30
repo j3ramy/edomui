@@ -26,13 +26,12 @@ public class TestScreen extends Screen {
 
         this.view.addWidget(new Text(5, 5, "Hey there! Greetings from EdomUI", FontSize.BASE, Color.BLUE));
 
-        ScrollableList list = new ScrollableList(5, 20, 100, 200, Color.RED);
+        ScrollableList list = new ScrollableList(5, 20, 100, 200, Color.PINK);
         this.view.addWidget(list);
+        list.getStyle().setBackgroundColor(Color.RED);
 
         for(int i = 0; i < 5; i++)
             list.addElement("TEST");
-
-        list.getStyle().setBackgroundColor(Color.LIGHT_GRAY);
 
         StaticImageButton imageButton = new StaticImageButton(110, 20, 13, null, null);
         view.addWidget(imageButton);

@@ -357,26 +357,14 @@ public class ScrollableList extends CompositeWidget {
 
     public void addElement(String title, @Nullable IAction clickAction) {
         Button button = new Button(getLeftPos(), getTopPos() + content.size() * this.listStyle.getElementHeight(),
-            getWidth() - this.scrollbar.getStyle().getScrollbarTrackWidth() - 2 * this.listStyle.getPadding(), this.listStyle.getElementHeight(), "",
+            getWidth() - this.scrollbar.getStyle().getScrollbarTrackWidth() - 2 * this.listStyle.getPadding(), this.listStyle.getElementHeight(), title,
             clickAction, ButtonType.TEXT_FIELD, this.listStyle.getPadding());
 
         button.noBorder();
-        button.getStyle().setBackgroundColor(this.listStyle.getBackgroundColor());
-        button.getStyle().setHoverBackgroundColor(this.listStyle.getSelectionColor());
-        button.getStyle().setFontSize(this.listStyle.getFontSize());
 
-        if (button.getTitle() != null) {
-            button.getTitle().getStyle().setTextColor(this.listStyle.getTextColor());
-            button.getTitle().getStyle().setTextHoverColor(this.listStyle.getTextHoverColor());
-            button.getTitle().getStyle().setTextDisabledColor(this.listStyle.getTextDisabledColor());
-            button.getTitle().getStyle().setFontSize(this.listStyle.getFontSize());
-
-            if (button.getTitle().isTruncated()) {
-                button.enableTooltip();
-            }
+        if (button.getTitle().isTruncated()) {
+            button.enableTooltip();
         }
-
-        button.setTitle(title);
 
         content.add(button);
         scrollbar.updateContentSize(content.size());
