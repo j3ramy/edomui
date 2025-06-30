@@ -31,5 +31,6 @@ public class ButtonStyle extends TextStyle {
 
         this.setTextColor(GuiUtils.getContrastColor(this.getBackgroundColor()));
         this.setTextHoverColor(GuiUtils.getContrastColor(this.getHoverBackgroundColor()));
+        this.setTextDisabledColor(GuiUtils.getContrastColor(this.getDisabledBackgroundColor()));
     }
 }
