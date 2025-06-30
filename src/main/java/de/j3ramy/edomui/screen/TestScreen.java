@@ -1,5 +1,6 @@
 package de.j3ramy.edomui.screen;
 
+import de.j3ramy.edomui.component.button.StaticImageButton;
 import de.j3ramy.edomui.component.presentation.ScrollableList;
 import de.j3ramy.edomui.view.View;
 import de.j3ramy.edomui.view.ViewRegistry;
@@ -32,6 +33,11 @@ public class TestScreen extends Screen {
             list.addElement("TEST");
 
         list.getStyle().setBackgroundColor(Color.LIGHT_GRAY);
+
+        StaticImageButton imageButton = new StaticImageButton(110, 20, 13, null, null);
+        view.addWidget(imageButton);
+        imageButton.getStyle().setBackgroundColor(Color.RED);
+        imageButton.getStyle().setHoverBackgroundColor(Color.PINK);
     }
 
     @Override
