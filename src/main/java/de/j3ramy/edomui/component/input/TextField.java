@@ -219,9 +219,11 @@ public class TextField extends Button {
 
     @Override
     public void setLeftPos(int newLeftPos) {
-        int delta = newLeftPos - this.getLeftPos();
+        int oldLeftPos = this.getLeftPos();
 
         super.setLeftPos(newLeftPos);
+
+        int delta = newLeftPos - oldLeftPos;
 
         if (visibleText != null) {
             visibleText.setLeftPos(visibleText.getLeftPos() + delta);
@@ -234,9 +236,11 @@ public class TextField extends Button {
 
     @Override
     public void setTopPos(int newTopPos) {
-        int delta = newTopPos - this.getTopPos();
+        int oldTopPos = this.getTopPos();
 
         super.setTopPos(newTopPos);
+
+        int delta = newTopPos - oldTopPos;
 
         if (visibleText != null) {
             visibleText.setTopPos(visibleText.getTopPos() + delta);
