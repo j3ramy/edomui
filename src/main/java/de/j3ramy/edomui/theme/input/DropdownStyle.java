@@ -1,6 +1,6 @@
 package de.j3ramy.edomui.theme.input;
 
-import de.j3ramy.edomui.util.style.WidgetStyle;
+import de.j3ramy.edomui.theme.WidgetStyle;
 
 public class DropdownStyle extends TextFieldStyle {
     private int maxVisibleElements = 4;
@@ -24,5 +24,10 @@ public class DropdownStyle extends TextFieldStyle {
 
     public DropdownStyle(WidgetStyle style) {
         super(style);
+
+        if (style instanceof DropdownStyle other) {
+            this.maxVisibleElements = other.maxVisibleElements;
+            this.optionHeight = other.optionHeight;
+        }
     }
 }

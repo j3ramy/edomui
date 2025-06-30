@@ -2,7 +2,6 @@ package de.j3ramy.edomui.theme;
 
 import de.j3ramy.edomui.enums.FontSize;
 import de.j3ramy.edomui.util.style.GuiUtils;
-import de.j3ramy.edomui.util.style.WidgetStyle;
 
 import java.awt.*;
 
@@ -147,7 +146,25 @@ public class PopUpStyle extends WidgetStyle {
     public PopUpStyle(WidgetStyle style) {
         super(style);
 
-        this.setBorderWidth(3);
-        this.setTextColor(GuiUtils.getContrastColor(this.getBackgroundColor()));
+        if (style instanceof PopUpStyle other) {
+            this.textColor = other.textColor;
+            this.titleFontSize = other.titleFontSize;
+            this.contentFontSize = other.contentFontSize;
+            this.width = other.width;
+            this.height = other.height;
+            this.defaultColor = other.defaultColor;
+            this.successColor = other.successColor;
+            this.errorColor = other.errorColor;
+            this.noticeColor = other.noticeColor;
+            this.margin = other.margin;
+            this.titleHeight = other.titleHeight;
+            this.widgetHeight = other.widgetHeight;
+            this.buttonWidth = other.buttonWidth;
+            this.inputWidth = other.inputWidth;
+            this.progressBarWidth = other.progressBarWidth;
+        } else {
+            this.setBorderWidth(3);
+            this.setTextColor(GuiUtils.getContrastColor(this.getBackgroundColor()));
+        }
     }
 }

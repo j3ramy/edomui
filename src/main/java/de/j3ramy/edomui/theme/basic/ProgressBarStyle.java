@@ -1,6 +1,6 @@
 package de.j3ramy.edomui.theme.basic;
 
-import de.j3ramy.edomui.util.style.WidgetStyle;
+import de.j3ramy.edomui.theme.WidgetStyle;
 
 import java.awt.*;
 
@@ -17,5 +17,9 @@ public class ProgressBarStyle extends WidgetStyle {
 
     public ProgressBarStyle(WidgetStyle style) {
         super(style);
+
+        if (style instanceof ProgressBarStyle other) {
+            this.barColor = other.barColor;
+        }
     }
 }

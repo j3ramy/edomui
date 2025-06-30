@@ -1,6 +1,6 @@
 package de.j3ramy.edomui.theme.basic;
 
-import de.j3ramy.edomui.util.style.WidgetStyle;
+import de.j3ramy.edomui.theme.WidgetStyle;
 
 import java.awt.*;
 
@@ -26,5 +26,10 @@ public class VerticalScrollbarStyle extends WidgetStyle {
 
     public VerticalScrollbarStyle(WidgetStyle style) {
         super(style);
+
+        if (style instanceof VerticalScrollbarStyle other) {
+            this.scrollbarTrackWidth = other.scrollbarTrackWidth;
+            this.thumbColor = other.thumbColor;
+        }
     }
 }

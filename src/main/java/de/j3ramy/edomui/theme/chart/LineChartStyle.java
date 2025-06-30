@@ -1,6 +1,6 @@
 package de.j3ramy.edomui.theme.chart;
 
-import de.j3ramy.edomui.util.style.WidgetStyle;
+import de.j3ramy.edomui.theme.WidgetStyle;
 
 import java.awt.*;
 
@@ -35,5 +35,11 @@ public class LineChartStyle extends ChartStyle {
 
     public LineChartStyle(WidgetStyle style) {
         super(style);
+
+        if (style instanceof LineChartStyle other) {
+            this.dataPointRadius = other.dataPointRadius;
+            this.lineThickness = other.lineThickness;
+            this.lineColor = other.lineColor;
+        }
     }
 }

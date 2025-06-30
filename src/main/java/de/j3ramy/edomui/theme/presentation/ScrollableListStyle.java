@@ -1,9 +1,8 @@
 package de.j3ramy.edomui.theme.presentation;
 
-import de.j3ramy.edomui.enums.FontSize;
 import de.j3ramy.edomui.theme.input.InputStyle;
 import de.j3ramy.edomui.util.style.GuiUtils;
-import de.j3ramy.edomui.util.style.WidgetStyle;
+import de.j3ramy.edomui.theme.WidgetStyle;
 
 import java.awt.*;
 
@@ -50,6 +49,11 @@ public class ScrollableListStyle extends InputStyle {
 
     public ScrollableListStyle(WidgetStyle style) {
         super(style);
+
+        if (style instanceof ScrollableListStyle other) {
+            this.selectionColor = other.selectionColor;
+            this.elementHeight = other.elementHeight;
+        }
 
         updateTextColors();
     }

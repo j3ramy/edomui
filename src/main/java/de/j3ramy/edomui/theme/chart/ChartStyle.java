@@ -1,7 +1,7 @@
 package de.j3ramy.edomui.theme.chart;
 
 import de.j3ramy.edomui.enums.FontSize;
-import de.j3ramy.edomui.util.style.WidgetStyle;
+import de.j3ramy.edomui.theme.WidgetStyle;
 
 import java.awt.*;
 
@@ -45,5 +45,12 @@ public abstract class ChartStyle extends WidgetStyle {
 
     public ChartStyle(WidgetStyle other) {
         super(other);
+
+        if (other instanceof ChartStyle chartStyle) {
+            this.xAxisLabelOffset = chartStyle.xAxisLabelOffset;
+            this.yAxisLabelOffset = chartStyle.yAxisLabelOffset;
+            this.labelColor = chartStyle.labelColor;
+            this.fontSize = chartStyle.fontSize;
+        }
     }
 }

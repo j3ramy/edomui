@@ -2,7 +2,7 @@ package de.j3ramy.edomui.theme.basic;
 
 import de.j3ramy.edomui.theme.text.TextStyle;
 import de.j3ramy.edomui.util.style.GuiUtils;
-import de.j3ramy.edomui.util.style.WidgetStyle;
+import de.j3ramy.edomui.theme.WidgetStyle;
 
 import java.awt.*;
 
@@ -29,8 +29,10 @@ public class ButtonStyle extends TextStyle {
     public ButtonStyle(WidgetStyle style) {
         super(style);
 
-        this.setTextColor(GuiUtils.getContrastColor(this.getBackgroundColor()));
-        this.setTextHoverColor(GuiUtils.getContrastColor(this.getHoverBackgroundColor()));
-        this.setTextDisabledColor(GuiUtils.getContrastColor(this.getDisabledBackgroundColor()));
+        if (!(style instanceof ButtonStyle)) {
+            this.setTextColor(GuiUtils.getContrastColor(this.getBackgroundColor()));
+            this.setTextHoverColor(GuiUtils.getContrastColor(this.getHoverBackgroundColor()));
+            this.setTextDisabledColor(GuiUtils.getContrastColor(this.getDisabledBackgroundColor()));
+        }
     }
 }

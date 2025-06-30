@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.enums.WidgetState;
 import de.j3ramy.edomui.interfaces.IWidget;
 import de.j3ramy.edomui.theme.ThemeManager;
-import de.j3ramy.edomui.util.style.WidgetStyle;
+import de.j3ramy.edomui.theme.WidgetStyle;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
 import java.awt.*;

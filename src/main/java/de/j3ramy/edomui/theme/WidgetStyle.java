@@ -1,4 +1,4 @@
-package de.j3ramy.edomui.util.style;
+package de.j3ramy.edomui.theme;
 
 import de.j3ramy.edomui.enums.WidgetState;
 

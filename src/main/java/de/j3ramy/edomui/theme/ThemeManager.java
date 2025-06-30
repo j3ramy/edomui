@@ -16,7 +16,6 @@ import de.j3ramy.edomui.theme.presentation.ScrollableListStyle;
 import de.j3ramy.edomui.theme.presentation.TableStyle;
 import de.j3ramy.edomui.theme.text.TextStyle;
 import de.j3ramy.edomui.theme.text.TooltipStyle;
-import de.j3ramy.edomui.util.style.WidgetStyle;
 
 import java.awt.*;
 

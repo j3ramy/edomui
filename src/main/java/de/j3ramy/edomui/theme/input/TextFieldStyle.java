@@ -1,6 +1,6 @@
 package de.j3ramy.edomui.theme.input;
 
-import de.j3ramy.edomui.util.style.WidgetStyle;
+import de.j3ramy.edomui.theme.WidgetStyle;
 
 import java.awt.*;
 
@@ -35,5 +35,11 @@ public class TextFieldStyle extends InputStyle {
 
     public TextFieldStyle(WidgetStyle style) {
         super(style);
+
+        if (style instanceof TextFieldStyle other) {
+            this.placeholderColor = other.placeholderColor;
+            this.selectionColor = other.selectionColor;
+            this.lineSpacing = other.lineSpacing;
+        }
     }
 }

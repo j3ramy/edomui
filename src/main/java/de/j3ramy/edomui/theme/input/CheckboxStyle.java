@@ -2,7 +2,7 @@ package de.j3ramy.edomui.theme.input;
 
 import de.j3ramy.edomui.enums.FontSize;
 import de.j3ramy.edomui.theme.basic.ButtonStyle;
-import de.j3ramy.edomui.util.style.WidgetStyle;
+import de.j3ramy.edomui.theme.WidgetStyle;
 
 import java.awt.*;
 
@@ -38,6 +38,12 @@ public class CheckboxStyle extends ButtonStyle {
     public CheckboxStyle(WidgetStyle style) {
         super(style);
 
-        this.setFontSize(FontSize.S);
+        if (style instanceof CheckboxStyle other) {
+            this.checkMargin = other.checkMargin;
+            this.labelLeftMargin = other.labelLeftMargin;
+            this.checkColor = other.checkColor;
+        } else {
+            this.setFontSize(FontSize.S);
+        }
     }
 }

@@ -1,6 +1,6 @@
 package de.j3ramy.edomui.theme.chart;
 
-import de.j3ramy.edomui.util.style.WidgetStyle;
+import de.j3ramy.edomui.theme.WidgetStyle;
 
 import java.awt.*;
 
@@ -35,5 +35,11 @@ public class BarChartStyle extends ChartStyle {
 
     public BarChartStyle(WidgetStyle style) {
         super(style);
+
+        if (style instanceof BarChartStyle other) {
+            this.minBarHeight = other.minBarHeight;
+            this.barColor = other.barColor;
+            this.barSpacing = other.barSpacing;
+        }
     }
 }

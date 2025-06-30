@@ -1,7 +1,7 @@
 package de.j3ramy.edomui.theme.input;
 
 import de.j3ramy.edomui.theme.basic.ButtonStyle;
-import de.j3ramy.edomui.util.style.WidgetStyle;
+import de.j3ramy.edomui.theme.WidgetStyle;
 
 public abstract class InputStyle extends ButtonStyle {
     private int padding = 3;
@@ -16,5 +16,9 @@ public abstract class InputStyle extends ButtonStyle {
 
     public InputStyle(WidgetStyle style) {
         super(style);
+
+        if (style instanceof InputStyle other) {
+            this.padding = other.padding;
+        }
     }
 }

@@ -1,7 +1,7 @@
 package de.j3ramy.edomui.theme.text;
 
 import de.j3ramy.edomui.enums.FontSize;
-import de.j3ramy.edomui.util.style.WidgetStyle;
+import de.j3ramy.edomui.theme.WidgetStyle;
 
 import java.awt.*;
 
@@ -45,5 +45,12 @@ public class TextStyle extends WidgetStyle {
 
     public TextStyle(WidgetStyle style) {
         super(style);
+
+        if (style instanceof TextStyle other) {
+            this.textColor = other.textColor;
+            this.textHoverColor = other.textHoverColor;
+            this.textDisabledColor = other.textDisabledColor;
+            this.fontSize = other.fontSize;
+        }
     }
 }

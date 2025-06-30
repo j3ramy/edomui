@@ -38,11 +38,17 @@ public class ScrollableList extends CompositeWidget {
     public ScrollableList(int x, int y, int width, int height, Color selectionColor) {
         super(x, y, width, height);
 
+        System.out.println("Default style fontSize: " + ThemeManager.getDefaultScrollableListStyle().getFontSize());
+
         this.listStyle = new ScrollableListStyle(ThemeManager.getDefaultScrollableListStyle());
+        System.out.println("After copy fontSize: " + this.listStyle.getFontSize());
+
         this.setStyle(this.listStyle);
+        System.out.println("After setStyle fontSize: " + this.listStyle.getFontSize());
 
         if(selectionColor != null){
             this.listStyle.setSelectionColor(selectionColor);
+            System.out.println("After setSelectionColor fontSize: " + this.listStyle.getFontSize());
         }
 
         this.maxVisibleListElements = this.listStyle.getElementHeight() > 0 ? height / this.listStyle.getElementHeight() : 0;

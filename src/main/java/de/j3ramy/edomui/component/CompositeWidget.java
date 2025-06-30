@@ -1,6 +1,6 @@
 package de.j3ramy.edomui.component;
 
-import de.j3ramy.edomui.util.style.WidgetStyle;
+import de.j3ramy.edomui.theme.WidgetStyle;
 
 public abstract class CompositeWidget extends Widget {
     private boolean needsStyleSync = true;
