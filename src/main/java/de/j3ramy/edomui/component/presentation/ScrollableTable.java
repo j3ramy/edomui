@@ -9,6 +9,7 @@ import de.j3ramy.edomui.component.text.Tooltip;
 import de.j3ramy.edomui.enums.ButtonType;
 import de.j3ramy.edomui.theme.presentation.TableStyle;
 import de.j3ramy.edomui.theme.ThemeManager;
+import de.j3ramy.edomui.util.style.GuiPresets;
 import de.j3ramy.edomui.view.View;
 
 import java.awt.*;
@@ -195,9 +196,12 @@ public final class ScrollableTable extends ScrollableList {
     }
 
     public void addHeader(List<String> headers, boolean renderTooltip) {
+        List<String> cleanRow = new ArrayList<>(headers);
+        cleanRow.replaceAll(value -> value.replace(GuiPresets.TEXT_AREA_DELIMITER, ""));
+
         this.headerRow = new TableRow(
                 getLeftPos(), getTopPos(), getContentWidth(), this.tableStyle.getElementHeight(),
-                new ArrayList<>(headers), renderTooltip, true
+                new ArrayList<>(cleanRow), renderTooltip, true
         );
 
         headerRow.getStyle().setBackgroundColor(this.listStyle.getSelectionColor());
@@ -211,9 +215,12 @@ public final class ScrollableTable extends ScrollableList {
     }
 
     public void addRow(List<String> rowData, boolean renderTooltip) {
+        List<String> cleanRow = new ArrayList<>(rowData);
+        cleanRow.replaceAll(value -> value.replace(GuiPresets.TEXT_AREA_DELIMITER, ""));
+
         TableRow row = new TableRow(
                 getLeftPos(), calculateRowPosition(content.size()), getContentWidth(), this.listStyle.getElementHeight(),
-                new ArrayList<>(rowData), renderTooltip, false
+                new ArrayList<>(cleanRow), renderTooltip, false
         );
 
         content.add(row);

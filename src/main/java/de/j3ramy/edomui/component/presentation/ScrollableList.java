@@ -11,6 +11,7 @@ import de.j3ramy.edomui.component.basic.VerticalScrollbar;
 import de.j3ramy.edomui.component.button.Button;
 import de.j3ramy.edomui.theme.presentation.ScrollableListStyle;
 import de.j3ramy.edomui.theme.ThemeManager;
+import de.j3ramy.edomui.util.style.GuiPresets;
 import de.j3ramy.edomui.util.style.GuiUtils;
 
 import javax.annotation.Nullable;
@@ -349,6 +350,8 @@ public class ScrollableList extends CompositeWidget {
     }
 
     public void addElement(String title, @Nullable IAction clickAction) {
+        title = title.replaceAll(GuiPresets.TEXT_AREA_DELIMITER, "");
+
         Button button = new Button(getLeftPos(), getTopPos() + content.size() * this.listStyle.getElementHeight(),
             getWidth() - this.scrollbar.getStyle().getScrollbarTrackWidth() - 2 * this.listStyle.getPadding(), this.listStyle.getElementHeight(), title,
             clickAction, ButtonType.TEXT_FIELD, this.listStyle.getPadding());

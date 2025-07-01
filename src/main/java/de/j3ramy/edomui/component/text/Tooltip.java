@@ -21,7 +21,7 @@ public final class Tooltip extends Widget {
     public Tooltip(String text, Widget target) {
         super(target.getLeftPos(), target.getTopPos(), 0, 0);
         this.target = target;
-        this.text = text;
+        this.text = text.replaceAll(GuiPresets.TEXT_AREA_DELIMITER, "");
 
         this.tooltipStyle = new TooltipStyle(ThemeManager.getDefaultTooltipStyle());
         this.setStyle(tooltipStyle);
