@@ -205,6 +205,7 @@ public class ScrollableList extends CompositeWidget {
             button.getStyle().setBackgroundColor(this.listStyle.getBackgroundColor());
             button.getStyle().setHoverBackgroundColor(this.listStyle.getSelectionColor());
             button.getStyle().setDisabledBackgroundColor(this.listStyle.getDisabledBackgroundColor());
+            button.getStyle().setFontSize(this.listStyle.getFontSize());
 
             if (button.getTitle() != null) {
                 button.getTitle().getStyle().setFontSize(this.listStyle.getFontSize());
