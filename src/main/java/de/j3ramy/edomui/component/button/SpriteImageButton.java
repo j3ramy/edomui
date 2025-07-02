@@ -16,7 +16,12 @@ public final class SpriteImageButton extends Button {
     private final ImageButtonStyle imageButtonStyle;
 
     public SpriteImageButton(int x, int y, int width, int height, int u, int v, int texW, int texH, int clipSize, ResourceLocation texture, IAction onClick) {
-        super(x, y, width, height, "", onClick, ButtonType.IMAGE);
+        this(x, y, width, height, u, v, texW, texH, clipSize, texture, onClick, "");
+    }
+
+    public SpriteImageButton(int x, int y, int width, int height, int u, int v, int texW, int texH, int clipSize, ResourceLocation texture, IAction onClick,
+                             String tooltip) {
+        super(x, y, width, height, tooltip, onClick, ButtonType.IMAGE);
         this.texture = texture;
         this.uOffset = u;
         this.vOffset = v;
@@ -26,6 +31,9 @@ public final class SpriteImageButton extends Button {
 
         this.imageButtonStyle = new ImageButtonStyle(ThemeManager.getDefaultImageButtonStyle());
         this.setStyle(imageButtonStyle);
+
+        this.getTitle().setHidden(true);
+        this.enableTooltip();
     }
 
     @Override

@@ -235,17 +235,9 @@ public class View implements IWidget {
         for (Widget widget : this.widgets) {
             if (widget.isHidden()) continue;
 
-            if (widget instanceof Button button) {
-                if (button.isTooltipEnabled() && button.getTooltip() != null && !button.getTooltip().isHidden()) {
-                    button.getTooltip().render(poseStack);
-                }
-            }
-
-            if (widget instanceof ScrollableList list) {
-                for (Button button : list.getContent()) {
-                    if (button.isTooltipEnabled() && button.getTooltip() != null && !button.getTooltip().isHidden()) {
-                        button.getTooltip().render(poseStack);
-                    }
+            if (widget instanceof Tooltip tooltip) {
+                if (!tooltip.isHidden()) {
+                    tooltip.render(poseStack);
                 }
             }
         }

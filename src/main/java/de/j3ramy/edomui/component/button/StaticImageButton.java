@@ -14,11 +14,18 @@ public final class StaticImageButton extends Button {
     private final ImageButtonStyle imageButtonStyle;
 
     public StaticImageButton(int x, int y, int width, int height, ResourceLocation texture, IAction onClick) {
-        super(x, y, width, height, "", onClick, ButtonType.IMAGE);
+        this(x, y, width, height, texture, onClick, "");
+    }
+
+    public StaticImageButton(int x, int y, int width, int height, ResourceLocation texture, IAction onClick, String tooltip) {
+        super(x, y, width, height, tooltip, onClick, ButtonType.IMAGE);
         this.texture = texture;
 
         this.imageButtonStyle = new ImageButtonStyle(ThemeManager.getDefaultImageButtonStyle());
         this.setStyle(imageButtonStyle);
+
+        this.getTitle().setHidden(true);
+        this.enableTooltip();
     }
 
     public StaticImageButton(int x, int y, int size, ResourceLocation texture, IAction onClick) {

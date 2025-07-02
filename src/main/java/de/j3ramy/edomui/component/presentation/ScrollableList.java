@@ -46,7 +46,9 @@ public class ScrollableList extends CompositeWidget {
             this.listStyle.setSelectionColor(selectionColor);
         }
 
-        this.maxVisibleListElements = this.listStyle.getElementHeight() > 0 ? height / this.listStyle.getElementHeight() : 0;
+        int elementWithGap = this.listStyle.getElementHeight() + this.listStyle.getElementGap();
+        this.maxVisibleListElements = elementWithGap > 0 ? height / elementWithGap : 0;
+
         this.scrollbar = new VerticalScrollbar(this, 0, maxVisibleListElements);
     }
 
@@ -285,7 +287,10 @@ public class ScrollableList extends CompositeWidget {
 
             b.setLeftPos(getLeftPos());
             b.setWidth(getWidth() - this.scrollbar.getStyle().getScrollbarTrackWidth());
-            b.setTopPos(getTopPos() + (i - scrollIndex) * this.listStyle.getElementHeight());
+
+            int yPosition = getTopPos() + (i - scrollIndex) * (this.listStyle.getElementHeight() + this.listStyle.getElementGap());
+            b.setTopPos(yPosition);
+
             b.setHeight(this.listStyle.getElementHeight());
         }
     }

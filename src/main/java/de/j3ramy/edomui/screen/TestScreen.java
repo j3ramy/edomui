@@ -1,5 +1,8 @@
 package de.j3ramy.edomui.screen;
 
+import de.j3ramy.edomui.component.button.StaticImageButton;
+import de.j3ramy.edomui.component.presentation.ScrollableList;
+import de.j3ramy.edomui.component.text.Tooltip;
 import de.j3ramy.edomui.view.View;
 import de.j3ramy.edomui.view.ViewRegistry;
 import de.j3ramy.edomui.enums.FontSize;
@@ -7,6 +10,7 @@ import de.j3ramy.edomui.component.text.Text;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TextComponent;
 
+import javax.swing.plaf.ToolTipUI;
 import java.awt.*;
 
 public class TestScreen extends Screen {
@@ -21,8 +25,6 @@ public class TestScreen extends Screen {
         super.init();
 
         ViewRegistry.registerView(this.view = new View());
-
-        this.view.addWidget(new Text(5, 5, "Hey there! Greetings from EdomUI", FontSize.BASE, Color.BLUE));
     }
 
     @Override

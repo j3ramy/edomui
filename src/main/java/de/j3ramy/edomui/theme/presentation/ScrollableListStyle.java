@@ -9,6 +9,7 @@ import java.awt.*;
 public class ScrollableListStyle extends InputStyle {
     private Color selectionColor = Color.BLACK;
     private int elementHeight = 13;
+    private int elementGap = 0;
 
     public int getElementHeight() {
         return elementHeight;
@@ -16,6 +17,10 @@ public class ScrollableListStyle extends InputStyle {
 
     public Color getSelectionColor() {
         return selectionColor;
+    }
+
+    public int getElementGap() {
+        return elementGap;
     }
 
     public void setSelectionColor(Color selectionColor) {
@@ -45,6 +50,10 @@ public class ScrollableListStyle extends InputStyle {
     public void setBackgroundColor(Color backgroundColor) {
         super.setBackgroundColor(backgroundColor);
         updateTextColors();
+    }
+
+    public void setElementGap(int elementGap) {
+        this.elementGap = elementGap;
     }
 
     public ScrollableListStyle(WidgetStyle style) {

@@ -72,7 +72,6 @@ public class Button extends CompositeWidget {
                     return Button.this.isMouseOver();
                 }
             };
-            case IMAGE -> null;
             default -> {
                 Rectangle rect = this.toRect();
                 rect.width -= 2 * padding;
