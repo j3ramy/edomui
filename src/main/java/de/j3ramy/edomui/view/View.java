@@ -52,8 +52,8 @@ public class View implements IWidget {
         if (isHidden) return;
 
         renderNormalWidgets(poseStack);
-        renderPopUps(poseStack);
         renderDropdowns(poseStack);
+        renderPopUps(poseStack);
         renderTooltips(poseStack);
     }
 
@@ -62,6 +62,7 @@ public class View implements IWidget {
         if (isHidden) return;
 
         boolean hasActivePopUp = hasActivePopUp();
+
         for (int i = widgets.size() - 1; i >= 0; i--) {
             Widget widget = widgets.get(i);
             if (!widget.isHidden() && widget instanceof PopUp) {
@@ -74,41 +75,19 @@ public class View implements IWidget {
 
         for (int i = widgets.size() - 1; i >= 0; i--) {
             Widget widget = widgets.get(i);
-            if (!widget.isHidden() && widget instanceof Dropdown) {
+            if (!widget.isHidden() && widget instanceof Dropdown dropdown) {
                 if (!shouldAllowInteraction(widget, hasActivePopUp)) {
                     continue;
                 }
 
-                widget.onClick(mouseButton);
                 if (widget.isMouseOver()) {
+                    widget.onClick(mouseButton);
                     return;
                 }
-            }
-        }
 
-        for (int i = widgets.size() - 1; i >= 0; i--) {
-            Widget widget = widgets.get(i);
-            if (!widget.isHidden() && !(widget instanceof PopUp) && !(widget instanceof Dropdown)) {
-
-                if (!shouldAllowInteraction(widget, hasActivePopUp)) {
-                    continue;
-                }
-
-                if ((widget instanceof TextArea || widget instanceof TextField) && !widget.isEnabled()) {
-                    widget.update(currentMouseX, currentMouseY);
+                if (dropdown.isUnfolded()) {
                     widget.onClick(mouseButton);
-
-                    if (widget.isMouseOver()) {
-                        break;
-                    }
-                }
-                else {
-                    widget.onClick(mouseButton);
-
-                    if (widget.isMouseOver() && shouldMoveToForeground(widget)) {
-                        moveWidgetToForeground(widget);
-                        break;
-                    }
+                    return;
                 }
             }
         }
