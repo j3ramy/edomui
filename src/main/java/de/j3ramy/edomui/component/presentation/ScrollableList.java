@@ -229,9 +229,13 @@ public class ScrollableList extends CompositeWidget {
             return;
 
         contextMenu.clear();
-        IContextMenuProvider.populateContextMenu(contextMenu, elementIndex,
-                content.get(elementIndex).getTitle().getString().toString());
 
+        String elementTitle = "";
+        if (elementIndex >= 0 && elementIndex < content.size()) {
+            elementTitle = content.get(elementIndex).getTitle().getString().toString();
+        }
+
+        IContextMenuProvider.populateContextMenu(contextMenu, elementIndex, elementTitle);
         contextMenu.show(this.getMousePosition().x, this.getMousePosition().y);
     }
 
