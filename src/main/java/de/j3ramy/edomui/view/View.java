@@ -29,9 +29,8 @@ public class View implements IWidget {
 
         if (isHidden || !isUpdating) return;
 
-        boolean hasActivePopUp = hasActivePopUp();
         for (Widget widget : widgets) {
-            if (shouldUpdateWidget(widget, hasActivePopUp)) {
+            if (shouldUpdateWidget(widget)) {
                 widget.update(mouseX, mouseY);
             }
         }
@@ -62,6 +61,7 @@ public class View implements IWidget {
     public void onClick(int mouseButton) {
         if (isHidden) return;
 
+        boolean hasActivePopUp = hasActivePopUp();
         for (int i = widgets.size() - 1; i >= 0; i--) {
             Widget widget = widgets.get(i);
             if (!widget.isHidden() && widget instanceof PopUp) {
@@ -75,6 +75,10 @@ public class View implements IWidget {
         for (int i = widgets.size() - 1; i >= 0; i--) {
             Widget widget = widgets.get(i);
             if (!widget.isHidden() && !(widget instanceof PopUp)) {
+
+                if (!shouldAllowInteraction(widget, hasActivePopUp)) {
+                    continue;
+                }
 
                 if ((widget instanceof TextArea || widget instanceof TextField) && !widget.isEnabled()) {
                     widget.update(currentMouseX, currentMouseY);
@@ -100,8 +104,14 @@ public class View implements IWidget {
     public void onScroll(double delta) {
         if (isHidden) return;
 
+        boolean hasActivePopUp = hasActivePopUp();
         for (Widget widget : widgets) {
             if (!widget.isHidden()) {
+                // Allow scroll interaction based on same logic
+                if (!shouldAllowInteraction(widget, hasActivePopUp) && !(widget instanceof PopUp)) {
+                    continue;
+                }
+
                 if (!widget.isEnabled()) {
                     widget.update(currentMouseX, currentMouseY);
                 }
@@ -114,8 +124,14 @@ public class View implements IWidget {
     public void keyPressed(int keyCode) {
         if (isHidden) return;
 
+        boolean hasActivePopUp = hasActivePopUp();
+
         for (Widget widget : widgets) {
             if (!widget.isHidden()) {
+                if (!shouldAllowInteraction(widget, hasActivePopUp) && !(widget instanceof PopUp)) {
+                    continue;
+                }
+
                 if ((widget instanceof TextArea || widget instanceof TextField) && !widget.isEnabled()) {
                     boolean isCtrlC = keyCode == 67 && Screen.hasControlDown();
                     boolean isCtrlA = keyCode == 65 && Screen.hasControlDown();
@@ -135,8 +151,14 @@ public class View implements IWidget {
     public void charTyped(char codePoint) {
         if (isHidden) return;
 
+        boolean hasActivePopUp = hasActivePopUp();
+
         for (Widget widget : widgets) {
             if (!widget.isHidden()) {
+                if (!shouldAllowInteraction(widget, hasActivePopUp) && !(widget instanceof PopUp)) {
+                    continue;
+                }
+
                 widget.charTyped(codePoint);
             }
         }
@@ -146,8 +168,14 @@ public class View implements IWidget {
     public void onMouseDrag(int mouseButton, double newX, double newY, int mouseX, int mouseY) {
         if (isHidden) return;
 
+        boolean hasActivePopUp = hasActivePopUp();
+
         for (Widget widget : widgets) {
             if (!widget.isHidden()) {
+                if (!shouldAllowInteraction(widget, hasActivePopUp) && !(widget instanceof PopUp)) {
+                    continue;
+                }
+
                 widget.onMouseDrag(mouseButton, newX, newY, mouseX, mouseY);
             }
         }
@@ -237,20 +265,15 @@ public class View implements IWidget {
         return false;
     }
 
-    protected boolean shouldUpdateWidget(Widget widget, boolean hasActivePopUp) {
-        if (widget instanceof Tooltip) {
-            return true;
-        }
-
-        if (hasActivePopUp) {
-            return widget instanceof PopUp && !widget.isHidden() && widget.isEnabled();
-        }
-
+    protected boolean shouldUpdateWidget(Widget widget) {
         return !widget.isHidden() && widget.isEnabled();
     }
 
-    protected boolean shouldUpdateWidget(Widget widget) {
-        return shouldUpdateWidget(widget, hasActivePopUp());
+    protected boolean shouldAllowInteraction(Widget widget, boolean hasActivePopUp) {
+        if (hasActivePopUp) {
+            return widget instanceof PopUp;
+        }
+        return true;
     }
 
     public void addWidget(Widget widget) {

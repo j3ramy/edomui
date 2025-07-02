@@ -50,9 +50,6 @@ public class TextField extends Button {
         this.textFieldStyle = new TextFieldStyle(ThemeManager.getDefaultTextFieldStyle());
         this.setStyle(this.textFieldStyle);
 
-        System.out.println(this.textFieldStyle.getTextColor());
-        System.out.println(this.textFieldStyle.getTextHoverColor());
-        System.out.println(this.textFieldStyle.getTextDisabledColor());
         this.visibleText = new VerticalCenteredText(this.toRect(), x + this.textFieldStyle.getPadding(), "",
                 this.textFieldStyle.getFontSize(), this.textFieldStyle.getTextColor(), this.textFieldStyle.getTextHoverColor(), textFieldStyle.getTextDisabledColor());
         this.visibleText.disableTruncate();
