@@ -16,6 +16,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public final class ScrollableTable extends ScrollableList {
     private final TableStyle tableStyle;
@@ -199,7 +200,7 @@ public final class ScrollableTable extends ScrollableList {
         List<String> cleanRow = new ArrayList<>(headers);
         cleanRow.replaceAll(value -> value.replace(GuiPresets.TEXT_AREA_DELIMITER, ""));
 
-        this.headerRow = new TableRow(
+        this.headerRow = new TableRow(UUID.randomUUID(),
                 getLeftPos(), getTopPos(), getContentWidth(), this.tableStyle.getElementHeight(),
                 new ArrayList<>(cleanRow), renderTooltip, true
         );
@@ -214,20 +215,22 @@ public final class ScrollableTable extends ScrollableList {
         markStylesDirty();
     }
 
-    public void addRow(List<String> rowData, boolean renderTooltip) {
+    public void addRow(UUID id, List<String> rowData, boolean renderTooltip) {
         List<String> cleanRow = new ArrayList<>(rowData);
         cleanRow.replaceAll(value -> value.replace(GuiPresets.TEXT_AREA_DELIMITER, ""));
 
-        TableRow row = new TableRow(
-                getLeftPos(), calculateRowPosition(content.size()), getContentWidth(), this.listStyle.getElementHeight(),
-                new ArrayList<>(cleanRow), renderTooltip, false
-        );
+        TableRow row = new TableRow(id, getLeftPos(), calculateRowPosition(content.size()), getContentWidth(), this.listStyle.getElementHeight(),
+                new ArrayList<>(cleanRow), renderTooltip, false);
 
         content.add(row);
         scrollbar.updateContentSize(content.size());
         layoutButtons();
 
         markStylesDirty();
+    }
+
+    public void addRow(List<String> rowData, boolean renderTooltip) {
+       this.addRow(UUID.randomUUID(), rowData, renderTooltip);
     }
 
     public void addRow(List<String> rowData) {
@@ -270,6 +273,7 @@ public final class ScrollableTable extends ScrollableList {
     // INNER CLASS: TableRow
     // ================================
     public final class TableRow extends Button {
+        private final UUID id;
         private final List<CenteredText> columnTexts = new ArrayList<>();
         private final List<Tooltip> columnTooltips = new ArrayList<>();
         private final View columnView = new View();
@@ -278,9 +282,10 @@ public final class ScrollableTable extends ScrollableList {
 
         private int[] columnWidths;
 
-        public TableRow(int x, int y, int width, int height, List<String> columnData, boolean renderTooltip, boolean isHeader) {
+        public TableRow(UUID id, int x, int y, int width, int height, List<String> columnData, boolean renderTooltip, boolean isHeader) {
             super(x, y, width, height, "", null, null, ButtonType.TEXT_FIELD);
 
+            this.id = id;
             this.columnData = new ArrayList<>(columnData);
             this.isHeader = isHeader;
             this.noBorder();
@@ -408,6 +413,10 @@ public final class ScrollableTable extends ScrollableList {
 
         public List<String> getColumnData() {
             return new ArrayList<>(columnData);
+        }
+
+        public UUID getId() {
+            return id;
         }
 
         public void renderWithoutTooltips(PoseStack poseStack) {
