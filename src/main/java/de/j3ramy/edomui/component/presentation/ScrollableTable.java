@@ -192,6 +192,19 @@ public final class ScrollableTable extends ScrollableList {
         return new ArrayList<>();
     }
 
+    public UUID getSelectedRowId() {
+        if (!hasSelection()) return null;
+
+        int actualIndex = super.getSelectedIndex();
+        if (actualIndex >= 0 && actualIndex < content.size()) {
+            Button selectedButton = content.get(actualIndex);
+            if (selectedButton instanceof TableRow) {
+                return ((TableRow) selectedButton).getId();
+            }
+        }
+        return null;
+    }
+
     public void addHeader(List<String> headers) {
         addHeader(headers, true);
     }
