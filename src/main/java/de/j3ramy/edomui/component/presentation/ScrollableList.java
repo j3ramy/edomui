@@ -138,6 +138,10 @@ public class ScrollableList extends CompositeWidget {
 
         if (!clicked) {
             unselect();
+
+            if (mouseButton == 1 && this.contextMenu != null) {
+                showContextMenu(-1);
+            }
         }
     }
 
