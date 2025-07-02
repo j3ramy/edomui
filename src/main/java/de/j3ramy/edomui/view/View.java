@@ -52,8 +52,8 @@ public class View implements IWidget {
         if (isHidden) return;
 
         renderNormalWidgets(poseStack);
-        renderDropdowns(poseStack);
         renderPopUps(poseStack);
+        renderDropdowns(poseStack);
         renderTooltips(poseStack);
     }
 
@@ -74,7 +74,21 @@ public class View implements IWidget {
 
         for (int i = widgets.size() - 1; i >= 0; i--) {
             Widget widget = widgets.get(i);
-            if (!widget.isHidden() && !(widget instanceof PopUp)) {
+            if (!widget.isHidden() && widget instanceof Dropdown) {
+                if (!shouldAllowInteraction(widget, hasActivePopUp)) {
+                    continue;
+                }
+
+                widget.onClick(mouseButton);
+                if (widget.isMouseOver()) {
+                    return;
+                }
+            }
+        }
+
+        for (int i = widgets.size() - 1; i >= 0; i--) {
+            Widget widget = widgets.get(i);
+            if (!widget.isHidden() && !(widget instanceof PopUp) && !(widget instanceof Dropdown)) {
 
                 if (!shouldAllowInteraction(widget, hasActivePopUp)) {
                     continue;
