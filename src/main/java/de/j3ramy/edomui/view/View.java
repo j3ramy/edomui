@@ -75,19 +75,35 @@ public class View implements IWidget {
 
         for (int i = widgets.size() - 1; i >= 0; i--) {
             Widget widget = widgets.get(i);
-            if (!widget.isHidden() && widget instanceof Dropdown dropdown) {
+            if (!widget.isHidden() && !(widget instanceof PopUp)) {
+
                 if (!shouldAllowInteraction(widget, hasActivePopUp)) {
                     continue;
                 }
 
-                if (widget.isMouseOver()) {
-                    widget.onClick(mouseButton);
-                    return;
+                if (widget instanceof Dropdown) {
+                    if (widget.isMouseOver()) {
+                        widget.onClick(mouseButton);
+                        return;
+                    }
+                    continue;
                 }
 
-                if (dropdown.isUnfolded()) {
+                if ((widget instanceof TextArea || widget instanceof TextField) && !widget.isEnabled()) {
+                    widget.update(currentMouseX, currentMouseY);
                     widget.onClick(mouseButton);
-                    return;
+
+                    if (widget.isMouseOver()) {
+                        break;
+                    }
+                }
+                else {
+                    widget.onClick(mouseButton);
+
+                    if (widget.isMouseOver() && shouldMoveToForeground(widget)) {
+                        moveWidgetToForeground(widget);
+                        break;
+                    }
                 }
             }
         }
