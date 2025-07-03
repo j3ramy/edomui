@@ -208,8 +208,15 @@ public class ScrollableList extends CompositeWidget {
 
     @Override
     protected void syncChildStyles() {
-        for (Button button : content) {
-            button.getStyle().setBackgroundColor(this.listStyle.getBackgroundColor());
+        for (int i = 0; i < content.size(); i++) {
+            Button button = content.get(i);
+
+            if (i != selectedIndex) {
+                button.getStyle().setBackgroundColor(this.listStyle.getBackgroundColor());
+            } else {
+                button.getStyle().setBackgroundColor(this.listStyle.getSelectionColor());
+            }
+
             button.getStyle().setHoverBackgroundColor(this.listStyle.getSelectionColor());
             button.getStyle().setDisabledBackgroundColor(this.listStyle.getDisabledBackgroundColor());
             button.getStyle().setFontSize(this.listStyle.getFontSize());
@@ -242,7 +249,9 @@ public class ScrollableList extends CompositeWidget {
     }
 
     private void selectIndex(int index) {
-        if (index < 0 || index >= content.size()) return;
+        if (index < 0 || index >= content.size()) {
+            return;
+        }
 
         unselect();
         selectedIndex = index;
