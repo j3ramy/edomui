@@ -72,20 +72,14 @@ public class Button extends CompositeWidget {
                     return Button.this.isMouseOver();
                 }
             };
-            default -> {
-                Rectangle rect = this.toRect();
-                rect.width -= 2 * padding;
-                rect.x += padding;
-
-                yield new CenteredText(rect, text, this.buttonStyle.getFontSize(), this.buttonStyle.getTextColor(), this.buttonStyle.getTextHoverColor(),
-                        this.buttonStyle.getTextDisabledColor()
-                ){
-                    @Override
-                    public boolean isMouseOver() {
-                        return Button.this.isMouseOver();
-                    }
-                };
-            }
+            default -> new CenteredText(this.toRect(), text, this.buttonStyle.getFontSize(), this.buttonStyle.getTextColor(), this.buttonStyle.getTextHoverColor(),
+                    this.buttonStyle.getTextDisabledColor()
+            ){
+                @Override
+                public boolean isMouseOver() {
+                    return Button.this.isMouseOver();
+                }
+            };
         };
 
         title.setHoverable(true);
@@ -171,10 +165,17 @@ public class Button extends CompositeWidget {
         super.setTopPos(newTopPos);
     }
 
-    public void setTitle(String text) {
-        if(title != null){
+    public void setTitle(String text, boolean replace) {
+        if(replace){
+            this.title = this.createTitle(ButtonType.DEFAULT, text, 0);
+        }
+        else if(title != null){
             title.setText(text);
         }
+    }
+
+    public void setTitle(String text) {
+        this.setTitle(text, false);
     }
 
     public void enableTooltip() {

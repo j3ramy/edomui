@@ -1,6 +1,5 @@
 package de.j3ramy.edomui.screen;
 
-import de.j3ramy.edomui.component.button.StaticImageButton;
 import de.j3ramy.edomui.view.View;
 import de.j3ramy.edomui.view.ViewRegistry;
 import de.j3ramy.edomui.enums.FontSize;
@@ -23,9 +22,7 @@ public class TestScreen extends Screen {
 
         ViewRegistry.registerView(this.view = new View());
 
-        this.view.addWidget(new Text(5, 5, "Hey there! Greetings from EdomUI", FontSize.BASE, Color.BLUE));
-
-        view.addWidget(new StaticImageButton(5, 15, 10, 10, null, null));
+        this.view.addWidget(new Text(10, 10, "Hey there! Greetings from EdomUI", FontSize.BASE, Color.BLUE));
     }
 
     @Override

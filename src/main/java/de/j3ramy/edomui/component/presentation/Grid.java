@@ -402,7 +402,9 @@ public final class Grid extends Widget {
 
     public void add(String label, Color backgroundColor, Color backgroundHoverColor, IAction leftClickAction) {
         Button button = new Button(0, 0, config.cellWidth, config.cellHeight, label, leftClickAction, ButtonType.DEFAULT, this.gridStyle.getPadding());
-        button.setTitle(label);
+        button.getStyle().setFontSize(this.gridStyle.getFontSize());
+        button.getTitle().getStyle().setFontSize(this.gridStyle.getFontSize());
+        button.setTitle(label, true);
         button.getStyle().setBackgroundColor(backgroundColor);
         button.getStyle().setHoverBackgroundColor(backgroundHoverColor);
         button.noBorder();
@@ -412,7 +414,11 @@ public final class Grid extends Widget {
     }
 
     public void add(String label, Color backgroundColor, IAction leftClickAction) {
-        this.add(label, backgroundColor, backgroundColor, leftClickAction);
+        this.add(label, backgroundColor, this.gridStyle.getHoverBackgroundColor(), leftClickAction);
+    }
+
+    public void add(String label, IAction leftClickAction) {
+        this.add(label, this.gridStyle.getBackgroundColor(), this.gridStyle.getHoverBackgroundColor(), leftClickAction);
     }
 
     public boolean removeCell(int rowIndex, int columnIndex) {
