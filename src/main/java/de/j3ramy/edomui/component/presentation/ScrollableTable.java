@@ -315,8 +315,14 @@ public final class ScrollableTable extends ScrollableList {
         }
 
         @Override
-        public void render(PoseStack poseStack) {
-            renderWithoutTooltips(poseStack);
+        public void render(PoseStack stack) {
+            if (isHidden()) return;
+            super.render(stack);
+
+            if (headerRow != null) {
+                headerRow.setTopPos(this.getTopPos());
+                headerRow.renderWithoutTooltips(stack);
+            }
         }
 
         @Override
@@ -455,6 +461,14 @@ public final class ScrollableTable extends ScrollableList {
                     break;
                 }
             }
+        }
+
+        public List<CenteredText> getColumnTexts() {
+            return columnTexts;
+        }
+
+        public List<Tooltip> getColumnTooltips() {
+            return columnTooltips;
         }
     }
 }

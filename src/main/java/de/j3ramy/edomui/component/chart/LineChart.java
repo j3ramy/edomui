@@ -169,5 +169,9 @@ public final class LineChart extends Widget {
     public void setNumberOfTicks(int numberOfTicks) {
         this.numberOfTicks = numberOfTicks;
     }
+
+    public View getView() {
+        return view;
+    }
 }
 

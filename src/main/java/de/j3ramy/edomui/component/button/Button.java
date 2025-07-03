@@ -88,9 +88,7 @@ public class Button extends CompositeWidget {
             }
         };
 
-        if (title != null) {
-            title.setHoverable(true);
-        }
+        title.setHoverable(true);
 
         return title;
     }
@@ -107,10 +105,6 @@ public class Button extends CompositeWidget {
 
         if(title != null){
             title.render(poseStack);
-        }
-
-        if (tooltipEnabled && tooltip != null && isMouseOver()) {
-            tooltip.render(poseStack);
         }
     }
 

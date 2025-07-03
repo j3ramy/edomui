@@ -46,7 +46,9 @@ public final class SpriteImageButton extends Button {
             AbstractContainerScreen.blit(poseStack, getLeftPos(), getTopPos(), uOffset, vOffset, clipSize, clipSize, textureWidth, textureHeight);
         }
 
-        getTooltip().render(poseStack);
+        if(!this.getTooltip().getText().isEmpty()){
+            getTooltip().render(poseStack);
+        }
     }
 
     @Override

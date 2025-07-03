@@ -43,7 +43,9 @@ public final class StaticImageButton extends Button {
             AbstractContainerScreen.blit(poseStack, getLeftPos(), getTopPos(), 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
         }
 
-        getTooltip().render(poseStack);
+        if(!this.getTooltip().getText().isEmpty()){
+            getTooltip().render(poseStack);
+        }
     }
 
     @Override

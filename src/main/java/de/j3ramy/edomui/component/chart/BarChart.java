@@ -145,4 +145,8 @@ public final class BarChart extends Widget {
     public void setTooltipSuffix(String tooltipSuffix) {
         this.tooltipSuffix = tooltipSuffix;
     }
+
+    public View getView() {
+        return view;
+    }
 }

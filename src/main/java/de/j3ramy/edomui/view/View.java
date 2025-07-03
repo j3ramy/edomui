@@ -2,16 +2,21 @@ package de.j3ramy.edomui.view;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.component.button.Button;
+import de.j3ramy.edomui.component.chart.BarChart;
+import de.j3ramy.edomui.component.chart.LineChart;
 import de.j3ramy.edomui.component.input.Dropdown;
 import de.j3ramy.edomui.component.input.TextArea;
 import de.j3ramy.edomui.component.input.TextField;
 import de.j3ramy.edomui.component.popup.PopUp;
+import de.j3ramy.edomui.component.presentation.Grid;
 import de.j3ramy.edomui.interfaces.IWidget;
 import de.j3ramy.edomui.component.*;
 import de.j3ramy.edomui.component.text.Tooltip;
 import de.j3ramy.edomui.component.presentation.ScrollableList;
 import net.minecraft.client.gui.screens.Screen;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class View implements IWidget {
@@ -112,7 +117,6 @@ public class View implements IWidget {
         boolean hasActivePopUp = hasActivePopUp();
         for (Widget widget : widgets) {
             if (!widget.isHidden()) {
-                // Allow scroll interaction based on same logic
                 if (!shouldAllowInteraction(widget, hasActivePopUp) && !(widget instanceof PopUp)) {
                     continue;
                 }
@@ -218,28 +222,53 @@ public class View implements IWidget {
             return;
         }
 
-        for (int i = widgets.size() - 1; i >= 0; i--) {
-            Widget widget = widgets.get(i);
-            if (!widget.isHidden() && widget instanceof Tooltip) {
-                widget.render(poseStack);
+        List<Tooltip> allTooltips = new ArrayList<>();
+        collectTooltipsFromWidgets(widgets, allTooltips);
+
+        for (Tooltip tooltip : allTooltips) {
+            if (!tooltip.isHidden()) {
+                tooltip.render(poseStack);
             }
         }
-
-        renderNestedTooltips(poseStack);
     }
 
-    private void renderNestedTooltips(PoseStack poseStack) {
-        if (hasActivePopUp()) {
-            return;
-        }
-
-        for (Widget widget : this.widgets) {
+    private void collectTooltipsFromWidgets(List<Widget> widgetList, List<Tooltip> tooltipList) {
+        for (Widget widget : widgetList) {
             if (widget.isHidden()) continue;
 
             if (widget instanceof Tooltip tooltip) {
-                if (!tooltip.isHidden()) {
-                    tooltip.render(poseStack);
+                tooltipList.add(tooltip);
+            }
+            else if (widget instanceof Button button) {
+                if (button.isTooltipEnabled() && button.getTooltip() != null &&
+                        button.isMouseOver()) {
+                    tooltipList.add(button.getTooltip());
                 }
+            }
+            else if (widget instanceof ScrollableList scrollableList) {
+                for (Button button : scrollableList.getContent()) {
+                    if (button.isTooltipEnabled() && button.getTooltip() != null &&
+                            button.isMouseOver() && !button.isHidden()) {
+                        tooltipList.add(button.getTooltip());
+                    }
+                }
+            }
+            else if (widget instanceof Grid grid) {
+                for (List<Button> row : grid.getGrid()) {
+                    for (Button button : row) {
+                        if (button != null && button.isTooltipEnabled() &&
+                                button.getTooltip() != null && button.isMouseOver() &&
+                                !button.isHidden()) {
+                            tooltipList.add(button.getTooltip());
+                        }
+                    }
+                }
+            }
+            else if (widget instanceof LineChart lineChart) {
+                collectTooltipsFromWidgets(lineChart.getView().getWidgets(), tooltipList);
+            }
+            else if (widget instanceof BarChart barChart) {
+                collectTooltipsFromWidgets(barChart.getView().getWidgets(), tooltipList);
             }
         }
     }

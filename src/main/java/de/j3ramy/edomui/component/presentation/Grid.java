@@ -61,10 +61,7 @@ public final class Grid extends Widget {
 
         if (contextMenu != null && !contextMenu.isHidden()) {
             contextMenu.render(poseStack);
-            return;
         }
-
-        renderTooltips(poseStack);
     }
 
     @Override
@@ -534,6 +531,10 @@ public final class Grid extends Widget {
 
     public VerticalScrollbar getScrollbar() {
         return scrollbar;
+    }
+
+    public List<List<Button>> getGrid() {
+        return grid;
     }
 
     record GridPosition(int row, int col) { }
