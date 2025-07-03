@@ -9,6 +9,8 @@ import de.j3ramy.edomui.component.input.TextArea;
 import de.j3ramy.edomui.component.input.TextField;
 import de.j3ramy.edomui.component.popup.PopUp;
 import de.j3ramy.edomui.component.presentation.Grid;
+import de.j3ramy.edomui.component.presentation.ScrollableTable;
+import de.j3ramy.edomui.component.text.CenteredText;
 import de.j3ramy.edomui.interfaces.IWidget;
 import de.j3ramy.edomui.component.*;
 import de.j3ramy.edomui.component.text.Tooltip;
@@ -245,6 +247,29 @@ public class View implements IWidget {
                     tooltipList.add(button.getTooltip());
                 }
             }
+            else if (widget instanceof ScrollableTable scrollableTable) {
+                for (Button button : scrollableTable.getVisibleButtons()) {
+                    if (button instanceof ScrollableTable.TableRow tableRow) {
+                        List<CenteredText> columnTexts = tableRow.getColumnTexts();
+                        List<Tooltip> columnTooltips = tableRow.getColumnTooltips();
+
+                        for (int i = 0; i < columnTexts.size() && i < columnTooltips.size(); i++) {
+                            Tooltip tooltip = columnTooltips.get(i);
+                            if (tooltip != null) {
+                                if (columnTexts.get(i).isMouseOver()) {
+                                    // Tooltip anzeigen und zur Render-Liste hinzufügen
+                                    tooltip.setHidden(false);
+                                    tooltipList.add(tooltip);
+                                    break; // Nur ein Tooltip pro Row
+                                } else {
+                                    // Tooltip verstecken wenn nicht mouse-over
+                                    tooltip.setHidden(true);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             else if (widget instanceof ScrollableList scrollableList) {
                 for (Button button : scrollableList.getContent()) {
                     if (button.isTooltipEnabled() && button.getTooltip() != null &&
@@ -265,10 +290,10 @@ public class View implements IWidget {
                 }
             }
             else if (widget instanceof LineChart lineChart) {
-                collectTooltipsFromWidgets(lineChart.getView().getWidgets(), tooltipList);
+                    collectTooltipsFromWidgets(lineChart.getView().getWidgets(), tooltipList);
             }
             else if (widget instanceof BarChart barChart) {
-                collectTooltipsFromWidgets(barChart.getView().getWidgets(), tooltipList);
+                    collectTooltipsFromWidgets(barChart.getView().getWidgets(), tooltipList);
             }
         }
     }

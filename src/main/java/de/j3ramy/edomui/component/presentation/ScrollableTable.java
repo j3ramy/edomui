@@ -42,14 +42,10 @@ public final class ScrollableTable extends ScrollableList {
 
         super.render(stack);
 
-        // Render fixed header
         if (headerRow != null) {
             headerRow.setTopPos(this.getTopPos());
             headerRow.renderWithoutTooltips(stack);
         }
-
-        // Render all tooltips on top
-        renderAllTooltips(stack);
     }
 
     @Override
@@ -123,36 +119,6 @@ public final class ScrollableTable extends ScrollableList {
                 }
             }
         }
-    }
-
-    private void renderAllTooltips(PoseStack stack) {
-        // Header tooltips have priority
-        if (headerRow != null && headerRow.isMouseOver()) {
-            headerRow.renderTooltips(stack);
-            return;
-        }
-
-        // Render tooltips from visible rows
-        for (Button button : getVisibleButtons()) {
-            if (button instanceof TableRow row && row.isMouseOver()) {
-                // Skip tooltip rendering for rows that are overlapped by fixed header
-                if (headerRow != null && isRowOverlappedByHeader(row)) {
-                    continue;
-                }
-
-                row.renderTooltips(stack);
-                break;
-            }
-        }
-    }
-
-    private boolean isRowOverlappedByHeader(TableRow row) {
-        if (headerRow == null) return false;
-
-        int headerBottom = headerRow.getTopPos() + headerRow.getHeight();
-        int rowTop = row.getTopPos();
-
-        return rowTop < headerBottom;
     }
 
     private boolean hasHeader() {
@@ -319,9 +285,10 @@ public final class ScrollableTable extends ScrollableList {
             if (isHidden()) return;
             super.render(stack);
 
-            if (headerRow != null) {
-                headerRow.setTopPos(this.getTopPos());
-                headerRow.renderWithoutTooltips(stack);
+            for (Widget widget : columnView.getWidgets()) {
+                if (!(widget instanceof Tooltip)) {
+                    widget.render(stack);
+                }
             }
         }
 
@@ -450,25 +417,12 @@ public final class ScrollableTable extends ScrollableList {
             }
         }
 
-        public void renderTooltips(PoseStack poseStack) {
-            for (int i = 0; i < columnTexts.size(); i++) {
-                CenteredText columnText = columnTexts.get(i);
-                if (columnText.isMouseOver() && i < columnTooltips.size()) {
-                    Tooltip tooltip = columnTooltips.get(i);
-                    if (tooltip != null) {
-                        tooltip.render(poseStack);
-                    }
-                    break;
-                }
-            }
+        public List<Tooltip> getColumnTooltips() {
+            return columnTooltips;
         }
 
         public List<CenteredText> getColumnTexts() {
             return columnTexts;
-        }
-
-        public List<Tooltip> getColumnTooltips() {
-            return columnTooltips;
         }
     }
 }

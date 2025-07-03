@@ -316,7 +316,7 @@ public class ScrollableList extends CompositeWidget {
         }
     }
 
-    protected ArrayList<Button> getVisibleButtons() {
+    public ArrayList<Button> getVisibleButtons() {
         int end = Math.min(content.size(), scrollIndex + maxVisibleListElements);
         return new ArrayList<>(content.subList(scrollIndex, end));
     }

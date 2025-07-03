@@ -185,5 +185,7 @@ public final class Tooltip extends Widget {
         return text;
     }
 
-
+    public Widget getTarget() {
+        return target;
+    }
 }
