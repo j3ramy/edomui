@@ -404,7 +404,7 @@ public final class Grid extends Widget {
         Button button = new Button(0, 0, config.cellWidth, config.cellHeight, label, leftClickAction, ButtonType.DEFAULT, this.gridStyle.getPadding());
         button.getStyle().setFontSize(this.gridStyle.getFontSize());
         button.getTitle().getStyle().setFontSize(this.gridStyle.getFontSize());
-        button.setTitle(label, true);
+        button.setTitle(label, true, this.gridStyle.getPadding());
         button.getStyle().setBackgroundColor(backgroundColor);
         button.getStyle().setHoverBackgroundColor(backgroundHoverColor);
         button.noBorder();
