@@ -217,7 +217,7 @@ public class View implements IWidget {
         }
     }
 
-    private void renderTooltips(PoseStack poseStack) {
+    public void renderTooltips(PoseStack poseStack) {
         if (hasActivePopUp()) {
             return;
         }

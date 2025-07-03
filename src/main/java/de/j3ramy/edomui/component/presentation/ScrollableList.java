@@ -223,6 +223,14 @@ public class ScrollableList extends CompositeWidget {
 
             if (button.getTitle() != null) {
                 button.getTitle().getStyle().setFontSize(this.listStyle.getFontSize());
+
+                if (i == selectedIndex) {
+                    button.getTitle().getStyle().setTextColor(this.listStyle.getTextHoverColor());
+                } else {
+                    button.getTitle().getStyle().setTextColor(this.listStyle.getTextColor());
+                }
+
+                button.getTitle().getStyle().setTextHoverColor(this.listStyle.getTextHoverColor());
             }
         }
     }
@@ -258,6 +266,10 @@ public class ScrollableList extends CompositeWidget {
 
         Button b = content.get(index);
         b.getStyle().setBackgroundColor(this.listStyle.getSelectionColor());
+
+        if (b.getTitle() != null) {
+            b.getTitle().getStyle().setTextColor(this.listStyle.getTextHoverColor());
+        }
 
         ensureVisible(index);
     }
@@ -450,7 +462,13 @@ public class ScrollableList extends CompositeWidget {
 
     public void unselect() {
         if (hasSelection()) {
-            content.get(selectedIndex).getStyle().setBackgroundColor(this.getStyle().getBackgroundColor());
+            Button button = content.get(selectedIndex);
+
+            button.getStyle().setBackgroundColor(this.getStyle().getBackgroundColor());
+
+            if (button.getTitle() != null) {
+                button.getTitle().getStyle().setTextColor(this.listStyle.getTextColor());
+            }
         }
         selectedIndex = -1;
     }
