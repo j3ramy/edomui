@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.enums.ButtonType;
 import de.j3ramy.edomui.interfaces.IAction;
 import de.j3ramy.edomui.theme.ThemeManager;
-import de.j3ramy.edomui.theme.basic.ButtonStyle;
 import de.j3ramy.edomui.theme.basic.ImageButtonStyle;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
@@ -46,6 +45,8 @@ public final class SpriteImageButton extends Button {
             RenderSystem.setShaderTexture(0, texture);
             AbstractContainerScreen.blit(poseStack, getLeftPos(), getTopPos(), uOffset, vOffset, clipSize, clipSize, textureWidth, textureHeight);
         }
+
+        getTooltip().render(poseStack);
     }
 
     @Override

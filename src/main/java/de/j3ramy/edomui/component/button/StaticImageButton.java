@@ -42,6 +42,8 @@ public final class StaticImageButton extends Button {
             RenderSystem.setShaderTexture(0, texture);
             AbstractContainerScreen.blit(poseStack, getLeftPos(), getTopPos(), 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
         }
+
+        getTooltip().render(poseStack);
     }
 
     @Override

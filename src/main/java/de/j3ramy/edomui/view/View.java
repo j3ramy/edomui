@@ -218,7 +218,8 @@ public class View implements IWidget {
             return;
         }
 
-        for (Widget widget : widgets) {
+        for (int i = widgets.size() - 1; i >= 0; i--) {
+            Widget widget = widgets.get(i);
             if (!widget.isHidden() && widget instanceof Tooltip) {
                 widget.render(poseStack);
             }
