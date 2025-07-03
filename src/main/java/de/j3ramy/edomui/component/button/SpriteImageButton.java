@@ -32,7 +32,10 @@ public final class SpriteImageButton extends Button {
         this.setStyle(imageButtonStyle);
 
         this.getTitle().setHidden(true);
-        this.enableTooltip();
+
+        if(!tooltip.isEmpty()){
+            this.enableTooltip();
+        }
     }
 
     @Override
@@ -46,7 +49,7 @@ public final class SpriteImageButton extends Button {
             AbstractContainerScreen.blit(poseStack, getLeftPos(), getTopPos(), uOffset, vOffset, clipSize, clipSize, textureWidth, textureHeight);
         }
 
-        if(!this.getTooltip().getText().isEmpty()){
+        if(this.getTooltip() != null){
             getTooltip().render(poseStack);
         }
     }

@@ -25,7 +25,10 @@ public final class StaticImageButton extends Button {
         this.setStyle(imageButtonStyle);
 
         this.getTitle().setHidden(true);
-        this.enableTooltip();
+
+        if(!tooltip.isEmpty()){
+            this.enableTooltip();
+        }
     }
 
     public StaticImageButton(int x, int y, int size, ResourceLocation texture, IAction onClick) {
@@ -43,7 +46,7 @@ public final class StaticImageButton extends Button {
             AbstractContainerScreen.blit(poseStack, getLeftPos(), getTopPos(), 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
         }
 
-        if(!this.getTooltip().getText().isEmpty()){
+        if(this.getTooltip() != null){
             getTooltip().render(poseStack);
         }
     }
