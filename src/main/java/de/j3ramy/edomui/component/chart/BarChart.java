@@ -24,6 +24,7 @@ public final class BarChart extends Widget {
     private String tooltipSuffix = "";
 
     private final View view = new View();
+    private final List<Tooltip> tooltips = new ArrayList<>();
 
     public BarChart(int xPos, int yPos, int width, int height) {
         super(xPos, yPos, width, height);
@@ -37,12 +38,15 @@ public final class BarChart extends Widget {
         return this.barChartStyle;
     }
 
-
     @Override
     public void render(PoseStack poseStack) {
         if (isHidden()) return;
         super.render(poseStack);
         view.render(poseStack);
+
+        for (Tooltip tooltip : tooltips) {
+            tooltip.render(poseStack);
+        }
     }
 
     @Override
@@ -50,6 +54,10 @@ public final class BarChart extends Widget {
         if (isHidden()) return;
         super.update(x, y);
         view.update(x, y);
+
+        for (Tooltip tooltip : tooltips) {
+            tooltip.update(x, y);
+        }
     }
 
     private float getYAxisScale() {
@@ -91,6 +99,7 @@ public final class BarChart extends Widget {
     public void clear() {
         this.dataPoints.clear();
         this.view.clear();
+        this.tooltips.clear();
     }
 
     public void addDataPoints(List<DataPoint> dataPoints) {
@@ -100,6 +109,7 @@ public final class BarChart extends Widget {
 
     public void refresh() {
         this.view.clear();
+        this.tooltips.clear();
 
         if (dataPoints.isEmpty()) return;
 
@@ -126,10 +136,12 @@ public final class BarChart extends Widget {
             int y = getTopPos() + getHeight() - barHeight;
 
             Rectangle bar = new Rectangle(x, y, barWidth, barHeight, this.barChartStyle.getBarColor());
+            bar.setHoverable(true); // Wichtig: Bar als hoverable markieren
             this.view.addWidget(bar);
 
             String suffix = tooltipSuffix != null ? tooltipSuffix : "";
-            this.view.addWidget(new Tooltip(point.getXLabel() + ": " + point.getYValue() + " " + suffix, bar));
+            Tooltip tooltip = new Tooltip(point.getXLabel() + ": " + point.getYValue() + " " + suffix, bar);
+            this.tooltips.add(tooltip);
         }
     }
 

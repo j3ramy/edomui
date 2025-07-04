@@ -18,6 +18,7 @@ import java.util.List;
 public final class LineChart extends Widget {
     private final View view = new View();
     private final LineChartStyle lineChartStyle;
+    private final List<Tooltip> tooltips = new ArrayList<>();
 
     private List<DataPoint> dataPoints = new ArrayList<>();
     private int yAxisMin = 0;
@@ -47,6 +48,11 @@ public final class LineChart extends Widget {
 
         if (!this.dataPoints.isEmpty()) {
             this.view.render(poseStack);
+
+            // Tooltips separat rendern
+            for (Tooltip tooltip : tooltips) {
+                tooltip.render(poseStack);
+            }
         }
     }
 
@@ -60,12 +66,18 @@ public final class LineChart extends Widget {
 
         if (!this.dataPoints.isEmpty()) {
             this.view.update(x, y);
+
+            // Tooltips separat updaten
+            for (Tooltip tooltip : tooltips) {
+                tooltip.update(x, y);
+            }
         }
     }
 
     public void clear(){
         this.dataPoints.clear();
         this.view.clear();
+        this.tooltips.clear();
     }
 
     private float getYAxisScale() {
@@ -81,7 +93,7 @@ public final class LineChart extends Widget {
             int yPosition = getTopPos() + getHeight() - Math.round((yValue - yAxisMin) * yScale);
 
             this.view.addWidget(new Text(getLeftPos() + this.lineChartStyle.getYAxisLabelOffset(), yPosition - 1, String.valueOf(yValue),
-                   this.lineChartStyle.getFontSize(), this.lineChartStyle.getLabelColor()));
+                    this.lineChartStyle.getFontSize(), this.lineChartStyle.getLabelColor()));
         }
     }
 
@@ -93,7 +105,12 @@ public final class LineChart extends Widget {
             int xPosition = getLeftPos() + i * xSpacing;
             int yPosition = getTopPos() + getHeight() + this.lineChartStyle.getXAxisLabelOffset();
 
-            this.view.addWidget(new Text(xPosition - 5, yPosition, point.getXLabel(),
+            // Text zentrieren: erst temporären Text erstellen um Breite zu ermitteln
+            Text tempText = new Text(0, 0, point.getXLabel(), this.lineChartStyle.getFontSize(), this.lineChartStyle.getLabelColor());
+            int textWidth = tempText.getWidth();
+            int centeredX = xPosition - textWidth / 2;
+
+            this.view.addWidget(new Text(centeredX, yPosition, point.getXLabel(),
                     this.lineChartStyle.getFontSize(), this.lineChartStyle.getLabelColor()));
 
             if(i > 0 && i < this.dataPoints.size() -1){
@@ -116,6 +133,7 @@ public final class LineChart extends Widget {
 
     public void addDataPoints(List<DataPoint> dataPoints) {
         this.view.clear();
+        this.tooltips.clear();
         this.dataPoints = dataPoints;
 
         if (this.dataPoints.size() < 2) return;
@@ -143,18 +161,30 @@ public final class LineChart extends Widget {
             this.view.addWidget(new Line(startX, startY, endX, endY, this.lineChartStyle.getLineThickness(),
                     this.lineChartStyle.getLineColor()));
 
-            Circle c;
-            int radius = this.lineChartStyle.getDataPointRadius();
-            this.view.addWidget(c = new Circle(startX + radius / 2, startY + radius / 2, radius, this.lineChartStyle.getLineColor()));
-            this.view.addWidget(new Tooltip(start.getYValue() + " " + tooltipSuffix, c));
+            Circle c = new Circle(startX - this.lineChartStyle.getDataPointRadius() / 2,
+                    startY - this.lineChartStyle.getDataPointRadius() / 2,
+                    this.lineChartStyle.getDataPointRadius(),
+                    this.lineChartStyle.getLineColor());
+            c.setHoverable(true); // Wichtig: Circle als hoverable markieren
+            this.view.addWidget(c);
+
+            Tooltip tooltip = new Tooltip(start.getYValue() + " " + tooltipSuffix, c);
+            this.tooltips.add(tooltip);
         }
 
+        // Letzter Datenpunkt
         DataPoint last = dataPoints.get(dataPoints.size() - 1);
         int lx = getXForIndex(dataPoints.size() - 1);
         int ly = getYForValue(last.getYValue());
-        Circle c;
-        this.view.addWidget(c = new Circle(lx, ly, 2, this.lineChartStyle.getLineColor()));
-        this.view.addWidget(new Tooltip(last.getYValue() + " " + tooltipSuffix, c));
+        Circle lastCircle = new Circle(lx - this.lineChartStyle.getDataPointRadius() / 2,
+                ly - this.lineChartStyle.getDataPointRadius() / 2,
+                this.lineChartStyle.getDataPointRadius(),
+                this.lineChartStyle.getLineColor());
+        lastCircle.setHoverable(true); // Wichtig: Circle als hoverable markieren
+        this.view.addWidget(lastCircle);
+
+        Tooltip lastTooltip = new Tooltip(last.getYValue() + " " + tooltipSuffix, lastCircle);
+        this.tooltips.add(lastTooltip);
     }
 
     public void setTooltipSuffix(String tooltipSuffix) {
@@ -174,4 +204,3 @@ public final class LineChart extends Widget {
         return view;
     }
 }
-

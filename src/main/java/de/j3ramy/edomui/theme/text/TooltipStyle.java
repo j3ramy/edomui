@@ -7,7 +7,7 @@ public class TooltipStyle extends TextStyle {
     private int padding = 3;
     private int lineSpacing = 5;
     private int maxWidth = 250;
-    private int minWidth = 25;
+    private int minWidth = 5;
     private int minHeight = 20;
 
     public int getPadding() {
