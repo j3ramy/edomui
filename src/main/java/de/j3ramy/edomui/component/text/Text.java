@@ -124,8 +124,8 @@ public class Text extends Widget {
         float scale = GuiUtils.getFontScale(this.textStyle.getFontSize());
 
         for (String line : lines) {
-            int fullWidth = Minecraft.getInstance().font.width(line);
-            if (fullWidth * scale > maxTextWidth) {
+            String truncatedLabel = GuiUtils.getTruncatedLabel(line, scale, maxTextWidth);
+            if (truncatedLabel.length() < line.length()) {
                 return true;
             }
         }

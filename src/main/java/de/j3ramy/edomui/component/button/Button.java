@@ -106,6 +106,10 @@ public class Button extends CompositeWidget {
         if(title != null){
             title.render(poseStack);
         }
+
+        if (tooltipEnabled && tooltip != null && title != null && title.isTruncated()) {
+            tooltip.render(poseStack);
+        }
     }
 
     @Override
@@ -113,7 +117,7 @@ public class Button extends CompositeWidget {
         if (isHidden()) return;
         super.update(x, y);
 
-        if (tooltipEnabled && tooltip != null) {
+        if (tooltipEnabled && tooltip != null && title != null && title.isTruncated()) {
             tooltip.update(x, y);
         }
 
