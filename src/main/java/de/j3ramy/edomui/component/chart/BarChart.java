@@ -136,7 +136,7 @@ public final class BarChart extends Widget {
             int y = getTopPos() + getHeight() - barHeight;
 
             Rectangle bar = new Rectangle(x, y, barWidth, barHeight, this.barChartStyle.getBarColor());
-            bar.setHoverable(true); // Wichtig: Bar als hoverable markieren
+            bar.setHoverable(true);
             this.view.addWidget(bar);
 
             String suffix = tooltipSuffix != null ? tooltipSuffix : "";

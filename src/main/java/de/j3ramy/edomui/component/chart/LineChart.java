@@ -49,7 +49,6 @@ public final class LineChart extends Widget {
         if (!this.dataPoints.isEmpty()) {
             this.view.render(poseStack);
 
-            // Tooltips separat rendern
             for (Tooltip tooltip : tooltips) {
                 tooltip.render(poseStack);
             }
@@ -67,7 +66,6 @@ public final class LineChart extends Widget {
         if (!this.dataPoints.isEmpty()) {
             this.view.update(x, y);
 
-            // Tooltips separat updaten
             for (Tooltip tooltip : tooltips) {
                 tooltip.update(x, y);
             }
@@ -105,7 +103,6 @@ public final class LineChart extends Widget {
             int xPosition = getLeftPos() + i * xSpacing;
             int yPosition = getTopPos() + getHeight() + this.lineChartStyle.getXAxisLabelOffset();
 
-            // Text zentrieren: erst temporären Text erstellen um Breite zu ermitteln
             Text tempText = new Text(0, 0, point.getXLabel(), this.lineChartStyle.getFontSize(), this.lineChartStyle.getLabelColor());
             int textWidth = tempText.getWidth();
             int centeredX = xPosition - textWidth / 2;
@@ -165,14 +162,13 @@ public final class LineChart extends Widget {
                     startY - this.lineChartStyle.getDataPointRadius() / 2,
                     this.lineChartStyle.getDataPointRadius(),
                     this.lineChartStyle.getLineColor());
-            c.setHoverable(true); // Wichtig: Circle als hoverable markieren
+            c.setHoverable(true);
             this.view.addWidget(c);
 
             Tooltip tooltip = new Tooltip(start.getYValue() + " " + tooltipSuffix, c);
             this.tooltips.add(tooltip);
         }
 
-        // Letzter Datenpunkt
         DataPoint last = dataPoints.get(dataPoints.size() - 1);
         int lx = getXForIndex(dataPoints.size() - 1);
         int ly = getYForValue(last.getYValue());
@@ -180,7 +176,7 @@ public final class LineChart extends Widget {
                 ly - this.lineChartStyle.getDataPointRadius() / 2,
                 this.lineChartStyle.getDataPointRadius(),
                 this.lineChartStyle.getLineColor());
-        lastCircle.setHoverable(true); // Wichtig: Circle als hoverable markieren
+        lastCircle.setHoverable(true);
         this.view.addWidget(lastCircle);
 
         Tooltip lastTooltip = new Tooltip(last.getYValue() + " " + tooltipSuffix, lastCircle);
