@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -27,8 +28,9 @@ public class TextField extends Button {
     protected final TextFieldStyle textFieldStyle;
     protected final StringBuilder text = new StringBuilder();
 
-    protected int maxLength = GuiPresets.TEXT_FIELD_CHAR_LIMIT;
+    private TextField nextTextField;
 
+    protected int maxLength = GuiPresets.TEXT_FIELD_CHAR_LIMIT;
     protected boolean focused = false;
     protected int caretTickCounter = 0;
     protected long lastClickTime = 0;
@@ -199,26 +201,28 @@ public class TextField extends Button {
                     case 65 -> selectAll();  // Ctrl+A
                     case 67 -> copy();       // Ctrl+C
                 }
+
             }
             return;
         }
 
         switch (keyCode) {
-            case 259 -> backspace();
-            case 261 -> delete();
-            case 263 -> moveCaret(-1, shift);
-            case 262 -> moveCaret(1, shift);
-            case 268 -> moveCaretToStart(shift);
-            case 269 -> moveCaretToEnd(shift);
-            case 257 -> {
+            case GLFW.GLFW_KEY_TAB -> jumpToNextField();
+            case GLFW.GLFW_KEY_BACKSPACE -> backspace();
+            case GLFW.GLFW_KEY_DELETE -> delete();
+            case GLFW.GLFW_KEY_LEFT -> moveCaret(-1, shift);
+            case GLFW.GLFW_KEY_RIGHT -> moveCaret(1, shift);
+            case GLFW.GLFW_KEY_HOME -> moveCaretToStart(shift);
+            case GLFW.GLFW_KEY_END -> moveCaretToEnd(shift);
+            case GLFW.GLFW_KEY_ENTER -> {
                 if (onPressEnterAction != null) onPressEnterAction.execute(this.getText());
             }
             default -> {
                 if (ctrl) {
-                    if (keyCode == 65) selectAll(); // Ctrl+A
-                    if (keyCode == 67) copy();     // Ctrl+C
-                    if (keyCode == 88) cut();      // Ctrl+X
-                    if (keyCode == 86) paste();    // Ctrl+V
+                    if (keyCode == GLFW.GLFW_KEY_A) selectAll();
+                    if (keyCode == GLFW.GLFW_KEY_C) copy();
+                    if (keyCode == GLFW.GLFW_KEY_X) cut();
+                    if (keyCode == GLFW.GLFW_KEY_V) paste();
                 }
             }
         }
@@ -378,6 +382,13 @@ public class TextField extends Button {
         selectionStart = start;
     }
 
+    private void jumpToNextField() {
+        if(this.nextTextField != null) {
+            focused = false;
+            this.nextTextField.setFocused();
+        }
+    }
+
     private void moveCaret(int delta, boolean shift) {
         if (shift && selectionStart == -1) selectionStart = caretCharPos;
         if (!shift) selectionStart = -1;
@@ -470,5 +481,9 @@ public class TextField extends Button {
 
     public int getMaxLength() {
         return maxLength;
+    }
+
+    public void setNextTextField(TextField nextTextField) {
+        this.nextTextField = nextTextField;
     }
 }

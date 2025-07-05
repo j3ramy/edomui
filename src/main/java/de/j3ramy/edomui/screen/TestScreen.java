@@ -22,7 +22,7 @@ public class TestScreen extends Screen {
 
         ViewRegistry.registerView(this.view = new View());
 
-        this.view.addWidget(new Text(10, 10, "Hey! EdomUI is working :D", FontSize.XS, Color.BLUE));
+        this.view.addWidget(new Text(10, 10, "Hey! EdomUI is working :D", FontSize.BASE, Color.BLUE));
     }
 
     @Override

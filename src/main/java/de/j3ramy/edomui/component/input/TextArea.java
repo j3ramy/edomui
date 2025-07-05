@@ -13,6 +13,7 @@ import de.j3ramy.edomui.util.style.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -97,7 +98,6 @@ public class TextArea extends Widget {
 
         this.scrollbar = new VerticalScrollbar(this, 1, maxVisibleLines);
 
-        // Initialize with empty line
         lines.add("");
         updateScrollbarData();
 
@@ -372,8 +372,8 @@ public class TextArea extends Widget {
         if (!this.isEnabled()) {
             if (ctrl) {
                 switch (keyCode) {
-                    case 65 -> selectAll();
-                    case 67 -> copy();
+                    case GLFW.GLFW_KEY_A -> selectAll();
+                    case GLFW.GLFW_KEY_C -> copy();
                 }
             }
             return;
@@ -381,15 +381,15 @@ public class TextArea extends Widget {
 
         boolean shift = Screen.hasShiftDown();
         switch (keyCode) {
-            case 259 -> backspace();
-            case 261 -> delete();
-            case 257 -> insertNewLine();
-            case 263 -> moveCaret(-1, 0, shift);
-            case 262 -> moveCaret(1, 0, shift);
-            case 265 -> moveCaret(0, -1, shift);
-            case 264 -> moveCaret(0, 1, shift);
-            case 268 -> moveCaretToLineStart(shift);
-            case 269 -> moveCaretToLineEnd(shift);
+            case GLFW.GLFW_KEY_BACKSPACE -> backspace();
+            case GLFW.GLFW_KEY_DELETE -> delete();
+            case GLFW.GLFW_KEY_ENTER -> insertNewLine();
+            case GLFW.GLFW_KEY_LEFT -> moveCaret(-1, 0, shift);
+            case GLFW.GLFW_KEY_RIGHT -> moveCaret(1, 0, shift);
+            case GLFW.GLFW_KEY_UP -> moveCaret(0, -1, shift);
+            case GLFW.GLFW_KEY_DOWN -> moveCaret(0, 1, shift);
+            case GLFW.GLFW_KEY_HOME -> moveCaretToLineStart(shift);
+            case GLFW.GLFW_KEY_END -> moveCaretToLineEnd(shift);
             default -> {
                 if (ctrl) {
                     handleControlKeys(keyCode);
