@@ -92,7 +92,7 @@ public final class Tooltip extends Widget {
             totalHeight = wrappedLines.length * (lineHeight + lineSpacing) - lineSpacing + 2 * padding;
         }
 
-        int minHeight = lineHeight + 2 * padding; // Minimum für single line
+        int minHeight = lineHeight + 2 * padding;
 
         this.setHeight(Math.max(minHeight, totalHeight));
     }

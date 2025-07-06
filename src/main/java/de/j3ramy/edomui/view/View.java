@@ -257,12 +257,10 @@ public class View implements IWidget {
                             Tooltip tooltip = columnTooltips.get(i);
                             if (tooltip != null) {
                                 if (columnTexts.get(i).isMouseOver()) {
-                                    // Tooltip anzeigen und zur Render-Liste hinzufügen
                                     tooltip.setHidden(false);
                                     tooltipList.add(tooltip);
-                                    break; // Nur ein Tooltip pro Row
+                                    break;
                                 } else {
-                                    // Tooltip verstecken wenn nicht mouse-over
                                     tooltip.setHidden(true);
                                 }
                             }

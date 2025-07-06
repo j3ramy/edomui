@@ -198,8 +198,8 @@ public class TextField extends Button {
         if (!this.isEnabled()) {
             if (ctrl) {
                 switch (keyCode) {
-                    case 65 -> selectAll();  // Ctrl+A
-                    case 67 -> copy();       // Ctrl+C
+                    case GLFW.GLFW_KEY_A -> selectAll();
+                    case GLFW.GLFW_KEY_C -> copy();
                 }
 
             }

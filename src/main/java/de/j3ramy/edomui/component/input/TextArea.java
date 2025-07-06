@@ -922,7 +922,6 @@ public class TextArea extends Widget {
     public void scrollToLine(int lineNumber) {
         if (lineNumber < 0 || lineNumber >= lines.size()) return;
 
-        // Zentriere die gewünschte Zeile wenn möglich
         int targetScrollOffset = Math.max(0, lineNumber - maxVisibleLines / 2);
         int maxScrollOffset = Math.max(0, lines.size() - maxVisibleLines);
 
