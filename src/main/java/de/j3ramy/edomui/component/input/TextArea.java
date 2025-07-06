@@ -302,6 +302,34 @@ public class TextArea extends Widget {
         }
     }
 
+    @Override
+    public void setTopPos(int topPos) {
+        int delta = this.getTopPos() - topPos;
+        super.setTopPos(topPos);
+
+        if (scrollbar != null) {
+            scrollbar.setTopPos(scrollbar.getTopPos() - delta);
+        }
+
+        if (placeholderRenderer != null) {
+            placeholderRenderer.setTopPos(getTopPos() + this.textAreaStyle.getPadding());
+        }
+    }
+
+    @Override
+    public void setLeftPos(int leftPos) {
+        int delta = this.getLeftPos() - leftPos;
+        super.setLeftPos(leftPos);
+
+        if (scrollbar != null) {
+            scrollbar.setLeftPos(scrollbar.getLeftPos() - delta);
+        }
+
+        if (placeholderRenderer != null) {
+            placeholderRenderer.setLeftPos(getLeftPos() + this.textAreaStyle.getPadding());
+        }
+    }
+
     private void handleSingleClick(int row, int col) {
         setCaretPosition(row, col);
         clearSelection();
