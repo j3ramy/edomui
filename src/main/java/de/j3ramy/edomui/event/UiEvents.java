@@ -11,54 +11,67 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = EdomUiMod.MOD_ID, value = Dist.CLIENT)
 public class UiEvents {
-
     @SubscribeEvent
     public static void onMouseClickEvent(ScreenEvent.MouseClickedEvent.Pre event){
         for(View view : ViewRegistry.getRegisteredViews()){
-            view.onClick(event.getButton());
+            if (!view.isHidden()) {  
+                view.onClick(event.getButton());
+            }
         }
     }
 
     @SubscribeEvent
     public static void onKeyPressedEvent(ScreenEvent.KeyboardKeyPressedEvent.Pre event){
         for(View view : ViewRegistry.getRegisteredViews()){
-            view.keyPressed(event.getKeyCode());
+            if (!view.isHidden()) {  
+                view.keyPressed(event.getKeyCode());
+            }
         }
     }
 
     @SubscribeEvent
     public static void onCharTypedEvent(ScreenEvent.KeyboardCharTypedEvent.Pre event){
         for(View view : ViewRegistry.getRegisteredViews()){
-            view.charTyped(event.getCodePoint());
+            if (!view.isHidden()) {  
+                view.charTyped(event.getCodePoint());
+            }
         }
     }
 
     @SubscribeEvent
     public static void onMouseScrollEvent(ScreenEvent.MouseScrollEvent.Pre event){
         for(View view : ViewRegistry.getRegisteredViews()){
-            view.onScroll(event.getScrollDelta());
+            if (!view.isHidden()) {  
+                view.onScroll(event.getScrollDelta());
+            }
         }
     }
 
     @SubscribeEvent
     public static void onMouseDragEvent(ScreenEvent.MouseDragEvent event){
         for(View view : ViewRegistry.getRegisteredViews()){
-            view.onMouseDrag(event.getMouseButton(), event.getDragX(), event.getDragY(), (int) event.getMouseX(), (int) event.getMouseY());
+            if (!view.isHidden()) {  
+                view.onMouseDrag(event.getMouseButton(), event.getDragX(), event.getDragY(), (int) event.getMouseX(), (int) event.getMouseY());
+            }
         }
     }
 
     @SubscribeEvent
     public static void onRender(ScreenEvent.DrawScreenEvent event){
         for(View view : ViewRegistry.getRegisteredViews()){
-            view.update(event.getMouseX(), event.getMouseY());
-            view.render(event.getPoseStack());
+            if (!view.isHidden()) {  
+                view.update(event.getMouseX(), event.getMouseY());
+                view.render(event.getPoseStack());
+            }
         }
     }
 
     @SubscribeEvent
     public static void onTick(TickEvent.ClientTickEvent event){
         for(View view : ViewRegistry.getRegisteredViews()){
-            view.tick();
+            if (!view.isHidden()) {  
+                view.tick();
+            }
         }
     }
 }
