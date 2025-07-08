@@ -1,6 +1,15 @@
 package de.j3ramy.edomui.util;
 
+import com.mojang.blaze3d.platform.NativeImage;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
+import java.util.Optional;
 
 public class GuiMathUtils  {
     public static int clamp(int value, int min, int max){
@@ -38,5 +47,32 @@ public class GuiMathUtils  {
 
     public static String formatFloatByLocale(float f, Locale locale) {
         return String.format(locale, "%.2f", f);
+    }
+
+    public static int calculateHeightFromWidth(int width, ResourceLocation textureLoc){
+        try {
+            ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+            Optional<Resource> resourceOpt = Optional.of(resourceManager.getResource(textureLoc));
+
+            Resource resource = resourceOpt.get();
+            InputStream inputStream = resource.getInputStream();
+
+            NativeImage nativeImage = NativeImage.read(inputStream);
+            int originalWidth = nativeImage.getWidth();
+            int originalHeight = nativeImage.getHeight();
+
+            nativeImage.close();
+            inputStream.close();
+            
+            return Math.round(width * originalHeight / (float) originalWidth);
+        } catch (IOException e) {
+            e.printStackTrace();
+            
+            return 0;
+        }
+    }
+    
+    public static float getRatio(int width, int height){
+        return (float) width / (float) height;
     }
 }

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.component.Widget;
+import de.j3ramy.edomui.util.GuiMathUtils;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 
@@ -26,6 +27,12 @@ public final class Image extends Widget {
     public Image(int x, int y, int width, int height, ResourceLocation textureLoc){
         this(x, y, width, height, 0, 0, width, height, textureLoc);
     }
+
+    public Image(int x, int y, int width, ResourceLocation textureLoc){
+        this(x, y, width, GuiMathUtils.calculateHeightFromWidth(width, textureLoc), 0, 0, width,
+                GuiMathUtils.calculateHeightFromWidth(width, textureLoc), textureLoc);
+    }
+
 
     @Override
     public void render(PoseStack matrixStack){
