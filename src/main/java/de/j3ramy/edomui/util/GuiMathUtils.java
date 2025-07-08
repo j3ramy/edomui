@@ -6,10 +6,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
-import java.util.Optional;
 
 public class GuiMathUtils  {
     public static int clamp(int value, int min, int max){
@@ -52,9 +50,7 @@ public class GuiMathUtils  {
     public static int calculateHeightFromWidth(int width, ResourceLocation textureLoc){
         try {
             ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-            Optional<Resource> resourceOpt = Optional.of(resourceManager.getResource(textureLoc));
-
-            Resource resource = resourceOpt.get();
+            Resource resource = resourceManager.getResource(textureLoc);
             InputStream inputStream = resource.getInputStream();
 
             NativeImage nativeImage = NativeImage.read(inputStream);
@@ -65,7 +61,7 @@ public class GuiMathUtils  {
             inputStream.close();
             
             return Math.round(width * originalHeight / (float) originalWidth);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             
             return 0;
