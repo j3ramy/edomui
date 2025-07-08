@@ -62,8 +62,6 @@ public class GuiMathUtils  {
             
             return Math.round(width * originalHeight / (float) originalWidth);
         } catch (Exception e) {
-            e.printStackTrace();
-            
             return 0;
         }
     }
