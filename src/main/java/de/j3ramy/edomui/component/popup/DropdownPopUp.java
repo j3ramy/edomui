@@ -6,6 +6,7 @@ import de.j3ramy.edomui.enums.PopUpType;
 import de.j3ramy.edomui.interfaces.IValueAction;
 import de.j3ramy.edomui.view.View;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public final class DropdownPopUp extends PopUp {
@@ -25,11 +26,14 @@ public final class DropdownPopUp extends PopUp {
         int inputX = this.getLeftPos() + (this.getWidth() - this.popUpStyle.getInputWidth()) / 2;
         int inputY = this.getTopPos() + this.popUpStyle.getTitleHeight() + this.popUpStyle.getMargin();
 
-        this.dropdown = new Dropdown(dropdownValues, inputX, inputY, this.popUpStyle.getInputWidth(),
-                this.popUpStyle.getWidgetHeight(), inputPlaceholder);
+        this.dropdown = new Dropdown(inputX, inputY, this.popUpStyle.getInputWidth(), this.popUpStyle.getWidgetHeight(), inputPlaceholder);
 
-        if (!dropdown.hasOptions()) {
+        if (dropdownValues != null && !dropdownValues.isEmpty()) {
+            this.dropdown.setOptions(dropdownValues, Color.LIGHT_GRAY);
             this.dropdown.setOption(dropdownValues.get(0));
+        }
+        else{
+            this.dropdown.setEnabled(false);
         }
 
         this.view.addWidget(this.dropdown);
