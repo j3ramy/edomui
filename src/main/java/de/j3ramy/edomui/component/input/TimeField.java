@@ -40,6 +40,7 @@ public final class TimeField extends TextField {
 
         raw += Character.toUpperCase(codePoint);
         setText(formatRawInput(raw));
+        triggerTextChanged();
     }
 
     @Override

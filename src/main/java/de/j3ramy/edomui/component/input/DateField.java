@@ -55,6 +55,7 @@ public final class DateField extends TextField {
 
         raw += codePoint;
         setText(formatRawInput(raw));
+        triggerTextChanged();
     }
 
     @Override
