@@ -12,7 +12,6 @@ import de.j3ramy.edomui.interfaces.IContextMenuProvider;
 import de.j3ramy.edomui.interfaces.IAction;
 import de.j3ramy.edomui.theme.presentation.GridStyle;
 import de.j3ramy.edomui.theme.ThemeManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,12 +72,6 @@ public final class Grid extends Widget {
 
         super.update(x, y);
         updateCellPositions();
-
-        Minecraft mc = Minecraft.getInstance();
-        double mouseX = mc.mouseHandler.xpos() * (mc.getWindow().getGuiScaledWidth() / (double) mc.getWindow().getWidth());
-        double mouseY = mc.mouseHandler.ypos() * (mc.getWindow().getGuiScaledHeight() / (double) mc.getWindow().getHeight());
-
-        updateCellStates((int) mouseX, (int) mouseY);
 
         if (contextMenu != null && !contextMenu.isHidden()) {
             if (needsScrolling()) {
