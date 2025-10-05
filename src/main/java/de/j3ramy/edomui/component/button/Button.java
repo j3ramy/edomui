@@ -138,9 +138,29 @@ public class Button extends CompositeWidget {
 
     @Override
     public void onClick(int mouseButton) {
-        if (!isMouseOver() || !isEnabled()) return;
-        if (mouseButton == 0 && leftClickAction != null) leftClickAction.execute();
-        if (mouseButton == 1 && rightClickAction != null) rightClickAction.execute();
+        if (!isMouseOver() || !isEnabled()){
+            return;
+        }
+
+        if (mouseButton == 0 && leftClickAction != null) {
+            leftClickAction.execute();
+        }
+
+        if (mouseButton == 1 && rightClickAction != null) {
+            rightClickAction.execute();
+        }
+    }
+
+    public void executeLeftClick() {
+        if (leftClickAction != null) {
+            leftClickAction.execute();
+        }
+    }
+
+    public void executeRightClick() {
+        if (rightClickAction != null) {
+            rightClickAction.execute();
+        }
     }
 
     @Override

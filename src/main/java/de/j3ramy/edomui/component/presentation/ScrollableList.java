@@ -266,6 +266,7 @@ public class ScrollableList extends CompositeWidget {
 
         Button b = content.get(index);
         b.getStyle().setBackgroundColor(this.listStyle.getSelectionColor());
+        b.executeLeftClick();
 
         if (b.getTitle() != null) {
             b.getTitle().getStyle().setTextColor(this.listStyle.getTextHoverColor());
