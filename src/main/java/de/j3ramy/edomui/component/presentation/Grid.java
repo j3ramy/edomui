@@ -412,7 +412,6 @@ public final class Grid extends Widget {
         int size = Math.min(config.cellWidth, config.cellHeight);
 
         StaticImageButton imageButton;
-        System.out.println(texture);
         if (tooltip != null && !tooltip.isEmpty()) {
             imageButton = new StaticImageButton(0, 0, size, size, texture, leftClickAction, tooltip);
         } else {

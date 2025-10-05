@@ -41,7 +41,9 @@ public final class Tooltip extends Widget {
         setHidden(!shouldShow);
 
         if (!isHidden()) {
-            positionTooltip(x, y);
+            double mouseX = Minecraft.getInstance().mouseHandler.xpos() * (Minecraft.getInstance().getWindow().getGuiScaledWidth() / (double)Minecraft.getInstance().getWindow().getWidth());
+            double mouseY = Minecraft.getInstance().mouseHandler.ypos() * (Minecraft.getInstance().getWindow().getGuiScaledHeight() / (double)Minecraft.getInstance().getWindow().getHeight());
+            positionTooltip((int) mouseX, (int) mouseY);
         }
     }
 
