@@ -104,7 +104,10 @@ public abstract class Widget implements IWidget {
 
     public void setHidden(boolean hidden) {
         this.isHidden = hidden;
-        this.mousePosition.setLocation(0, 0);
+
+        if(hidden){
+            this.mousePosition.setLocation(0, 0);
+        }
     }
 
     public Point getMousePosition() { return mousePosition; }
