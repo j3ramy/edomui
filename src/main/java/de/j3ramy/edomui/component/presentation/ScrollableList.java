@@ -106,7 +106,7 @@ public class ScrollableList extends CompositeWidget {
                     Button b = getVisibleButtons().get(i);
                     if (b.isMouseOver() && b.isEnabled()) {
                         int elementIndex = scrollIndex + i;
-                        selectIndex(elementIndex);
+                        selectIndex(elementIndex, mouseButton);
                         showContextMenu(elementIndex);
                         return;
                     }
@@ -125,11 +125,11 @@ public class ScrollableList extends CompositeWidget {
 
                 switch (mouseButton) {
                     case 0:
-                        selectIndex(elementIndex);
+                        selectIndex(elementIndex, mouseButton);
                         b.onClick(mouseButton);
                         return;
                     case 1:
-                        selectIndex(elementIndex);
+                        selectIndex(elementIndex, mouseButton);
                         showContextMenu(elementIndex);
                         return;
                 }
@@ -254,7 +254,7 @@ public class ScrollableList extends CompositeWidget {
         contextMenu.show(this.getMousePosition().x, this.getMousePosition().y);
     }
 
-    private void selectIndex(int index) {
+    private void selectIndex(int index, int mouseButton) {
         if (index < 0 || index >= content.size()) {
             return;
         }
@@ -264,7 +264,12 @@ public class ScrollableList extends CompositeWidget {
 
         Button b = content.get(index);
         b.getStyle().setBackgroundColor(this.listStyle.getSelectionColor());
-        b.executeLeftClick();
+
+        if(mouseButton == 0) {
+            b.executeLeftClick();
+        }else if(mouseButton == 1) {
+            b.executeRightClick();
+        }
 
         if (b.getTitle() != null) {
             b.getTitle().getStyle().setTextColor(this.listStyle.getTextHoverColor());
@@ -444,7 +449,7 @@ public class ScrollableList extends CompositeWidget {
 
     public void selectFirstEntry() {
         if (!content.isEmpty()) {
-            selectIndex(0);
+            selectIndex(0, 0);
         }
     }
 
@@ -452,7 +457,7 @@ public class ScrollableList extends CompositeWidget {
         for (int i = 0; i < content.size(); i++) {
             Button b = content.get(i);
             if (b.getTitle().getString().toString().equals(title)) {
-                selectIndex(i);
+                selectIndex(i, 0);
                 return true;
             }
         }
