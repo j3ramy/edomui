@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.j3ramy.edomui.component.Widget;
 import de.j3ramy.edomui.component.basic.VerticalScrollbar;
 import de.j3ramy.edomui.component.button.Button;
+import de.j3ramy.edomui.component.button.StaticImageButton;
 import de.j3ramy.edomui.component.presentation.contextmenu.ContextMenu;
 import de.j3ramy.edomui.component.presentation.contextmenu.DynamicContextMenuBuilder;
 import de.j3ramy.edomui.enums.ButtonType;
@@ -11,6 +12,7 @@ import de.j3ramy.edomui.interfaces.IContextMenuProvider;
 import de.j3ramy.edomui.interfaces.IAction;
 import de.j3ramy.edomui.theme.presentation.GridStyle;
 import de.j3ramy.edomui.theme.ThemeManager;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -239,12 +241,18 @@ public final class Grid extends Widget {
     private void renderButtonWithoutTooltip(Button button, PoseStack poseStack) {
         if (button.isHidden()) return;
 
+        if (button instanceof StaticImageButton) {
+            button.render(poseStack);
+            return;
+        }
+
         if (button.isShowBackground()) {
             button.renderBackground(poseStack);
         }
 
         button.getTitle().render(poseStack);
     }
+
 
     private void renderTooltips(PoseStack poseStack) {
         for (int i = 0; i < grid.size(); i++) {
@@ -394,6 +402,24 @@ public final class Grid extends Widget {
 
     public boolean isMouseOverCell() {
         return getHoveredCell() != null;
+    }
+
+    public void add(ResourceLocation texture, IAction leftClickAction) {
+        add(texture, leftClickAction, null);
+    }
+
+    public void add(ResourceLocation texture, IAction leftClickAction, @Nullable String tooltip) {
+        int size = Math.min(config.cellWidth, config.cellHeight);
+
+        StaticImageButton imageButton;
+        System.out.println(texture);
+        if (tooltip != null && !tooltip.isEmpty()) {
+            imageButton = new StaticImageButton(0, 0, size, size, texture, leftClickAction, tooltip);
+        } else {
+            imageButton = new StaticImageButton(0, 0, size, size, texture, leftClickAction);
+        }
+
+        addButton(imageButton);
     }
 
     public void addButton(Button button) {

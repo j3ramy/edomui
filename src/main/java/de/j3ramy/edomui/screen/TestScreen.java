@@ -1,6 +1,5 @@
 package de.j3ramy.edomui.screen;
 
-import de.j3ramy.edomui.component.input.Checkbox;
 import de.j3ramy.edomui.view.View;
 import de.j3ramy.edomui.view.ViewRegistry;
 import de.j3ramy.edomui.enums.FontSize;
