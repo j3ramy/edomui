@@ -108,10 +108,12 @@ public class Button extends CompositeWidget {
         }
 
         if (tooltipEnabled && tooltip != null) {
-            boolean alwaysShow = this instanceof StaticImageButton;
-            boolean shouldShow = alwaysShow ? isMouseOver() : (title != null && title.isTruncated());
+            boolean isImageButton = this instanceof StaticImageButton;
+            boolean showTooltip = isImageButton ? isMouseOver() : (title != null && title.isTruncated() && isMouseOver());
 
-            if (shouldShow) {
+            tooltip.setHidden(!showTooltip);
+
+            if (!tooltip.isHidden()) {
                 tooltip.render(poseStack);
             }
         }
@@ -123,10 +125,12 @@ public class Button extends CompositeWidget {
         super.update(x, y);
 
         if (tooltipEnabled && tooltip != null) {
-            boolean alwaysShow = this instanceof StaticImageButton;
-            boolean shouldShow = alwaysShow ? isMouseOver() : (title != null && title.isTruncated());
+            boolean isImageButton = this instanceof StaticImageButton;
+            boolean showTooltip = isImageButton ? isMouseOver() : (title != null && title.isTruncated() && isMouseOver());
 
-            if (shouldShow) {
+            tooltip.setHidden(!showTooltip);
+
+            if (!tooltip.isHidden()) {
                 tooltip.update(x, y);
             }
         }
