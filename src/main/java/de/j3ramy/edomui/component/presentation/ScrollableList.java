@@ -120,20 +120,18 @@ public class ScrollableList extends CompositeWidget {
         boolean clicked = false;
         for (int i = 0; i < getVisibleButtons().size(); i++) {
             Button b = getVisibleButtons().get(i);
-
             if (b.isMouseOver() && b.isEnabled()) {
                 int elementIndex = scrollIndex + i;
 
-                if (mouseButton == 1) {
-                    selectIndex(elementIndex);
-                    showContextMenu(elementIndex);
-                    clicked = true;
-                    break;
-                } else if (mouseButton == 0) {
-                    selectIndex(elementIndex);
-                    b.onClick(mouseButton);
-                    clicked = true;
-                    break;
+                switch (mouseButton) {
+                    case 0:
+                        selectIndex(elementIndex);
+                        b.onClick(mouseButton);
+                        return;
+                    case 1:
+                        selectIndex(elementIndex);
+                        showContextMenu(elementIndex);
+                        return;
                 }
             }
         }
