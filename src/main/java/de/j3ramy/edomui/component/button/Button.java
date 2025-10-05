@@ -107,8 +107,13 @@ public class Button extends CompositeWidget {
             title.render(poseStack);
         }
 
-        if (tooltipEnabled && tooltip != null && title != null && title.isTruncated()) {
-            tooltip.render(poseStack);
+        if (tooltipEnabled && tooltip != null) {
+            boolean alwaysShow = this instanceof StaticImageButton;
+            boolean shouldShow = alwaysShow ? isMouseOver() : (title != null && title.isTruncated());
+
+            if (shouldShow) {
+                tooltip.render(poseStack);
+            }
         }
     }
 
@@ -117,8 +122,13 @@ public class Button extends CompositeWidget {
         if (isHidden()) return;
         super.update(x, y);
 
-        if (tooltipEnabled && tooltip != null && title != null && title.isTruncated()) {
-            tooltip.update(x, y);
+        if (tooltipEnabled && tooltip != null) {
+            boolean alwaysShow = this instanceof StaticImageButton;
+            boolean shouldShow = alwaysShow ? isMouseOver() : (title != null && title.isTruncated());
+
+            if (shouldShow) {
+                tooltip.update(x, y);
+            }
         }
 
         if (this.title != null) {
