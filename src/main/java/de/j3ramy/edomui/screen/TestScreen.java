@@ -24,8 +24,6 @@ public class TestScreen extends Screen {
         ViewRegistry.registerView(this.view = new View());
 
         this.view.addWidget(new Text(10, 10, "Hey! EdomUI is working :D", FontSize.BASE, Color.BLUE));
-
-        view.addWidget(new Checkbox(10, 20, 10, 10, "Test", false, () -> System.out.println("TEST")));
     }
 
     @Override
