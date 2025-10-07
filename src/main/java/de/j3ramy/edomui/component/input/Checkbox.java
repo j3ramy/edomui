@@ -67,7 +67,7 @@ public final class Checkbox extends Button {
 
     @Override
     public void onClick(int mouseButton) {
-        if(!this.isEnabled() || this.isHidden()){
+        if(!this.isEnabled() || this.isHidden() || !this.isMouseOver()){
             return;
         }
 
