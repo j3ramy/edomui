@@ -32,8 +32,6 @@ public final class Checkbox extends Button {
 
     public Checkbox(int x, int y, int width, int height, String title, boolean isChecked) {
         this(x, y, width, height, title, isChecked, null);
-
-        this.leftClickAction = () -> this.checked = !this.checked;
     }
 
     public Checkbox(int x, int y, int width, int height, String title) {
@@ -41,18 +39,10 @@ public final class Checkbox extends Button {
     }
 
     @Override
-    public void onClick(int mouseButton) {
-        if (!isMouseOver() || !isEnabled()) {
+    public void render(PoseStack poseStack) {
+        if (isHidden()) {
             return;
         }
-
-        this.checked = !this.checked;
-        super.onClick(mouseButton);
-    }
-
-    @Override
-    public void render(PoseStack poseStack) {
-        if (isHidden()) return;
 
         super.render(poseStack);
 
@@ -73,6 +63,16 @@ public final class Checkbox extends Button {
     public void update(int mouseX, int mouseY) {
         super.update(mouseX, mouseY);
         label.update(mouseX, mouseY);
+    }
+
+    @Override
+    public void onClick(int mouseButton) {
+        if(!this.isEnabled() || this.isHidden()){
+            return;
+        }
+
+        this.checked = !this.checked;
+        super.onClick(mouseButton);
     }
 
     @Override
