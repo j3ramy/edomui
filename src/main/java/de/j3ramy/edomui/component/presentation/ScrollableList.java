@@ -412,8 +412,8 @@ public class ScrollableList extends CompositeWidget {
 
     public void removeSelectedElement() {
         if (selectedIndex != -1 && selectedIndex < content.size()) {
-            content.remove(selectedIndex);
             unselect();
+            content.remove(selectedIndex);
             scrollbar.updateContentSize(content.size());
             layoutButtons();
         }
