@@ -126,7 +126,6 @@ public class ScrollableList extends CompositeWidget {
                 switch (mouseButton) {
                     case 0:
                         selectIndex(elementIndex, mouseButton);
-                        b.onClick(mouseButton);
                         return;
                     case 1:
                         selectIndex(elementIndex, mouseButton);
