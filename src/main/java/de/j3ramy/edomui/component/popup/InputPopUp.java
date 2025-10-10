@@ -2,6 +2,7 @@ package de.j3ramy.edomui.component.popup;
 
 import de.j3ramy.edomui.component.input.PasswordField;
 import de.j3ramy.edomui.component.input.TextField;
+import de.j3ramy.edomui.interfaces.IAction;
 import de.j3ramy.edomui.interfaces.IValueAction;
 import de.j3ramy.edomui.view.View;
 import de.j3ramy.edomui.enums.PopUpType;
@@ -13,7 +14,7 @@ public final class InputPopUp extends PopUp {
     private final TextField inputField;
 
     public InputPopUp(View hostView, int xPos, int yPos, String title, String confirmButtonTitle, String cancelButtonTitle,
-                      String inputValue, String inputPlaceholder, PopUpType popUpType, IValueAction confirmAction, boolean isPassword) {
+                      String inputValue, String inputPlaceholder, PopUpType popUpType, IValueAction confirmAction, IAction cancelAction, boolean isPassword) {
         super(0, 0, title, "", popUpType);
 
         int centeredX = xPos - this.getWidth() / 2;
@@ -50,7 +51,10 @@ public final class InputPopUp extends PopUp {
 
         this.cancelButton = new Button(
                 this.getLeftPos() + this.getWidth() - this.popUpStyle.getButtonWidth() - this.popUpStyle.getMargin(), buttonY, this.popUpStyle.getButtonWidth(),
-                this.popUpStyle.getWidgetHeight(), cancelButtonTitle, () -> hostView.getWidgets().remove(this)
+                this.popUpStyle.getWidgetHeight(), cancelButtonTitle, () -> {
+                    cancelAction.execute();
+                    hostView.getWidgets().remove(this);
+                }
         );
 
         this.view.addWidget(this.confirmButton);
@@ -59,26 +63,26 @@ public final class InputPopUp extends PopUp {
 
     public InputPopUp(View hostView, int xPos, int yPos, String title, String confirmButtonTitle, String cancelButtonTitle,
                       String inputValue, String inputPlaceholder, PopUpType popUpType, IValueAction confirmAction){
-        this(hostView, xPos, yPos, title, confirmButtonTitle, cancelButtonTitle, inputValue, inputPlaceholder, popUpType, confirmAction, false);
+        this(hostView, xPos, yPos, title, confirmButtonTitle, cancelButtonTitle, inputValue, inputPlaceholder, popUpType, confirmAction, null, false);
     }
 
     public InputPopUp(View hostView, int xPos, int yPos, String title, String confirmButtonTitle, String cancelButtonTitle, IValueAction confirmAction) {
-        this(hostView, xPos, yPos, title, confirmButtonTitle, cancelButtonTitle, "", "", PopUpType.NOTICE, confirmAction, false);
+        this(hostView, xPos, yPos, title, confirmButtonTitle, cancelButtonTitle, "", "", PopUpType.NOTICE, confirmAction, null, false);
     }
 
     public InputPopUp(View hostView, int xPos, int yPos, String title, String confirmButtonTitle, String cancelButtonTitle,
                       IValueAction confirmAction, boolean isPassword) {
-        this(hostView, xPos, yPos, title, confirmButtonTitle, cancelButtonTitle, "", "", PopUpType.NOTICE, confirmAction, isPassword);
+        this(hostView, xPos, yPos, title, confirmButtonTitle, cancelButtonTitle, "", "", PopUpType.NOTICE, confirmAction, null, isPassword);
     }
 
     public InputPopUp(View hostView, int xPos, int yPos, String title, String confirmButtonTitle, String cancelButtonTitle,
                       String inputValue, IValueAction confirmAction) {
-        this(hostView, xPos, yPos, title, confirmButtonTitle, cancelButtonTitle, inputValue, "", PopUpType.NOTICE, confirmAction, false);
+        this(hostView, xPos, yPos, title, confirmButtonTitle, cancelButtonTitle, inputValue, "", PopUpType.NOTICE, confirmAction, null, false);
     }
 
     public InputPopUp(View hostView, int xPos, int yPos, String title, String confirmButtonTitle, String cancelButtonTitle,
                       String inputValue, String inputPlaceholder, IValueAction confirmAction) {
-        this(hostView, xPos, yPos, title, confirmButtonTitle, cancelButtonTitle, inputValue, inputPlaceholder, PopUpType.NOTICE, confirmAction, false);
+        this(hostView, xPos, yPos, title, confirmButtonTitle, cancelButtonTitle, inputValue, inputPlaceholder, PopUpType.NOTICE, confirmAction, null, false);
     }
 
     @Override
