@@ -52,7 +52,10 @@ public final class InputPopUp extends PopUp {
         this.cancelButton = new Button(
                 this.getLeftPos() + this.getWidth() - this.popUpStyle.getButtonWidth() - this.popUpStyle.getMargin(), buttonY, this.popUpStyle.getButtonWidth(),
                 this.popUpStyle.getWidgetHeight(), cancelButtonTitle, () -> {
-                    cancelAction.execute();
+                    if(cancelAction != null) {
+                        cancelAction.execute();
+                    }
+
                     hostView.getWidgets().remove(this);
                 }
         );
