@@ -45,12 +45,12 @@ public class DynamicContextMenuBuilder {
         return this;
     }
 
-    public DynamicContextMenuBuilder addDeleteAction(Function<Integer, IAction> deleteFunction) {
-        return addIndexAction("Delete", deleteFunction);
+    public void addDeleteAction(Function<Integer, IAction> deleteFunction) {
+        addIndexAction("Delete", deleteFunction);
     }
 
-    public DynamicContextMenuBuilder addEditAction(Function<Integer, IAction> editFunction) {
-        return addIndexAction("Edit", editFunction);
+    public void addEditAction(Function<Integer, IAction> editFunction) {
+        addIndexAction("Edit", editFunction);
     }
 
     public DynamicContextMenuBuilder addMoveActions(Function<Integer, IAction> moveUpFunction,

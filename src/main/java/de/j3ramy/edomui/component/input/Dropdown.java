@@ -202,15 +202,13 @@ public final class Dropdown extends Button {
         return !getOptions().isEmpty();
     }
 
-    public boolean setOption(String name) {
-        if (menu == null) return false;
+    public void setOption(String name) {
+        if (menu == null) return;
 
         if (menu.selectEntry(name)) {
             setTitle(name);
-            return true;
         } else {
             unselect();
-            return false;
         }
     }
 

@@ -16,12 +16,12 @@ import java.awt.*;
 public class Button extends CompositeWidget {
     private final IAction rightClickAction;
     private final ButtonStyle buttonStyle;
+    protected final IAction leftClickAction;
 
     private Tooltip tooltip;
     private boolean tooltipEnabled = false;
 
     protected Text title;
-    protected IAction leftClickAction;
 
     public Button(int x, int y, int width, int height, String text, IAction leftClickAction, IAction rightClickAction, ButtonType type) {
         super(x, y, width, height);

@@ -13,6 +13,7 @@ import de.j3ramy.edomui.util.style.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
@@ -131,22 +132,26 @@ public class TextArea extends Widget {
             int lineIndex = scrollOffset + i;
             if (lineIndex >= lines.size()) break;
 
-            String line = lines.get(lineIndex);
-
-            // Calculate position with consistent line height
-            int lineY = getTopPos() + this.textAreaStyle.getPadding() + (i * lineHeight);
-
-            // Create temporary text renderer for each line
-            Text lineRenderer = new Text(
-                    getLeftPos() + this.textAreaStyle.getPadding(),
-                    lineY,
-                    line,
-                    this.textAreaStyle.getFontSize(),
-                    this.isEmpty()  ? this.textAreaStyle.getPlaceholderColor() : this.textAreaStyle.getTextColor()
-            );
+            Text lineRenderer = getLineRenderer(lineIndex, i);
             lineRenderer.disableTruncate();
             lineRenderer.render(poseStack);
         }
+    }
+
+    private @NotNull Text getLineRenderer(int lineIndex, int i) {
+        String line = lines.get(lineIndex);
+
+        // Calculate position with consistent line height
+        int lineY = getTopPos() + this.textAreaStyle.getPadding() + (i * lineHeight);
+
+        // Create temporary text renderer for each line
+        return new Text(
+                getLeftPos() + this.textAreaStyle.getPadding(),
+                lineY,
+                line,
+                this.textAreaStyle.getFontSize(),
+                this.isEmpty()  ? this.textAreaStyle.getPlaceholderColor() : this.textAreaStyle.getTextColor()
+        );
     }
 
     private void renderPlaceholder(PoseStack poseStack) {

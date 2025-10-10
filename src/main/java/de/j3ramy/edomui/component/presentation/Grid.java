@@ -476,15 +476,14 @@ public final class Grid extends Widget {
         }
     }
 
-    public Grid enableDynamicContextMenu() {
-        return this.enableDynamicContextMenu(getStyle().getBackgroundColor());
+    public void enableDynamicContextMenu() {
+        this.enableDynamicContextMenu(getStyle().getBackgroundColor());
     }
 
-    public Grid enableDynamicContextMenu(Color selectionColor) {
+    public void enableDynamicContextMenu(Color selectionColor) {
         this.contextMenu = new ContextMenu(selectionColor);
         this.menuBuilder = DynamicContextMenuBuilder.create();
         this.dynamicMenuEnabled = true;
-        return this;
     }
 
     public Grid addContextAction(String label, IAction action) {
