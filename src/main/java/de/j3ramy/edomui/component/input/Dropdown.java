@@ -116,12 +116,6 @@ public final class Dropdown extends Button {
         if (mouseButton == 0) {
             if (isUnfolded && menu != null) {
                 menu.onClick(mouseButton);
-
-                String currentSelection = this.menu.getSelectedTitle();
-                if (this.onChangeAction != null && (!this.lastSelectedElement.equals(currentSelection) || this.lastSelectedElement.isEmpty())) {
-                    this.lastSelectedElement = currentSelection;
-                    this.onChangeAction.execute(currentSelection);
-                }
             }
 
            if (isMouseOver()) {
