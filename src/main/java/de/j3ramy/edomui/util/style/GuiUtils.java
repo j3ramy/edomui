@@ -66,19 +66,13 @@ public class GuiUtils {
         return truncatedText + "...";
     }
 
-    public static String getFormattedTime(boolean useIngameTime, TimeFormat timeFormat) {
+    public static String getFormattedTime(TimeFormat timeFormat) {
         int hours;
         int minutes;
 
-        if (useIngameTime && Minecraft.getInstance().level != null) {
-            long worldTime = Minecraft.getInstance().level.getDayTime() % 24000;
-            hours = (int) ((worldTime / 1000 + 6) % 24);
-            minutes = (int) (60 * (worldTime % 1000) / 1000);
-        } else {
-            Calendar calendar = Calendar.getInstance();
-            hours = calendar.get(Calendar.HOUR_OF_DAY);
-            minutes = calendar.get(Calendar.MINUTE);
-        }
+        Calendar calendar = Calendar.getInstance();
+        hours = calendar.get(Calendar.HOUR_OF_DAY);
+        minutes = calendar.get(Calendar.MINUTE);
 
         if (timeFormat == TimeFormat.HOURS_12) {
             return String.format("%02d:%02d %s", (hours % 12 == 0) ? 12 : hours % 12, minutes,
@@ -88,35 +82,30 @@ public class GuiUtils {
         }
     }
 
-    public static String getDatetimeNow(boolean useIngameTime, DateFormat dateFormat, TimeFormat timeFormat){
-        return getDateAsString(useIngameTime, dateFormat) + " " + getFormattedTime(useIngameTime, timeFormat);
+    public static String getDatetimeNow(DateFormat dateFormat, TimeFormat timeFormat){
+        return getDateAsString(dateFormat) + " " + getFormattedTime(timeFormat);
     }
 
-    public static String getDateNow(boolean useIngameTime, DateFormat dateFormat){
-        return getDateAsString(useIngameTime, dateFormat);
+    public static String getDateNow(DateFormat dateFormat){
+        return getDateAsString(dateFormat);
     }
 
 
     private static final Calendar calendar = Calendar.getInstance();
-    public static String getDateAsString(boolean useIngameTime, DateFormat dateFormat){
-        if(useIngameTime && Minecraft.getInstance().level != null){
-            return "Day " + (Minecraft.getInstance().level.getDayTime() / 24000);
-        }
-        else{
-            String day = String.format("%02d", calendar.get(Calendar.DAY_OF_MONTH));
-            String month = String.format("%02d", calendar.get(Calendar.MONTH) + 1);
-            String year = String.valueOf(calendar.get(Calendar.YEAR));
+    public static String getDateAsString(DateFormat dateFormat){
+        String day = String.format("%02d", calendar.get(Calendar.DAY_OF_MONTH));
+        String month = String.format("%02d", calendar.get(Calendar.MONTH) + 1);
+        String year = String.valueOf(calendar.get(Calendar.YEAR));
 
-            switch (dateFormat){
-                case DE -> {
-                    return day + "." + month + "." + year;
-                }
-                case UK -> {
-                    return day + "/" + month + "/" + year;
-                }
-                default -> {
-                    return month + "/" + day + "/" + year;
-                }
+        switch (dateFormat){
+            case DE -> {
+                return day + "." + month + "." + year;
+            }
+            case UK -> {
+                return day + "/" + month + "/" + year;
+            }
+            default -> {
+                return month + "/" + day + "/" + year;
             }
         }
     }
