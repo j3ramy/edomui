@@ -22,6 +22,11 @@ public class PopUp extends CompositeWidget {
     public PopUp(int xPos, int yPos, String titleText, String content, PopUpType type) {
         super(xPos, yPos, 0, 0);
 
+        int centeredX = xPos - this.getWidth() / 2;
+        int centeredY = yPos - this.getHeight() / 2;
+        this.setLeftPos(centeredX);
+        this.setTopPos(centeredY);
+
         this.popUpStyle = new PopUpStyle(ThemeManager.getDefaultPopUpStyle());
         this.setStyle(popUpStyle);
 

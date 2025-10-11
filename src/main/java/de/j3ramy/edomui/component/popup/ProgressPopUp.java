@@ -10,14 +10,9 @@ public final class ProgressPopUp extends PopUp {
     private final ProgressBar progressBar;
 
     public ProgressPopUp(View hostView, int xPos, int yPos, String title, String content, PopUpType type, int duration, IAction finishAction) {
-        super(0, 0, title, "", type);
+        super(xPos, yPos, title, "", type);
 
         this.finishAction = finishAction;
-
-        int centeredX = xPos - this.getWidth() / 2;
-        int centeredY = yPos - this.getHeight() / 2;
-        this.setLeftPos(centeredX);
-        this.setTopPos(centeredY);
 
         int barX = this.getLeftPos() + (this.getWidth() - this.popUpStyle.getProgressBarWidth()) / 2;
         int barY = this.getTopPos() + this.getHeight() - this.popUpStyle.getWidgetHeight() - this.popUpStyle.getMargin();

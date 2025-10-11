@@ -16,12 +16,7 @@ public final class DropdownPopUp extends PopUp {
 
     public DropdownPopUp(View hostView, int xPos, int yPos, String title, String confirmButtonTitle, String cancelButtonTitle,
                          ArrayList<String> dropdownValues, String inputPlaceholder, PopUpType popUpType, IValueAction confirmAction, boolean isPassword) {
-        super(0, 0, title, "", popUpType);
-
-        int centeredX = xPos - this.getWidth() / 2;
-        int centeredY = yPos - this.getHeight() / 2;
-        this.setLeftPos(centeredX);
-        this.setTopPos(centeredY);
+        super(xPos, yPos, title, "", popUpType);
 
         int inputX = this.getLeftPos() + (this.getWidth() - this.popUpStyle.getInputWidth()) / 2;
         int inputY = this.getTopPos() + this.popUpStyle.getTitleHeight() + this.popUpStyle.getMargin();

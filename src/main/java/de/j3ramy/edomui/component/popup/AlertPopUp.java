@@ -8,12 +8,7 @@ public final class AlertPopUp extends PopUp {
     private final Button closeButton;
 
     public AlertPopUp(View hostView, int xPos, int yPos, String title, String content, String buttonTitle, PopUpType type) {
-        super(0, 0, title, content, type);
-
-        int centeredX = xPos - this.getWidth() / 2;
-        int centeredY = yPos - this.getHeight() / 2;
-        this.setLeftPos(centeredX);
-        this.setTopPos(centeredY);
+        super(xPos, yPos, title, content, type);
 
         int buttonX = this.getLeftPos() + (this.getWidth() - this.popUpStyle.getButtonWidth()) / 2;
         int buttonY = this.getTopPos() + this.getHeight() - this.popUpStyle.getWidgetHeight() - this.popUpStyle.getMargin();
