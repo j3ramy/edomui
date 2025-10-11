@@ -61,6 +61,7 @@ public class View implements IWidget {
         renderNormalWidgets(poseStack);
         renderDropdowns(poseStack);
         renderPopUps(poseStack);
+        renderTooltips(poseStack);
     }
 
     @Override
