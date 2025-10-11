@@ -29,7 +29,7 @@ public final class LineChart extends Widget {
     public LineChart(int xPos, int yPos, int width, int height) {
         super(xPos, yPos, width, height);
 
-        this.lineChartStyle = ThemeManager.getDefaultLineChartStyle();
+        this.lineChartStyle = new LineChartStyle(ThemeManager.getDefaultLineChartStyle());
         this.setStyle(lineChartStyle);
     }
 

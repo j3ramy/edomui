@@ -29,7 +29,7 @@ public final class BarChart extends Widget {
     public BarChart(int xPos, int yPos, int width, int height) {
         super(xPos, yPos, width, height);
 
-        this.barChartStyle = ThemeManager.getDefaultBarChartStyle();
+        this.barChartStyle = new BarChartStyle(ThemeManager.getDefaultBarChartStyle());
         this.setStyle(barChartStyle);
     }
 
