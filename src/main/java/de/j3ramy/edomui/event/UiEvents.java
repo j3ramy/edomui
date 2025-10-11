@@ -57,11 +57,20 @@ public class UiEvents {
     }
 
     @SubscribeEvent
-    public static void onRender(ScreenEvent.DrawScreenEvent event){
-        for(View view : ViewRegistry.getRegisteredViews()){
-            if (!view.isHidden()) {  
+    public static void onRenderPre(ScreenEvent.DrawScreenEvent.Pre event) {
+        for (View view : ViewRegistry.getRegisteredViews()) {
+            if (!view.isHidden()) {
                 view.update(event.getMouseX(), event.getMouseY());
                 view.render(event.getPoseStack());
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRenderPost(ScreenEvent.DrawScreenEvent.Post event) {
+        for (View view : ViewRegistry.getRegisteredViews()) {
+            if (!view.isHidden()) {
+                view.renderTooltips(event.getPoseStack());
             }
         }
     }
