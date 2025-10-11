@@ -61,7 +61,10 @@ public class UiEvents {
         for(View view : ViewRegistry.getRegisteredViews()){
             if (!view.isHidden()) {
                 view.update(event.getMouseX(), event.getMouseY());
-                view.render(event.getPoseStack());
+
+                if(!view.isManualRenderingEnabled()){
+                    view.render(event.getPoseStack());
+                }
             }
         }
     }

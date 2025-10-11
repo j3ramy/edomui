@@ -24,7 +24,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class View implements IWidget {
     private final CopyOnWriteArrayList<Widget> widgets = new CopyOnWriteArrayList<>();
 
-    private boolean isHidden, isUpdating = true;
+    private boolean isHidden, isUpdating = true, enableManualRendering = false;
     private String playerId;
     private int currentMouseX = 0;
     private int currentMouseY = 0;
@@ -366,5 +366,13 @@ public class View implements IWidget {
 
     public String getPlayerId() {
         return playerId;
+    }
+
+    public void enableManualRendering() {
+        this.enableManualRendering = true;
+    }
+
+    public boolean isManualRenderingEnabled() {
+        return enableManualRendering;
     }
 }
