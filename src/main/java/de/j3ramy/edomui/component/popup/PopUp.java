@@ -20,20 +20,17 @@ public class PopUp extends CompositeWidget {
     protected final View view = new View();
 
     public PopUp(int xPos, int yPos, String titleText, String content, PopUpType type) {
-        super(xPos, yPos, 0, 0);
-
-        int centeredX = xPos - this.getWidth() / 2;
-        int centeredY = yPos - this.getHeight() / 2;
-        this.setLeftPos(centeredX);
-        this.setTopPos(centeredY);
+        super(0, 0, 0, 0);
 
         this.popUpStyle = new PopUpStyle(ThemeManager.getDefaultPopUpStyle());
         this.setStyle(popUpStyle);
 
         this.setWidth(this.popUpStyle.getWidth());
         this.setHeight(this.popUpStyle.getHeight());
-        this.setLeftPos(this.getLeftPos() - this.popUpStyle.getWidth() / 2);
-        this.setLeftPos(this.getTopPos() - this.popUpStyle.getHeight() / 2);
+        int centeredX = xPos - this.getWidth() / 2;
+        int centeredY = yPos - this.getHeight() / 2;
+        this.setLeftPos(centeredX);
+        this.setTopPos(centeredY);
 
         this.getStyle().setBorderWidth(this.popUpStyle.getBorderWidth());
         this.getStyle().setBackgroundColor(this.popUpStyle.getBackgroundColor());
