@@ -229,6 +229,16 @@ public final class ScrollableTable extends ScrollableList {
         return data;
     }
 
+    @Override
+    public boolean isEmpty() {
+        if (hasHeader()) {
+            return content.size() <= 1;
+        }
+
+        return super.isEmpty();
+    }
+
+
     public List<String> getHeaderData() {
         return headerRow != null ? headerRow.getColumnData() : new ArrayList<>();
     }
