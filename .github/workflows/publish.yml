@@ -47,7 +47,10 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build mod
-        run: ./gradlew build
+        env:
+          CI: true
+        run: ./gradlew build --stacktrace --info --no-daemon
+        timeout-minutes: 15
 
       - name: Find built JAR
         id: findjar
