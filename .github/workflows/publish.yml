@@ -47,8 +47,6 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build mod
-        env:
-          CI: true
         run: ./gradlew build --stacktrace --info --no-daemon
         timeout-minutes: 15
 
@@ -82,7 +80,23 @@ jobs:
           API_TOKEN: ${{ secrets.API_TOKEN }}
         run: |
           echo "Uploading file to API..."
-          curl -X POST "https://minecraft.curseforge.com/api/projects/${PROJECT_ID}/upload-file" \
+      
+          RESPONSE=$(curl -s -w "%{http_code}" -o response.json \
+            -X POST "https://minecraft.curseforge.com/api/projects/${PROJECT_ID}/upload-file" \
             -H "X-Api-Token: ${API_TOKEN}" \
-            -F "metadata=@metadata.json;type=application/json" \
-            -F "file=@${{ steps.findjar.outputs.jar_path }}"
+            -F "metadata=$(cat metadata.json)" \
+            -F "file=@${{ steps.findjar.outputs.jar_path }}")
+      
+          if [ "$RESPONSE" -ne 200 ]; then
+            echo "Upload failed (HTTP $RESPONSE)"
+            cat response.json
+            exit 1
+          fi
+      
+          if grep -q '"errorCode"' response.json; then
+            echo "CurseForge API returned an error!"
+            cat response.json
+            exit 1
+          fi
+      
+          echo "Upload successful!"
