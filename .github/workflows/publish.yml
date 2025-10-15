@@ -1,0 +1,85 @@
+name: Build and Upload Mod File to CurseForge
+
+on:
+  workflow_dispatch:
+    inputs:
+      modname:
+        description: 'MOD NAME'
+        required: true
+    
+      mcversion:
+        description: 'MC VERSION'
+        required: true
+        default: '1.18.2'
+        type: choice
+        options:
+          - '1.18.2'
+
+      version:
+        description: | 
+          MOD VERSION (MAJORMOD.MAJORAPI.MINOR.PATCH):
+          MAJORMOD - Removing items, blocks, tile entities and changing or removing previously existing mechanics |  
+          MAJORAPI - Changing the order or variables of enums, return types of methods or removing public methods | 
+          MINOR - Adding items, blocks, tile entities or new mechanics | 
+          PATCH - Bugfixes
+        required: true
+
+      changelog:
+        description: 'CHANGELOG (1-2 sentences)'
+        required: true
+        type: string
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Grant execute permission for Gradle
+        run: chmod +x gradlew
+
+      - name: Build mod
+        run: ./gradlew build
+
+      - name: Find built JAR
+        id: findjar
+        run: |
+          JAR_PATH=$(find build/libs -name "*.jar" | head -n 1)
+          if [ -z "$JAR_PATH" ]; then
+            echo "No JAR file found in build/libs"
+            exit 1
+          fi
+          echo "jar_path=$JAR_PATH" >> $GITHUB_OUTPUT
+
+      - name: Generate metadata JSON
+        id: meta
+        run: |
+          echo "Generating metadata.json..."
+          cat <<EOF > metadata.json
+          {
+            "changelog": "${{ github.event.inputs.changelog }}",
+            "displayName": "${{github.event.inputs.modname}}-${{ github.event.inputs.mcversion }}-${{ github.event.inputs.version }}",
+            "gameVersions": [9008],
+            "releaseType": "release"
+          }
+          EOF
+          cat metadata.json
+
+      - name: Upload mod file
+        env:
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+        run: |
+          echo "Uploading file to API..."
+          curl -X POST "https://minecraft.curseforge.com/api/projects/${PROJECT_ID}/upload-file" \
+            -H "X-Api-Token: ${API_TOKEN}" \
+            -F "metadata=@metadata.json;type=application/json" \
+            -F "file=@${{ steps.findjar.outputs.jar_path }}"
