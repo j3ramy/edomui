@@ -9,6 +9,9 @@ import de.j3ramy.edomui.component.Widget;
 import de.j3ramy.edomui.theme.ThemeManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 
@@ -18,7 +21,12 @@ public class Text extends Widget {
     private final TextStyle textStyle;
 
     private StringBuilder text;
-    private boolean truncateLabel = true;
+    private boolean truncateLabel = true, isSelectable;
+    private int caretCharPos = 0;
+    private int selectionStart = -1;
+    private long lastClickTime = 0;
+    private int lastClickCaretChar = -1;
+    private int clickCount = 0;
 
     public Text(int x, int y, String text, FontSize fontSize, int maxTextWidth, Color color, Color hoverColor, Color disabledColor) {
         super(x, y, 0, 0);
@@ -54,29 +62,86 @@ public class Text extends Widget {
 
         super.render(poseStack);
 
-        Color renderColor = isEnabled() ? (isHoverable() && isMouseOver() ? this.textStyle.getTextHoverColor() :
-                this.textStyle.getTextColor()) : this.textStyle.getTextDisabledColor();
+        Color renderColor = textStyle.getTextColor();
         float scale = GuiUtils.getFontScale(this.textStyle.getFontSize());
         float ratio = 1 / scale;
 
-        String[] lines = text.toString().split("\n");
+        if (selectionStart != -1 && caretCharPos != selectionStart) {
+            int from = Math.min(caretCharPos, selectionStart);
+            int to = Math.max(caretCharPos, selectionStart);
+            int left = getLeftPos() + (int) getSubstringTextWidth(0, from);
+            int right = getLeftPos() + (int) getSubstringTextWidth(0, to);
+            AbstractContainerScreen.fill(poseStack, left, getTopPos(), right, getTopPos() + (int)(GuiPresets.LETTER_HEIGHT * scale),
+                    this.getStyle().getSelectionColor().getRGB());
+        }
 
         poseStack.pushPose();
         poseStack.scale(scale, scale, scale);
+        Minecraft.getInstance().font.draw(poseStack, text.toString(), getLeftPos() * ratio, getTopPos() * ratio, renderColor.getRGB());
+        poseStack.popPose();
+    }
 
-        int yOffset = 0;
-        for (String line : lines) {
-            String label = truncateLabel ? GuiUtils.getTruncatedLabel(line, scale, maxTextWidth) : line;
-            Minecraft.getInstance().font.draw(poseStack, label, getLeftPos() * ratio, (getTopPos() + yOffset) * ratio, renderColor.getRGB());
-            yOffset += GuiPresets.LETTER_HEIGHT;
+    @Override
+    public void onClick(int mouseButton) {
+        if (mouseButton != 0 || !this.isSelectable || !this.isMouseOver()) {
+            return;
         }
 
-        poseStack.popPose();
+        int mouseX = getMousePosition().x;
+        int clickX = mouseX - getLeftPos();
+        this.caretCharPos = getCharIndexFromPixel(clickX);
+
+        long now = System.currentTimeMillis();
+        if (now - lastClickTime < GuiPresets.DOUBLE_CLICK_THRESHOLD_FAST && caretCharPos == lastClickCaretChar) {
+            clickCount++;
+        } else {
+            clickCount = 1;
+        }
+
+        lastClickTime = now;
+        lastClickCaretChar = caretCharPos;
+
+        if (clickCount == 2) {
+            selectWordAtCaret();
+        } else {
+            selectionStart = -1;
+        }
+    }
+
+    @Override
+    public void keyPressed(int keyCode) {
+        boolean ctrl = Screen.hasControlDown();
+        if (ctrl && keyCode == GLFW.GLFW_KEY_C) {
+            copy();
+        }
     }
 
     @Override
     public TextStyle getStyle() {
         return this.textStyle;
+    }
+
+    private void copy() {
+        if (selectionStart != -1 && caretCharPos != selectionStart) {
+            int from = Math.min(caretCharPos, selectionStart);
+            int to = Math.max(caretCharPos, selectionStart);
+            Minecraft.getInstance().keyboardHandler.setClipboard(text.substring(from, to));
+        }
+    }
+
+    private void selectWordAtCaret() {
+        if (text.isEmpty()) {
+            return;
+        }
+
+        int start = caretCharPos;
+        int end = caretCharPos;
+
+        while (start > 0 && !Character.isWhitespace(text.charAt(start - 1))) start--;
+        while (end < text.length() && !Character.isWhitespace(text.charAt(end))) end++;
+
+        caretCharPos = end;
+        selectionStart = start;
     }
 
     private void autoHeight() {
@@ -173,5 +238,9 @@ public class Text extends Widget {
         this.textStyle.setFontSize(fontSize);
         autoWidth();
         autoHeight();
+    }
+
+    public void setSelectable(){
+        this.isSelectable = true;
     }
 }

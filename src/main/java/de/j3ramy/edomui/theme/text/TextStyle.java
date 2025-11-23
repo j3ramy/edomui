@@ -9,6 +9,7 @@ public class TextStyle extends WidgetStyle {
     private Color textColor = Color.WHITE;
     private Color textHoverColor = Color.GRAY;
     private Color textDisabledColor = Color.GRAY;
+    private Color selectionColor = Color.YELLOW;
     private FontSize fontSize = FontSize.S;
 
     public Color getTextColor() {
@@ -21,6 +22,10 @@ public class TextStyle extends WidgetStyle {
 
     public Color getTextHoverColor() {
         return textHoverColor;
+    }
+
+    public Color getSelectionColor() {
+        return selectionColor;
     }
 
     public void setFontSize(FontSize fontSize) {
@@ -43,6 +48,10 @@ public class TextStyle extends WidgetStyle {
         this.textHoverColor = textHoverColor;
     }
 
+    public void setSelectionColor(Color selectionColor) {
+        this.selectionColor = selectionColor;
+    }
+
     public TextStyle(WidgetStyle style) {
         super(style);
 
@@ -50,6 +59,7 @@ public class TextStyle extends WidgetStyle {
             this.textColor = other.textColor;
             this.textHoverColor = other.textHoverColor;
             this.textDisabledColor = other.textDisabledColor;
+            this.selectionColor = other.selectionColor;
             this.fontSize = other.fontSize;
         }
     }
