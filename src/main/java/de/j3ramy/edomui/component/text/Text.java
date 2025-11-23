@@ -84,6 +84,7 @@ public class Text extends Widget {
     @Override
     public void onClick(int mouseButton) {
         if (mouseButton != 0 || !this.isSelectable || !this.isMouseOver()) {
+            this.selectionStart = -1;
             return;
         }
 
