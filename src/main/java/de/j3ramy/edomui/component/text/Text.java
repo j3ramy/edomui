@@ -71,13 +71,15 @@ public class Text extends Widget {
             int to = Math.max(caretCharPos, selectionStart);
             int left = getLeftPos() + (int) getSubstringTextWidth(0, from);
             int right = getLeftPos() + (int) getSubstringTextWidth(0, to);
-            AbstractContainerScreen.fill(poseStack, left, getTopPos(), right, getTopPos() + (int)(GuiPresets.LETTER_HEIGHT * scale),
+            AbstractContainerScreen.fill(poseStack, left, getTopPos(), right, getTopPos() + (int) (GuiPresets.LETTER_HEIGHT * scale),
                     this.getStyle().getSelectionColor().getRGB());
         }
 
+        String displayText = truncateLabel ? GuiUtils.getTruncatedLabel(text.toString(), scale, maxTextWidth) : text.toString();
+
         poseStack.pushPose();
         poseStack.scale(scale, scale, scale);
-        Minecraft.getInstance().font.draw(poseStack, text.toString(), getLeftPos() * ratio, getTopPos() * ratio, renderColor.getRGB());
+        Minecraft.getInstance().font.draw(poseStack, displayText, getLeftPos() * ratio, getTopPos() * ratio, renderColor.getRGB());
         poseStack.popPose();
     }
 
@@ -150,14 +152,17 @@ public class Text extends Widget {
         setHeight((int) (GuiPresets.LETTER_HEIGHT * GuiUtils.getFontScale(this.textStyle.getFontSize()) * lines));
     }
 
-    protected void autoWidth() {
+    public void autoWidth() {
+        float scale = GuiUtils.getFontScale(this.textStyle.getFontSize());
+
         int maxLineWidth = 0;
-        String[] lines = text.toString().split("\n");
-        for (String line : lines) {
-            int width = (int) getSubstringTextWidth(0, line.length());
-            if (width > maxLineWidth) maxLineWidth = width;
+        for (String line : text.toString().split("\n")) {
+            String truncatedLabel = GuiUtils.getTruncatedLabel(line, scale, (int)(maxTextWidth * 1.1f));
+            int width = (int)(Minecraft.getInstance().font.width(truncatedLabel) * scale);
+            maxLineWidth = Math.max(maxLineWidth, width);
         }
-        setWidth(maxLineWidth);
+
+        setWidth(Math.min(maxLineWidth, maxTextWidth));
     }
 
     public void disableTruncate() {

@@ -52,21 +52,14 @@ public class Button extends CompositeWidget {
     protected Text createTitle(ButtonType type, String text, int padding) {
         int left = this.getLeftPos();
         int width = this.getWidth();
+        int maxTextWidth = width - 2 * padding;
 
         Text title = switch (type) {
-            case DROPDOWN -> new VerticalCenteredText(this.toRect(), left + padding, text, this.buttonStyle.getFontSize(),
-                    width - 2 * padding - 20, this.buttonStyle.getTextColor(), this.buttonStyle.getTextHoverColor(),
-                    this.buttonStyle.getTextDisabledColor()
-            ){
-                @Override
-                public boolean isMouseOver() {
-                    return Button.this.isMouseOver();
-                }
-            };
-            case TEXT_FIELD -> new VerticalCenteredText(this.toRect(), left + padding, text, this.buttonStyle.getFontSize(),
-                    width - 2 * padding, this.buttonStyle.getTextColor(), this.buttonStyle.getTextHoverColor(),
-                    this.buttonStyle.getTextDisabledColor()
-            ){
+            case DROPDOWN, TEXT_FIELD -> new VerticalCenteredText(this.toRect(), left + padding, text,
+                    this.buttonStyle.getFontSize(), maxTextWidth,
+                    this.buttonStyle.getTextColor(),
+                    this.buttonStyle.getTextHoverColor(),
+                    this.buttonStyle.getTextDisabledColor()) {
                 @Override
                 public boolean isMouseOver() {
                     return Button.this.isMouseOver();
@@ -77,9 +70,10 @@ public class Button extends CompositeWidget {
                 rect.width -= 2 * padding;
                 rect.x += padding;
 
-                yield new CenteredText(rect, text, this.buttonStyle.getFontSize(), this.buttonStyle.getTextColor(), this.buttonStyle.getTextHoverColor(),
-                        this.buttonStyle.getTextDisabledColor()
-                ){
+                yield new CenteredText(rect, text, this.buttonStyle.getFontSize(), maxTextWidth,  // <-- maxTextWidth hinzugefügt
+                        this.buttonStyle.getTextColor(),
+                        this.buttonStyle.getTextHoverColor(),
+                        this.buttonStyle.getTextDisabledColor()) {
                     @Override
                     public boolean isMouseOver() {
                         return Button.this.isMouseOver();
@@ -89,7 +83,6 @@ public class Button extends CompositeWidget {
         };
 
         title.setHoverable(true);
-
         return title;
     }
 
@@ -212,9 +205,9 @@ public class Button extends CompositeWidget {
     public void setTitle(String text, boolean replace, int padding) {
         if(replace){
             this.title = this.createTitle(ButtonType.DEFAULT, text, padding);
-        }
-        else if(title != null){
+        } else if(title != null){
             title.setText(text);
+            title.autoWidth();
         }
     }
 

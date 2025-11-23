@@ -33,37 +33,26 @@ public class GuiUtils {
         return (int) (Minecraft.getInstance().font.width(text) * fontSizeScale);
     }
 
-    public static String getTruncatedLabel(String s, float fontSizeScale, int maxTextWidth) {
-        if (s == null || s.isEmpty()) {
-            return "";
-        }
-
+    public static String getTruncatedLabel(String text, float scale, int maxWidth) {
         Font font = Minecraft.getInstance().font;
-        int scaledTextWidth = (int) (font.width(s) * fontSizeScale);
-        if (scaledTextWidth <= maxTextWidth) {
-            return s;
+        int scaledWidth = (int)(font.width(text) * scale);
+
+        if (scaledWidth <= maxWidth) {
+            return text;
         }
 
-        int ellipsisWidth = (int) (font.width("...") * fontSizeScale);
-        int availableWidth = maxTextWidth - ellipsisWidth;
-        if (availableWidth <= 0) {
-            return "...";
-        }
+        String ellipsis = "...";
+        int ellipsisWidth = (int)(font.width(ellipsis) * scale);
+        int availableWidth = maxWidth - ellipsisWidth;
 
-        int currentWidth = 0;
-        StringBuilder truncatedText = new StringBuilder();
-
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            int charWidth = (int) (font.width(String.valueOf(c)) * fontSizeScale);
-            if (currentWidth + charWidth > availableWidth) {
-                break;
+        for (int i = text.length() - 1; i >= 0; i--) {
+            String sub = text.substring(0, i);
+            if ((int)(font.width(sub) * scale) <= availableWidth) {
+                return sub + ellipsis;
             }
-            truncatedText.append(c);
-            currentWidth += charWidth;
         }
 
-        return truncatedText + "...";
+        return ellipsis;
     }
 
     public static String getFormattedTime(TimeFormat timeFormat) {
