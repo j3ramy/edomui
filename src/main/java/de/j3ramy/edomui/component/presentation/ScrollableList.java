@@ -50,8 +50,6 @@ public class ScrollableList extends CompositeWidget {
         this.maxVisibleListElements = elementWithGap > 0 ? height / elementWithGap : 0;
 
         this.scrollbar = new VerticalScrollbar(this, 0, maxVisibleListElements);
-
-        this.update(0, 0);
     }
 
     public ScrollableList(int x, int y, int width, int height) {
