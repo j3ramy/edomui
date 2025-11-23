@@ -33,6 +33,8 @@ public class Button extends CompositeWidget {
 
         this.setHoverable(true);
         this.title = createTitle(type, text, 0);
+
+        this.syncChildStyles();
     }
 
     public Button(int x, int y, int width, int height, String title, IAction leftClickAction) {
