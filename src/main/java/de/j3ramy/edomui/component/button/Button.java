@@ -54,28 +54,30 @@ public class Button extends CompositeWidget {
     protected Text createTitle(ButtonType type, String text, int padding) {
         int left = this.getLeftPos();
         int width = this.getWidth();
-        int maxTextWidth = width - 2 * padding;
+
+        int rightPadding = padding;
+        if (type == ButtonType.DROPDOWN) {
+            rightPadding = padding + 10;
+        }
+
+        int maxTextWidth = width - padding - rightPadding;
 
         Text title = switch (type) {
-            case DROPDOWN, TEXT_FIELD -> new VerticalCenteredText(this.toRect(), left + padding, text,
-                    this.buttonStyle.getFontSize(), maxTextWidth,
-                    this.buttonStyle.getTextColor(),
-                    this.buttonStyle.getTextHoverColor(),
-                    this.buttonStyle.getTextDisabledColor()) {
+            case DROPDOWN, TEXT_FIELD -> new VerticalCenteredText(this.toRect(), left + padding, text, this.buttonStyle.getFontSize(),
+                    maxTextWidth, this.buttonStyle.getTextColor(), this.buttonStyle.getTextHoverColor(), this.buttonStyle.getTextDisabledColor()) {
                 @Override
                 public boolean isMouseOver() {
                     return Button.this.isMouseOver();
                 }
             };
+
             default -> {
                 Rectangle rect = this.toRect();
-                rect.width -= 2 * padding;
+                rect.width -= padding + rightPadding;
                 rect.x += padding;
 
-                yield new CenteredText(rect, text, this.buttonStyle.getFontSize(), maxTextWidth,  // <-- maxTextWidth hinzugefügt
-                        this.buttonStyle.getTextColor(),
-                        this.buttonStyle.getTextHoverColor(),
-                        this.buttonStyle.getTextDisabledColor()) {
+                yield new CenteredText(rect, text, this.buttonStyle.getFontSize(), maxTextWidth, this.buttonStyle.getTextColor(),
+                        this.buttonStyle.getTextHoverColor(), this.buttonStyle.getTextDisabledColor()) {
                     @Override
                     public boolean isMouseOver() {
                         return Button.this.isMouseOver();
