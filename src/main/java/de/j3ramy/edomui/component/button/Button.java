@@ -10,6 +10,7 @@ import de.j3ramy.edomui.component.text.CenteredText;
 import de.j3ramy.edomui.component.text.Text;
 import de.j3ramy.edomui.component.text.Tooltip;
 import de.j3ramy.edomui.component.text.VerticalCenteredText;
+import de.j3ramy.edomui.util.style.GuiPresets;
 
 import java.awt.*;
 
@@ -57,7 +58,7 @@ public class Button extends CompositeWidget {
 
         int rightPadding = padding;
         if (type == ButtonType.DROPDOWN) {
-            rightPadding = padding + 10;
+            rightPadding = padding + GuiPresets.DROPDOWN_RIGHT_PADDING;
         }
 
         int maxTextWidth = width - padding - rightPadding;

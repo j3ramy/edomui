@@ -12,6 +12,7 @@ public class GuiPresets {
     public static String TEXT_AREA_DELIMITER = "\n";
     public static float MAX_PROGRESS_BAR_VALUE = 1;
     public static int MAX_TEXT_LENGTH = 1024;
+    public static int DROPDOWN_RIGHT_PADDING = 15;
 
     public static void setCursorBlinkTickTime(int cursorBlinkTickTime) {
         CURSOR_BLINK_TICK_TIME = cursorBlinkTickTime;
